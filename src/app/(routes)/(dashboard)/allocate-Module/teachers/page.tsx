@@ -79,7 +79,7 @@ const SchoolsPage = () => {
           Allocate Module
           </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="">
         <DialogHeader className="flex justify-center items-center w-full bg-[#FCF9F9] mt-3 p-2">
           <DialogTitle>Add new school</DialogTitle>
           {/* <DialogDescription>
