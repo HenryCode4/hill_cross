@@ -15,7 +15,7 @@ const Login = () => {
     };
 
   return (
-    <div className="relative z-[999] flex h-auto w-[724px] flex-col rounded-[12px] bg-[#FCFCFC] px-[96px] py-[33px]">
+    <div className="relative z-[999] flex h-auto w-full xl:w-[724px] flex-col rounded-[12px] bg-[#FCFCFC] px-[10px] xl:px-[96px] py-[33px]">
           <div className="flex flex-col gap-y-[8px] pb-[56px] text-center">
             <h1 className="text-[24px] font-[600] leading-[34px] text-[#EC1B22]">
               Welcome back
@@ -61,7 +61,7 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="flex justify-between items-start gap-y-[8px]">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-y-[8px]">
             <div className="flex items-center space-x-2">
             <Switch id="remember-me" />
             <Label htmlFor="remember-me">Remember Me</Label>
@@ -73,7 +73,7 @@ const Login = () => {
             </div>
 
             <div className="w-full">
-                <Button className="w-full font-[600] text-[16px]">
+                <Button className="w-full font-[600] text-[12px] md:text-[16px]">
                     LOGIN TO YOUR PORTAL
                 </Button>
             </div>

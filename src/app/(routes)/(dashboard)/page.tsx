@@ -100,7 +100,7 @@ const Dashboard = () => {
     <div className="flex h-full w-full flex-col gap-y-[24px] bg-[#F8F8F8] pb-[24px] pt-[90px] lg:gap-y-[43px] lg:px-[52px]">
       <Header title={"Dashboard"} subTitle={"Dashboard"} />
 
-      <div className="grid h-auto xl:h-[180px] w-full grid-cols-1 xl:grid-cols-4 gap-y-[48px]  bg-white px-[15px] py-[33px] xl:px-[40px]">
+      <div className="grid h-auto w-full xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 gap-y-[48px]  bg-white px-[15px] py-[33px] xl:px-[40px]">
         {staffs.map((staff, i) => (
           <div key={i} className="flex items-center  gap-x-[8px]">
             <div className="flex h-[96px] w-[96px] items-center justify-center rounded-full border border-[#9D1217]">

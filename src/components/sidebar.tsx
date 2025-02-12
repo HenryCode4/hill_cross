@@ -281,7 +281,7 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
               <Image src={Logo} alt="sidebar logo" className="h-[48px] w-[183px] object-cover" />
             </Link>
 
-            <X onClick={() => setToggle(false)} size={24} className='text-white'/>
+            <X onClick={() => setToggle(false)} size={24} className='text-white cursor-pointer'/>
           </div>
       
 
