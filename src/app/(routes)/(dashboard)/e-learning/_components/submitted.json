@@ -1,0 +1,42 @@
+[
+    {
+      "studentId": "0411020375084",
+      "studentName": "Timi James",
+      "fileType": "PDF",
+      "score": 8,
+      "submissionDate": "2024-04-26",
+      "status": "Graded"
+    },
+    {
+      "studentId": "0411020375085",
+      "studentName": "Jane Doe",
+      "fileType": "DOCX",
+      "score": 9,
+      "submissionDate": "2024-04-25",
+      "status": "Graded"
+    },
+    {
+      "studentId": "0411020375086",
+      "studentName": "John Smith",
+      "fileType": "PDF",
+      "score": 7,
+      "submissionDate": "2024-04-24",
+      "status": "Pending"
+    },
+    {
+      "studentId": "0411020375087",
+      "studentName": "Alice Johnson",
+      "fileType": "PPT",
+      "score": 10,
+      "submissionDate": "2024-04-23",
+      "status": "Graded"
+    },
+    {
+      "studentId": "0411020375088",
+      "studentName": "Bob Brown",
+      "fileType": "PDF",
+      "score": 6,
+      "submissionDate": "2024-04-22",
+      "status": "Pending"
+    }
+  ]

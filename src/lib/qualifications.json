@@ -1,0 +1,102 @@
+[
+    {
+        "qualifications": "System Support",
+        "school": "School Of Information Technology",
+        "students": "4,465"
+    },
+    {
+        "qualifications": "Business Management",
+        "school": "School Of Business",
+        "students": "3,210"
+    },
+    {
+        "qualifications": "Marketing",
+        "school": "School Of Business",
+        "students": "2,980"
+    },
+    {
+        "qualifications": "Human Resources",
+        "school": "School Of Business",
+        "students": "1,750"
+    },
+    {
+        "qualifications": "Finance",
+        "school": "School Of Business",
+        "students": "2,340"
+    },
+    {
+        "qualifications": "Graphic Design",
+        "school": "School Of Arts",
+        "students": "1,890"
+    },
+    {
+        "qualifications": "Fine Arts",
+        "school": "School Of Arts",
+        "students": "1,230"
+    },
+    {
+        "qualifications": "Music",
+        "school": "School Of Arts",
+        "students": "1,110"
+    },
+    {
+        "qualifications": "Civil Engineering",
+        "school": "School Of Engineering",
+        "students": "2,560"
+    },
+    {
+        "qualifications": "Mechanical Engineering",
+        "school": "School Of Engineering",
+        "students": "2,780"
+    },
+    {
+        "qualifications": "Electrical Engineering",
+        "school": "School Of Engineering",
+        "students": "2,450"
+    },
+    {
+        "qualifications": "Computer Science",
+        "school": "School Of Information Technology",
+        "students": "3,670"
+    },
+    {
+        "qualifications": "Software Development",
+        "school": "School Of Information Technology",
+        "students": "3,890"
+    },
+    {
+        "qualifications": "Network Administration",
+        "school": "School Of Information Technology",
+        "students": "2,340"
+    },
+    {
+        "qualifications": "Cyber Security",
+        "school": "School Of Information Technology",
+        "students": "2,150"
+    },
+    {
+        "qualifications": "Data Science",
+        "school": "School Of Information Technology",
+        "students": "2,980"
+    },
+    {
+        "qualifications": "Nursing",
+        "school": "School Of Health Sciences",
+        "students": "3,450"
+    },
+    {
+        "qualifications": "Pharmacy",
+        "school": "School Of Health Sciences",
+        "students": "2,670"
+    },
+    {
+        "qualifications": "Public Health",
+        "school": "School Of Health Sciences",
+        "students": "2,340"
+    },
+    {
+        "qualifications": "Dentistry",
+        "school": "School Of Health Sciences",
+        "students": "1,980"
+    }
+]

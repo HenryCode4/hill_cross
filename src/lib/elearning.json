@@ -1,0 +1,45 @@
+[
+    {
+      "module": "Introduction to South African Law",
+      "topic": "The divisions of SA Law",
+      "teacher": "Tshepiso Modise",
+      "createdDate": "2024-04-26",
+      "status": "Pending"
+    },
+    {
+      "module": "Introduction to South African Law",
+      "topic": "The history of SA Law",
+      "teacher": "Tshepiso Modise",
+      "createdDate": "2024-05-01",
+      "status": "Approved"
+    },
+    {
+      "module": "Introduction to South African Law",
+      "topic": "Constitutional Law in South Africa",
+      "teacher": "Tshepiso Modise",
+      "createdDate": "2024-06-10",
+      "status": "Ended"
+    },
+    {
+      "module": "Introduction to South African Law",
+      "topic": "Property Law",
+      "teacher": "Tshepiso Modise",
+      "createdDate": "2024-07-15",
+      "status": "Pending"
+    },
+    {
+      "module": "Introduction to South African Law",
+      "topic": "Family Law",
+      "teacher": "Tshepiso Modise",
+      "createdDate": "2024-08-20",
+      "status": "Approved"
+    },
+    {
+      "module": "Introduction to South African Law",
+      "topic": "Criminal Law",
+      "teacher": "Tshepiso Modise",
+      "createdDate": "2024-09-05",
+      "status": "Ended"
+    }
+  ]
+  

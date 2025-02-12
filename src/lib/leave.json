@@ -1,0 +1,44 @@
+[
+    {
+        "requestDate": "15-01-2019",
+        "leaveType": "Annual Leave",
+        "startDate": "15-01-2019",
+        "endDate": "15-01-2019",
+        "status": "Accepted"
+    },
+    {
+        "requestDate": "15-01-2019",
+        "leaveType": "Sick Leave",
+        "startDate": "15-01-2019",
+        "endDate": "15-01-2019",
+        "status": "Accepted"
+    },
+    {
+        "requestDate": "15-01-2019",
+        "leaveType": "2 days off",
+        "startDate": "15-01-2019",
+        "endDate": "15-01-2019",
+        "status": "Accepted"
+    },
+    {
+        "requestDate": "15-01-2019",
+        "leaveType": "Annual Leave",
+        "startDate": "15-01-2019",
+        "endDate": "15-01-2019",
+        "status": "Accepted"
+    },
+    {
+        "requestDate": "15-01-2019",
+        "leaveType": "Annual Leave",
+        "startDate": "15-01-2019",
+        "endDate": "15-01-2019",
+        "status": "Accepted"
+    },
+    {
+        "requestDate": "15-01-2019",
+        "leaveType": "Annual Leave",
+        "startDate": "15-01-2019",
+        "endDate": "15-01-2019",
+        "status": "Accepted"
+    }
+]

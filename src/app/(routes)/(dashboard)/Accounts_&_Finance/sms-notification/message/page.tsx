@@ -1,0 +1,133 @@
+"use client"
+
+import { addCycle } from '@/assets'
+import { DatePickerDemo } from '@/components/datepicker'
+import Header from '@/components/header'
+import SelectComponent from '@/components/selectComponent'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import Image from 'next/image'
+import Link from 'next/link'
+import React, { useState } from 'react'
+
+const MessagePage = () => {
+    const [active, setActive] = useState(1)
+  return (
+    <div className="flex h-full w-full flex-col gap-y-[24px] bg-[#F8F8F8] pb-[24px] pt-[90px] lg:gap-y-[43px] lg:px-[52px]">
+      <Header
+        backIcon
+        title={"Messaging"}
+        subTitle={"Accounting & Finance"}
+        hideSearch
+      />
+
+      <div className='w-full flex gap-y-[45px] flex-col bg-white h-auto p-[39px]'>
+      <div className="flex w-full flex-col lg:flex-row justify-between lg:items-center gap-y-[20px]">
+            <div className="flex gap-x-[16px]">
+                <button onClick={()=> setActive(1)} className={`${active === 1 ? "bg-[#9D1217]":"bg-[#F6B2AD]"} h-[48px] w-auto text-white rounded-[8px] px-[16px] py-[12px]`}>Scheduled</button>
+                <button onClick={()=> setActive(2)} className={`${active === 2 ? "bg-[#9D1217]":"bg-[#F6B2AD]"} h-[48px] w-auto text-white rounded-[8px] px-[16px] py-[12px]`}>Outbox</button>
+           
+            </div>
+            
+            <div className='flex flex-1 justify-end'>
+                <Link href={"/Accounts_&_Finance/sms-notification/message"}>
+                    <button className={`bg-[#9D1217] h-[48px] w-auto text-white rounded-[8px] px-[16px] py-[12px] flex gap-x-[8px] items-center`}>
+                    <Image src={addCycle} alt="new message icon" />
+                    <p className="text-[20px] font-[500]">New Message</p>
+                </button>
+                </Link>
+            
+            </div>
+          </div>
+          {
+  active === 1 ? (
+    <div className='w-full flex-col flex gap-y-[32px]'>
+      <div className='grid lg:grid-cols-2 gap-[47px]'>
+        <div className="flex flex-col gap-y-[8px]">
+          <Label className="text-[#1E1E1E] font-[600]">Message Recipient</Label>
+          <SelectComponent className='border border-[#AACEC9] bg-[#F9FCFB] rounded-[8px]' items={["Unpaid Student sponsors"]} placeholder="Select qualification" />
+        </div>
+        <div className="flex flex-col gap-y-[8px]">
+          <Label className="text-[#1E1E1E] font-[600]">Delivery Method</Label>
+          <SelectComponent className='border border-[#AACEC9] bg-[#F9FCFB] rounded-[8px]' items={["SMS", "E-mail"]} placeholder="Select qualification" />
+        </div>
+        <div className="flex flex-col gap-y-[8px]">
+          <Label className="text-[#1E1E1E] font-[600]">Message Subject</Label>
+          <Input className='text-[#696A6A] text-[1rem] border border-[#AACEC9] bg-[#F9FCFB] rounded-[8px] h-[48px] outline-none focus:outline-none' placeholder="Unpaid Student sponsors" />
+        </div>
+      </div>
+
+      <div className='w-full h-[1px] bg-[#B0B0B0]' />
+
+      <div>
+        <Textarea className='focus:outline-none' />
+      </div>
+
+      <div className='grid lg:grid-cols-2 gap-[47px]'>
+        <div className="flex flex-col gap-y-[8px]">
+          <Label className="text-[#1E1E1E] font-[600]">Expected Date of Delivery <span className='text-[red]'>*</span></Label>
+          <DatePickerDemo className='border border-[#AACEC9] bg-[#F9FCFB] rounded-[8px]' />
+        </div>
+        <div className="flex flex-col gap-y-[8px]">
+          <Label className="text-[#1E1E1E] font-[600]">Delivery Time <span className='text-[red]'>*</span></Label>
+          <DatePickerDemo selectTime className='border border-[#AACEC9] bg-[#F9FCFB] rounded-[8px]' />
+        </div>
+      </div>
+
+      <div className='flex gap-x-[48px]'>
+        <button className={`bg-[#9D1217] h-[48px] w-auto text-white rounded-[8px] px-[16px] py-[12px]`}>Send Now</button>
+        <button className={`bg-[#F6B2AD] h-[48px] w-auto text-white rounded-[8px] px-[16px] py-[12px]`}>Schedule for later</button>
+      </div>
+    </div>
+  ) : (
+    <div className='w-full flex-col flex gap-y-[32px]'>
+      <div className='grid lg:grid-cols-2 gap-[47px]'>
+        <div className="flex flex-col gap-y-[8px]">
+          <Label className="text-[#1E1E1E] font-[600]">Message Recipient</Label>
+          <SelectComponent className='border border-[#AACEC9] bg-[#F9FCFB] rounded-[8px]' items={["Unpaid Student sponsors"]} placeholder="Select qualification" />
+        </div>
+        <div className="flex flex-col gap-y-[8px]">
+          <Label className="text-[#1E1E1E] font-[600]">Delivery Method</Label>
+          <SelectComponent className='border border-[#AACEC9] bg-[#F9FCFB] rounded-[8px]' items={["SMS", "E-mail"]} placeholder="Select qualification" />
+        </div>
+        <div className="flex flex-col gap-y-[8px]">
+          <Label className="text-[#1E1E1E] font-[600]">Message Subject</Label>
+          <Input className='text-[#696A6A] text-[1rem] border border-[#AACEC9] bg-[#F9FCFB] rounded-[8px] h-[48px] outline-none focus:outline-none' placeholder="Unpaid Student sponsors" />
+        </div>
+      </div>
+
+      <div className='w-full h-[1px] bg-[#B0B0B0]' />
+
+      <div>
+        <Textarea className='focus:outline-none' />
+      </div>
+
+      <div className='grid lg:grid-cols-2 gap-[47px]'>
+        <div className="flex flex-col gap-y-[8px]">
+          <Label className="text-[#1E1E1E] font-[600]">Expected Date of Delivery <span className='text-[red]'>*</span></Label>
+          <DatePickerDemo className='border border-[#AACEC9] bg-[#F9FCFB] rounded-[8px]' />
+        </div>
+        <div className="flex flex-col gap-y-[8px]">
+          <Label className="text-[#1E1E1E] font-[600]">Delivery Time <span className='text-[red]'>*</span></Label>
+          <DatePickerDemo selectTime className='border border-[#AACEC9] bg-[#F9FCFB] rounded-[8px]' />
+        </div>
+      </div>
+
+      <div className='flex gap-x-[48px]'>
+        <button className={`bg-[#9D1217] h-[48px] w-auto text-white rounded-[8px] px-[16px] py-[12px]`}>Re-Send</button>
+        
+      </div>
+    </div>
+  )
+}
+          
+
+          
+      </div>
+
+    </div>
+  )
+}
+
+export default MessagePage

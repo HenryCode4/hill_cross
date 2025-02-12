@@ -1,0 +1,14 @@
+[
+  { "name": "Jan", "uv": 70, "pv": 2400, "amt": 70 },
+  { "name": "Feb", "uv": 120, "pv": 4567, "amt": 120 },
+  { "name": "Mar", "uv": 40, "pv": 1398, "amt": 40 },
+  { "name": "Apr", "uv": 80, "pv": 3908, "amt": 80 },
+  { "name": "May", "uv": 50, "pv": 4800, "amt": 50 },
+  { "name": "Jun", "uv": 40, "pv": 3800, "amt": 40 },
+  { "name": "Jul", "uv": 10, "pv": 4300, "amt": 10 },
+  { "name": "Aug", "uv": 20, "pv": 4300, "amt": 20 },
+  { "name": "Sep", "uv": 10, "pv": 4300, "amt": 10 },
+  { "name": "Oct", "uv": 40, "pv": 4300, "amt": 40 },
+  { "name": "Nov", "uv": 80, "pv": 4300, "amt": 80 },
+  { "name": "Dec", "uv": 60, "pv": 4300, "amt": 60 }
+]

@@ -1,0 +1,32 @@
+[
+    {
+        "name": "School Of Information Technology",
+        "qualification": 4,
+        "students": "4,465"
+    },
+    {
+        "name": "School Of Engineering",
+        "qualification": 4,
+        "students": "8,654"
+    },
+    {
+        "name": "School Of Legal Studies",
+        "qualification": 3,
+        "students": "2,745"
+    },
+    {
+        "name": "School Of Finance, Business & Management",
+        "qualification": 10,
+        "students": "10,793"
+    },
+    {
+        "name": "School Of Media Studies",
+        "qualification": 5,
+        "students": "4,548"
+    },
+    {
+        "name": "School Of Information Technology",
+        "qualification": null,
+        "students": null
+    }
+]

@@ -1,0 +1,42 @@
+[
+    {
+        "studentId": "9504256081086",
+        "name": "Wandisile Solani",
+        "qualification": "Business Management",
+        "paymentDate": "July 18, 2022",
+        "feeStatus": "Cleared",
+        "reasonForPayment": "Outstanding Fees"
+    },
+    {
+        "studentId": "9504256081087",
+        "name": "Thabo Mokoena",
+        "qualification": "Information Technology",
+        "paymentDate": "August 22, 2022",
+        "feeStatus": "Cleared",
+        "reasonForPayment": "Books"
+    },
+    {
+        "studentId": "9504256081088",
+        "name": "Lerato Khumalo",
+        "qualification": "Marketing",
+        "paymentDate": "September 15, 2022",
+        "feeStatus": "Cleared",
+        "reasonForPayment": "Certificate"
+    },
+    {
+        "studentId": "9504256081089",
+        "name": "Sipho Dlamini",
+        "qualification": "Human Resources",
+        "paymentDate": "October 10, 2022",
+        "feeStatus": "Cleared",
+        "reasonForPayment": "Practical Fees"
+    },
+    {
+        "studentId": "9504256081090",
+        "name": "Nomsa Nkosi",
+        "qualification": "Finance",
+        "paymentDate": "November 5, 2022",
+        "feeStatus": "Cleared",
+        "reasonForPayment": "Fees"
+    }
+]

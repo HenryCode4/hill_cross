@@ -1,0 +1,22 @@
+export const schools: string[] = [
+    "School Of Information Technology",
+    "School Of Business",
+    "School Of Arts",
+    "School Of Engineering",
+    "School Of Health Sciences",
+    "School Of Law",
+    "School Of Education",
+    "School Of Social Sciences",
+    "School Of Environmental Studies",
+    "School Of Agriculture",
+    "School Of Architecture",
+    "School Of Communication",
+    "School Of Economics",
+    "School Of Journalism",
+    "School Of Languages",
+    "School Of Mathematics",
+    "School Of Medicine",
+    "School Of Music",
+    "School Of Nursing",
+    "School Of Pharmacy"
+  ];

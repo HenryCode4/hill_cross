@@ -1,0 +1,33 @@
+[
+    {
+        "title": "END OF SESSION REMINDER",
+        "recipients": "ALL STUDENTS",
+        "channel": "SMS",
+        "deliveryDate": "20/01/2022"
+    },
+    {
+        "title": "PAYMENT REMINDER ",
+        "recipients": "OWING STUDENTS",
+        "channel": "SMS",
+        "deliveryDate": "20/01/2022"
+    },
+    {
+        "title": "RESUMPTION REMINDER",
+        "recipients": "ALL STUDNETS",
+        "channel": "E-MAIL",
+        "deliveryDate": "20/01/2022"
+    },
+    {
+        "title": "EXAM SCHEDULE",
+        "recipients": "FULLY PAID STUDENTS",
+        "channel": "SMS",
+        "deliveryDate": "20/01/2022"
+    },
+    {
+        "title": "RESULT PICKUP",
+        "recipients": "PAID STUDNETS",
+        "channel": "E-MAIL",
+        "deliveryDate": "20/01/2022"
+    }
+   
+]

@@ -1,0 +1,58 @@
+[
+    {
+        "date": "15-01-2019",
+        "transactionDescription": "Wandisile Solani",
+        "debit": "100.00",
+        "credit": "4",
+        "balance": "100.00"
+    },
+    {
+        "date": "16-01-2019",
+        "transactionDescription": "Nomsa Moyo",
+        "debit": "200.00",
+        "credit": "6",
+        "balance": "300.00"
+    },
+    {
+        "date": "17-01-2019",
+        "transactionDescription": "Lerato Dlamini",
+        "debit": "50.00",
+        "credit": "10",
+        "balance": "250.00"
+    },
+    {
+        "date": "18-01-2019",
+        "transactionDescription": "Sipho Mthembu",
+        "debit": "150.00",
+        "credit": "2",
+        "balance": "100.00"
+    },
+    {
+        "date": "19-01-2019",
+        "transactionDescription": "Thandiwe Nkosi",
+        "debit": "75.00",
+        "credit": "5",
+        "balance": "50.00"
+    },
+    {
+        "date": "20-01-2019",
+        "transactionDescription": "Tshepo Khumalo",
+        "debit": "120.00",
+        "credit": "8",
+        "balance": "230.00"
+    },
+    {
+        "date": "21-01-2019",
+        "transactionDescription": "Mandla Msimang",
+        "debit": "90.00",
+        "credit": "12",
+        "balance": "140.00"
+    },
+    {
+        "date": "22-01-2019",
+        "transactionDescription": "Zanele Tshabalala",
+        "debit": "180.00",
+        "credit": "3",
+        "balance": "200.00"
+    }
+]
