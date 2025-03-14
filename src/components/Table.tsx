@@ -34,7 +34,7 @@ const Table = ({ columns, data, renderAction, renderTopic, renderSchoolName, ren
                 <th
                   key={index}
                   style={{ width: column.width }}
-                  className={`px-4 py-2 text-left text-[16px] font-semibold`}
+                  className={`text-[#B0B0B0] px-4 py-2 text-left text-[16px] 2xl:text-[20px] font-semibold`}
                 >
                   {column.header}
                 </th>
@@ -56,7 +56,7 @@ const Table = ({ columns, data, renderAction, renderTopic, renderSchoolName, ren
                     <td
                       key={index}
                       style={{ width: column.width }}
-                      className={`h-[68px] px-4 py-2 font-[600] ${column.accessorKey === "type" && "text-center"} `}
+                      className={`text-[#5B5B5B] text-[16px] 2xl:text-[20px] h-[68px] px-4 py-2 font-[500] ${column.accessorKey === "type" && "text-center"} `}
                     >
                       {column.accessorKey === "action"
                         ? renderAction && renderAction(d)

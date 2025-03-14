@@ -62,7 +62,7 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
       url: "/e-learning",
       iconDark: elearning,
       iconLite: elearningLite,
-    },
+    }, 
     {
       title: "Allocate Module",
       iconDark: moduleAl,

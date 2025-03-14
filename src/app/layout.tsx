@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import QueryProvider from "@/context/query-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: {
@@ -19,7 +21,11 @@ export default function RootLayout({
       <body
         className={`antialiased`}
       >
-        {children}
+        <QueryProvider>
+          {children}
+          <Toaster />
+        </QueryProvider>
+        
       </body>
     </html>
   );

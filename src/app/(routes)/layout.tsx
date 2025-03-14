@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
+import { AuthProvider } from "@/context/auth-provider";
 import { useState } from "react";
 
 export default function DashboardLayout({
@@ -11,7 +12,8 @@ export default function DashboardLayout({
 }>) {
   const [toggle, setToggle] = useState(false)
   return (
-    <div className="w-full min-h-screen bg-[#F8F8F8]">
+    <AuthProvider>
+      <div className="w-full min-h-screen bg-[#F8F8F8]">
         <Navbar setToggle={setToggle}/>
         <div className="fixed z-[999]">
 
@@ -21,5 +23,7 @@ export default function DashboardLayout({
           {children}
         </main>
     </div>
+    </AuthProvider>
+    
   );
 }

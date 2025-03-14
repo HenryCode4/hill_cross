@@ -1,10 +1,9 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-
-interface RenderBarChartProps{
+interface RenderBarChartProps {
     fill: string;
     data: { name: string, uv: number, pv: number, amt: number | null }[];
     barSize: number;

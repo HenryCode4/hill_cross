@@ -3,12 +3,15 @@ import Image from "next/image";
 import React from "react";
 import { Separator } from "./ui/separator";
 import { Menu } from "lucide-react";
+import { useAuthContext } from "@/context/auth-provider";
 
 interface NavbarProps {
   setToggle: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Navbar = ({setToggle}: NavbarProps) => {
+  const {user} = useAuthContext();
+  
   return (
     <div className="md:pl-[323px] fixed h-[92px] w-full bg-[#ffffff] z-[999]">
       <div className="flex h-full w-full items-center justify-between px-[27px] lg:px-[52px]">
@@ -42,13 +45,14 @@ const Navbar = ({setToggle}: NavbarProps) => {
             <div className="flex w-[176px]">
               <div className="flex gap-x-[12px]">
                 <div>
-                  <Image className="w-[34px] h-[34px] md:h-[40px] md:w-[40px]" src={avatar} alt="avatar Icon" />
+                  <Image width={34}  height={34} className="w-[34px] h-[34px] md:h-[40px] md:w-[40px]" src={avatar}  alt="avatar Icon" />
+              
                 </div>
 
                 <div className="flex flex-col">
                   <div className="flex w-[120px] justify-between">
                     <p className="text-[12.64px] md:text-[1rem] font-[400] md:font-[600] leading-[19.36px] text-[#011F1B]">
-                      Bright Oleka
+                      {user?.name}
                     </p>
                     <Image src={dropdown} alt="drop down icon" />
                   </div>

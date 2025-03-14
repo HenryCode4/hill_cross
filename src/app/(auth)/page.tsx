@@ -3,7 +3,7 @@
 import { loginImage, Logo } from "@/assets";
 
 import Image from "next/image";
-import Login from "../_components/login";
+import Login from "./_components/login";
 
 const LoginPage = () => {
  

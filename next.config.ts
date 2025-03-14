@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  images: {
+    domains: [
+      'hillcross-presigned-uploads.s3.eu-west-2.amazonaws.com',
+    ],
+  },
   experimental: {
     staleTimes: {
       dynamic: 30,
