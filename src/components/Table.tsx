@@ -19,9 +19,10 @@ interface TableProps {
   renderDesignation?: (item: Record<string, any>) => React.ReactNode;
   renderMode?: (item: Record<string, any>) => React.ReactNode;
   renderSchoolName?: (item: Record<string, any>) => React.ReactNode;
+  renderQualificationName?: (item: Record<string, any>) => React.ReactNode;
 }
 
-const Table = ({ columns, data, renderAction, renderTopic, renderSchoolName, renderStatus, renderAdditionalInfo, renderAvatarImage, renderName, renderFinancialStatus, renderDesignation, renderMode }: TableProps) => {
+const Table = ({ columns, data, renderAction, renderTopic, renderSchoolName, renderStatus, renderAdditionalInfo, renderAvatarImage, renderName, renderFinancialStatus, renderDesignation, renderMode, renderQualificationName }: TableProps) => {
   return (
     <div className="relative overflow-x-auto">
       {/* This div now holds the table with scrolling enabled */}
@@ -70,6 +71,8 @@ const Table = ({ columns, data, renderAction, renderTopic, renderSchoolName, ren
                         ? renderStatus(d)
                         : column.accessorKey === "name" && renderSchoolName
                         ? renderSchoolName(d)
+                        : column.accessorKey === "qualifications" && renderQualificationName
+                        ? renderQualificationName(d)
                         : column.accessorKey === "name" && renderName
                         ? renderName(d)
                         : column.accessorKey === "avatar" && renderAvatarImage

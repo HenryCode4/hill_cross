@@ -29,7 +29,7 @@ interface Form {
     {
         accessorKey: 'name', 
         header: <div className='w-[178px]'>NAME</div>, 
-        width: '20%', // New column
+        width: '20%',
     },
     {
         accessorKey: 'qualification', 
@@ -55,13 +55,11 @@ interface Form {
 
 const RecentRegisteredStudent = () => {
     const {data} = useRecentRegisteredStudentData();
-    console.log(data)
-    console.log(data?.data?.data)
     const apiData = data?.data?.data || []
     const studentData = apiData.map((item: any)=> ({
         studentId: item.id,
         name: item.name,
-        qualification: item.qualifications,
+        qualification: item.profile.qualification.name,
         paymentDate: item.date_created,
         feeStatus: item.financial_status,
         reasonForPayment: "Admission"

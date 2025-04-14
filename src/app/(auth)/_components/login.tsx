@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Cookies from "js-cookie";
+import { formSchema } from "@/lib/schema";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,15 +36,6 @@ const Login = () => {
     mutationFn: loginMutationFn,
   });
 
-  const formSchema = z.object({
-    username: z.string().trim().min(1, {
-      message: "Email is required",
-    }),
-    password: z.string().trim().min(1, {
-      message: "Password is required",
-    }),
-  });
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,7 +45,6 @@ const Login = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     mutate(values, {
       onSuccess: (response) => {
         // if (response.data.mfaRequired) {

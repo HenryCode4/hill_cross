@@ -73,3 +73,6 @@ export { default as quali1 } from '@/assets/images/quali1.svg';
 export { default as quali2 } from '@/assets/images/quali2.svg';
 export { default as quali3 } from '@/assets/images/quali3.svg';
 export { default as quali4 } from '@/assets/images/quali4.svg';
+export { default as blue } from '@/assets/images/blue.svg';
+export { default as green } from '@/assets/images/green.svg';
+export { default as red } from '@/assets/images/red.svg';

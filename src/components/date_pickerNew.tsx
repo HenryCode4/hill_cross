@@ -4,8 +4,13 @@ import { calenderIcon } from "@/assets"
 import Image from "next/image"
 import * as React from "react"
 
-export function DatePicker() {
-  const [date, setDate] = React.useState<string>("")
+interface DatePickerProps {
+  onChange?: (date: string) => void;
+  value?: string;
+}
+
+export function DatePicker({ onChange, value }: DatePickerProps) {
+  const [date, setDate] = React.useState<string>(value || "")
   const [showCalendar, setShowCalendar] = React.useState(false)
   const [selectedMonth, setSelectedMonth] = React.useState<number>(new Date().getMonth())
   const [selectedYear, setSelectedYear] = React.useState<number>(new Date().getFullYear())
@@ -18,6 +23,7 @@ export function DatePicker() {
     const selectedDate = new Date(selectedYear, selectedMonth, day)
     const formattedDate = selectedDate.toISOString().split("T")[0]
     setDate(formattedDate)
+    onChange?.(formattedDate)
     setShowCalendar(false)
   }
 

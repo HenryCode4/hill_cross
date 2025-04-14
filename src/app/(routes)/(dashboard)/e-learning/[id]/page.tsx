@@ -5,10 +5,18 @@ import Table from '@/components/Table'
 import React, { useState } from 'react'
 import Submitted from '../_components/submitted'
 import NotSubmitted from '../_components/notSubmitted'
+import { useParams } from 'next/navigation'
+import { useAssessmentByIdData } from '@/hooks/useAssessment'
 
 
 const SinglePage = () => {
+   const params = useParams();
+    const assessmentId = params.id as string;
     const [tab, setTab] = useState(1)
+
+    const {data} = useAssessmentByIdData(assessmentId);
+    const assessmentData = data?.data?.data;
+    console.log(assessmentData)
   return (
     <div className="flex h-full w-full flex-col gap-y-[24px] bg-[#F8F8F8] pb-[24px] pt-[90px] lg:gap-y-[43px] lg:px-[52px]">
       <Header backIcon title={"E-Learning Uploads"} subTitle={"Examination"} />

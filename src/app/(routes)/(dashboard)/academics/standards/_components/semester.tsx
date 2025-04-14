@@ -8,12 +8,6 @@ import React, { useState } from "react";
 import Pagination from "@/components/pagination";
 import UpdateSemester from "../UpdateSemester";
 
-interface SemesterProps {
-  open: boolean;
-  onClick: () => void;
-  onClose: () => void;
-}
-
 interface school {
   name: string;
   action: string;
@@ -48,7 +42,8 @@ export const semester = [
 ]
 
 
-const Semester = ({open,  onClose, onClick, }: SemesterProps) => {
+const Semester = () => {
+   const [modalOpenEdit, setModalOpenEdit] = useState(false)
   return (
     <div className="w-full flex flex-col gap-y-[52px]">
       <div className="relative flex w-full flex-col bg-white">
@@ -70,7 +65,7 @@ const Semester = ({open,  onClose, onClick, }: SemesterProps) => {
                   src={edit}
                   alt="Edit icon"
                   className="h-[27px] w-[24px] "
-                  onClick={onClick}
+                  onClick={()=>setModalOpenEdit(true)}
                 />,
 
                 <Image
@@ -90,10 +85,10 @@ const Semester = ({open,  onClose, onClick, }: SemesterProps) => {
 
       {/* <Pagination /> */}
 
-      {open && (
+      {modalOpenEdit && (
           <UpdateSemester
-            open={open}
-            onClose={onClose}
+            open={modalOpenEdit}
+            onClose={()=>setModalOpenEdit(false)}
           />
         )}
     </div>
