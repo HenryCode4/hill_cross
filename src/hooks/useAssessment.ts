@@ -3,10 +3,10 @@
 import { getAssessmentByIdMutationFn, getAssessmentDataQueryFn} from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 
-const useAssessmentData = () => {
+const useAssessmentData = (page?: string, status?: string, teacher?: string, module?:string) => {
   const query = useQuery({
-    queryKey: ["assessmentData"],
-    queryFn: getAssessmentDataQueryFn,
+    queryKey: ["assessmentData", page,status,teacher,module],
+    queryFn: () => getAssessmentDataQueryFn(page,status,teacher,module),
     staleTime: Infinity,
   });
   return query;

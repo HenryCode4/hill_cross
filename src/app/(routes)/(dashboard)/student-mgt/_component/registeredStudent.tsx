@@ -25,8 +25,11 @@ interface student {
     admissionStatus: string;
     action: string;
   }
+  interface RegisteredStudentGridProps {
+    studentApi: any;
+  }
 
-const RegisteredStudentGrid = () => {
+const RegisteredStudentGrid = ({studentApi}: RegisteredStudentGridProps) => {
     const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
     const items = ["Show Student", "Edit Student", "Registered Student", "Archive Student", "Disable Student", "Regenerate Admission Letter", "Delete Account", "View Admission Letter", "Print Details"]
   return (
@@ -35,7 +38,7 @@ const RegisteredStudentGrid = () => {
 
           <div className='grid xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 gap-y-[31px] gap-x-[31px]'>
             {
-              student.map((item, i) => (
+              studentApi?.map((item: any, i: any) => (
                 <div key={i} className='w-[350px] h-auto bg-white py-[20px] px-[15px] border border-[#B0B0B0] rounded-[16px] relative'>
                   <div className='absolute top-[15px] right-[25px]'>
                      <Select >
@@ -56,7 +59,7 @@ const RegisteredStudentGrid = () => {
                  
                   <div className='flex flex-col items-center justify-center w-full gap-y-[12px]'>
                     <Image 
-                src={avatars[i % avatars.length]} // This ensures avatars cycle from start after reaching the end
+                src={item.avatar || avatars[i % avatars.length]} // This ensures avatars cycle from start after reaching the end
                 alt={`Avatar for ${item.name}`} 
                 width={100} // Set the width of the image
                 height={100} // Set the height of the image

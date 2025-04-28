@@ -12,10 +12,10 @@ const useSchoolData = () => {
   return query;
 };
 
-export const useTeacherData = () => {
+export const useTeacherData = (page?: string) => {
   const query = useQuery({
-    queryKey: ["teacherData"],
-    queryFn: getTeacherDataQueryFn,
+    queryKey: ["teacherData", page],
+    queryFn:()=> getTeacherDataQueryFn(page),
     staleTime: Infinity,
   });
   return query;

@@ -97,8 +97,10 @@ interface student {
       width: "180px",
     },
   ];
-
-const Graduated = () => {
+  interface GraduatedStudentProps {
+    studentApi: any;
+  }
+const Graduated = ({studentApi}: GraduatedStudentProps) => {
     const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
   return (
     <div className="relative flex w-full flex-col bg-white">
@@ -106,22 +108,18 @@ const Graduated = () => {
         <div className="w-full h-full bg-white px-[8px] ">
           <Table
             columns={columns}
-            data={student}
-            renderAction={(item: any) => {
-              // Pass icons directly as props
-              const icons = [
-                <Image
-                key="application-stop-icon"
-                  src={applicationStop}
-                  alt="Application stop icon"
-                  className="h-[24px] w-[24px]"
-                //   onClick={()=> setModalOpenEdit(true)}
-                />,
-                
-              ];
-
-              return <ActionIcons  icons={icons} status={item.status} mgt financialStatus={item.financialStatus}/>;
-            }}
+            data={studentApi}
+            renderAction={(item: any) => (
+                                     <div className='flex items-center gap-x-[8px]'>
+                                       <Image
+                                       key="application-stop-icon"
+                                         src={applicationStop}
+                                         alt="Application stop icon"
+                                         className="h-[43px] w-[43px] "
+                                       //   onClick={()=> setModalOpenEdit(true)}
+                                       />
+                                     </div>
+                                   )}
 
             renderStatus={(item: any) => (
               <div className="">

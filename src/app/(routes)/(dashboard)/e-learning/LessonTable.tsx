@@ -107,7 +107,7 @@ const LessonTable = () => {
   const lessonApi = data?.data?.data;
   const totalPages = data?.data?.meta?.last_page || 1;
 
-  const handleFilterChange = (filterType: keyof typeof filters, value: string) => {
+  const handleFilterChange = (filterType: keyof typeof filters, value: string ) => {
     setFilters(prev => ({
       ...prev,
       [filterType]: value

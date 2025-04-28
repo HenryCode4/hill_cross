@@ -24,6 +24,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import CustomDropdownMenu from "@/components/customDropdownMenu";
+import SelectComponent from "@/components/selectComponent";
+import useModuleData from "@/hooks/useModule";
+import { useTeacherData } from "@/hooks/useSchool";
+import Pagination from "@/components/pagination";
 
 interface assessment {
   module: string;
@@ -94,39 +98,47 @@ const AssignmentTable = () => {
     module: "",
     status: "",
   });
-console.log(selectedAssignment)
-  const { data } = useAssignmentData();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { data } = useAssignmentData(
+    currentPage.toString(),
+    filters.status,
+    filters.teacher,
+    filters.module,
+  );
   const assignmentApi = data?.data?.data;
+  const totalPages = data?.data?.meta?.last_page || 1;
   console.log(assignmentApi);
 
-  const filteredData = React.useMemo(() => {
-    if (!assignmentApi) return [];
+  //teacher
+  const {data: teacher} = useTeacherData();
+  const teacherApi = teacher?.data?.data;
+  const teacherOptions = teacherApi?.map((item: any) => ({
+    id: item.id,
+    label: item.name,
+  }));
+  console.log(teacherOptions)
 
-    return assignmentApi.filter((lesson: any) => {
-      const teacherMatch =
-        !filters.teacher ||
-        lesson.teacher.toLowerCase().includes(filters.teacher.toLowerCase());
+  //module 
+  const {data: module } = useModuleData();
+  const moduleApi = module?.data?.data;
+  const moduleOptions = moduleApi?.map((item: any) => ({
+    id: item.id,
+    label: item.name,
+  }));
 
-      const moduleMatch =
-        !filters.module ||
-        lesson.module.toLowerCase().includes(filters.module.toLowerCase());
+  
 
-      const statusMatch =
-        !filters.status ||
-        lesson.status.toLowerCase().includes(filters.status.toLowerCase());
-
-      return teacherMatch && moduleMatch && statusMatch;
-    });
-  }, [assignmentApi, filters]);
-
-  const handleFilterChange = (
-    filterType: keyof typeof filters,
-    value: string,
-  ) => {
-    setFilters((prev) => ({
+  const handleFilterChange = (filterType: keyof typeof filters, value: string) => {
+    setFilters(prev => ({
       ...prev,
-      [filterType]: value,
+      [filterType]: value
     }));
+    setCurrentPage(1); // Reset to first page when filter changes
+  };
+
+  const handleServerPageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const { mutate: endLesson, isPending } = useMutation({
@@ -162,26 +174,24 @@ console.log(selectedAssignment)
               Sort by:
             </button>
             <div className="flex w-full flex-1 flex-wrap gap-[32px] xl:flex-nowrap">
-              <input
-                type="text"
-                placeholder="Search by teacher"
-                value={filters.teacher}
-                onChange={(e) => handleFilterChange("teacher", e.target.value)}
-                className="h-[56px] w-full rounded-[8px] bg-transparent border border-[#AACEC9] px-[8px] text-[20px] font-[500] outline-none focus:border-[#ED1000]"
+            <SelectComponent
+                items={teacherOptions}
+                placeholder="Select Teacher"
+                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
+                onChange={(value) => handleFilterChange('teacher', value)}
               />
-              <input
-                type="text"
-                placeholder="Search by module"
-                value={filters.module}
-                onChange={(e) => handleFilterChange("module", e.target.value)}
-                className="h-[56px] w-full rounded-[8px] bg-transparent border border-[#AACEC9] px-[8px] text-[20px] font-[500] outline-none focus:border-[#ED1000]"
+              <SelectComponent
+                items={moduleOptions}
+                placeholder="Select Module"
+                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
+                onChange={(value) => handleFilterChange('module', value)}
               />
-              <input
-                type="text"
-                placeholder="Search by status"
-                value={filters.status}
-                onChange={(e) => handleFilterChange("status", e.target.value)}
-                className="h-[56px] w-full rounded-[8px] border bg-transparent border-[#AACEC9] px-[8px] text-[20px] font-[500] outline-none focus:border-[#ED1000]"
+
+              <SelectComponent
+                items={["Approve", "Pending", "End"]}
+                placeholder="Select Status"
+                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
+                onChange={(value) => handleFilterChange('status', value)}
               />
             </div>
           </div>
@@ -190,7 +200,7 @@ console.log(selectedAssignment)
       <div className="w-full bg-white px-[8px] pb-[8px]">
         <Table
           columns={columns}
-          data={filteredData}
+          data={assignmentApi}
           renderAction={(item) => (
             <div className="flex w-[160px] items-start gap-x-[8px]">
               {item.status === "Pending" ? (
@@ -293,6 +303,17 @@ console.log(selectedAssignment)
             </div>
           )}
         />
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPrevPage={() => {}}
+            onNextPage={() => {}}
+            onPageChange={() => {}}
+            isServerPagination={true}
+            onServerPageChange={handleServerPageChange}
+          />
+        
 
         {modalOpenEdit && (
           <UpdateAssignment

@@ -67,3 +67,17 @@ export interface UpdateExaminationType {
     total_score: number;
 }
 
+export interface TeacherType {
+    name: string,
+    email: string,
+    password: string,
+    staff_id: string,
+    phone_number: string
+}
+
+export interface AllocateModuleType {
+    teacher_id: string,
+    academic_calender_id: string,
+    modules: string[],
+}
+

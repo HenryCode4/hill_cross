@@ -156,9 +156,9 @@ const AddNewModule = () => {
         <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPrevPage={() => {}}  // These are required but won't be used
-        onNextPage={() => {}}  // These are required but won't be used
-        onPageChange={() => {}}  // These are required but won't be used
+        onPrevPage={() => {}}  
+        onNextPage={() => {}}  
+        onPageChange={() => {}}  
         isServerPagination={true}
         onServerPageChange={handleServerPageChange}
       />

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { format } from "date-fns"
+import { format, parse } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -19,21 +19,48 @@ interface DatePickerDemoProps {
   className?: string;
   selectTime?: boolean;
   placeholder?: string;
+  date?: string;
+  setDate?: (date: string | undefined) => void;
 }
 
-export function DatePickerDemo({ className, selectTime, placeholder }: DatePickerDemoProps) {
-  const [date, setDate] = React.useState<Date>()
+export function DatePickerDemo({ className, selectTime, placeholder, date,
+  setDate  }: DatePickerDemoProps) {
+    const [open, setOpen] = React.useState(false);
 
-  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedTime = event.target.value
-    const [hours, minutes, seconds] = selectedTime.split(":").map(Number)
-    const newDate = new Date()
-    newDate.setHours(hours, minutes, seconds)
-    setDate(newDate)
-  }
+    // Convert string date to Date object for the Calendar
+    const dateValue = date ? parse(date, "yyyy-MM-dd", new Date()) : undefined;
+
+    const handleDateSelect = (selectedDate: Date | undefined) => {
+      if (setDate) {
+        // Convert Date back to string in yyyy-MM-dd format
+        setDate(selectedDate ? format(selectedDate, "yyyy-MM-dd") : undefined);
+      }
+      setOpen(false);
+    };
+  
+    // const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //   const selectedTime = event.target.value;
+    //   // For time only, keep the current date or use today
+    //   const currentDate = date ? parse(date, "yyyy-MM-dd", new Date()) : new Date();
+    //   const [hours, minutes, seconds] = selectedTime.split(":").map(Number);
+    //   currentDate.setHours(hours, minutes, seconds);
+      
+    //   setDate?.(format(currentDate, "yyyy-MM-dd"));
+    //   setOpen(false);
+    // };
+
+    const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const [hours, minutes] = event.target.value.split(":");
+    
+      // Format as "HH:MM" (leading zeros if needed)
+      const formattedTime = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+    
+      setDate?.(formattedTime);
+      setOpen(false);
+    };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -45,7 +72,7 @@ export function DatePickerDemo({ className, selectTime, placeholder }: DatePicke
             ]
           )}
         >
-          {date ? (selectTime ? format(date, "HH:mm:ss") : format(date, "PPP")) : <span>{placeholder || (selectTime ? "Select time" : "Select date")}</span>}
+          {date ? (selectTime ? date : date) : <span>{placeholder || (selectTime ? "Select time" : "Select date")}</span>}
           {
             selectTime ? (<Image src={clock1} alt="down icon" />) : (<Image src={calendar} alt="down icon" />)
           }
@@ -62,8 +89,8 @@ export function DatePickerDemo({ className, selectTime, placeholder }: DatePicke
         ) : (
           <Calendar
             mode="single"
-            selected={date}
-            onSelect={setDate}
+            selected={dateValue}
+            onSelect={handleDateSelect}
             initialFocus
           />
         )}

@@ -4,11 +4,14 @@ import React from 'react'
 interface selectProps {
     data: string[];
     placeholder: string;
-    title: string;
+    title?: string;
     required?: string
+    onChange?: (value: string) => void;
+    defaultValue?: string;
+    value?: string;
 }
 
-const SelectPage = ({data, placeholder, title, required}: selectProps) => {
+const SelectPage = ({data, placeholder, title, required, onChange, defaultValue , value}: selectProps) => {
     
   return (
     <div>
@@ -17,7 +20,7 @@ const SelectPage = ({data, placeholder, title, required}: selectProps) => {
         {title} <span className="text-[#930C02]">{required}</span>
       </label>
 
-      <Select>
+      <Select onValueChange={onChange} defaultValue={defaultValue}>
         <div className="h-full w-full rounded-[8px] border border-[#CEAAAA] bg-[#FCF9F9]">
           <SelectTrigger className="h-[43px] w-full bg-transparent outline-none">
             <SelectValue
