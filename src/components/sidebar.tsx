@@ -85,6 +85,12 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
       iconLite: studentMgtLite,
     },
     {
+      title: "Registration Finalization",
+      url: "/complete-registration",
+      iconDark: studentMgt,
+      iconLite: studentMgtLite,
+    },
+    {
       title: "Accounts & Finance",
       // url: "",
       iconDark: account,
