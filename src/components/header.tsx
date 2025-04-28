@@ -8,6 +8,7 @@ import Link from "next/link";
 import SearchComponent from "./searchComponent";
 import Image from "next/image";
 import { addCycle } from "@/assets";
+import { CSVLink } from "react-csv";
 
 interface HeaderProps {
   title: string;
@@ -17,6 +18,7 @@ interface HeaderProps {
   hideSearch?: boolean;
   finance?: boolean;
   notification?: boolean;
+  feesApi?: any[];
 }
 
 const Header = ({
@@ -26,13 +28,24 @@ const Header = ({
   addStudentBtn,
   hideSearch,
   finance,
-  notification
+  notification,
+  feesApi
 }: HeaderProps) => {
   const router = useRouter();
 
   const handleBackClick = () => {
     router.back();
   };
+
+  const headers = [
+    { label: "Student ID", key: "studentId" },
+    { label: "Name", key: "name" },
+    { label: "Qualification", key: "qualification" },
+    { label: "Payment Date", key: "paymentDate" },
+    { label: "Fee Status", key: "feeStatus" },
+    { label: "Amount", key: "amount" }
+  ];
+
 
   return (
     <div className="flex w-full flex-col gap-x-[128px] gap-y-[24px] px-[27px] py-[32px] lg:flex-row lg:px-0">
@@ -67,11 +80,16 @@ const Header = ({
         </Link>
       )}
 
-      {finance && (
+      {finance && feesApi && (
         <div className="h-[48px] w-[161px] rounded-[8px] bg-[#ED1000]">
-          <button className="h-full w-full text-[16px] font-[500] text-white">
-            Export Reports
-          </button>
+          <CSVLink 
+                      data={feesApi || []}
+                      headers={headers}
+                      filename={`payment-list-${new Date().toISOString()}.csv`}
+                      className="h-[43px] w-[161px] bg-[#ED1000] text-[white] rounded-[8px] flex items-center justify-center"
+                    >
+                      Export Reports
+                    </CSVLink>
         </div>
       )}
 

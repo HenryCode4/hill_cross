@@ -26,7 +26,11 @@ interface student {
     action: string;
   }
 
-const GraduatedGrid = () => {
+  interface GraduatedGridProps {
+    studentApi: any;
+  }
+
+const GraduatedGrid = ({studentApi}: GraduatedGridProps) => {
     const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
     const items = ["Show Student", "Edit Student", "Delete Account", "Print Details"]
   return (
@@ -35,7 +39,7 @@ const GraduatedGrid = () => {
 
           <div className='grid xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 gap-y-[31px] gap-x-[31px]'>
             {
-              student.map((item, i) => (
+              studentApi?.map((item:any, i:any) => (
                 <div key={i} className='w-[350px] h-auto bg-white py-[20px] px-[15px] border border-[#B0B0B0] rounded-[16px] relative'>
                   <div className='absolute top-[15px] right-[25px]'>
                      <Select >
@@ -56,7 +60,7 @@ const GraduatedGrid = () => {
                  
                   <div className='flex flex-col items-center justify-center w-full gap-y-[12px]'>
                     <Image 
-                src={avatars[i % avatars.length]} // This ensures avatars cycle from start after reaching the end
+                src={item.avatar || avatars[i % avatars.length]} // This ensures avatars cycle from start after reaching the end
                 alt={`Avatar for ${item.name}`} 
                 width={100} 
                 height={100} 

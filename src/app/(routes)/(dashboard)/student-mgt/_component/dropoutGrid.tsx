@@ -25,8 +25,10 @@ interface student {
     admissionStatus: string;
     action: string;
   }
-
-const DropoutGrid = () => {
+  interface DropoutGridGridProps {
+    studentApi: any;
+  }
+const DropoutGrid = ({studentApi}: DropoutGridGridProps) => {
     const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
     const items = ["Show Student", "Edit Student", "Delete Account", "Print Details"]
   return (
@@ -35,7 +37,7 @@ const DropoutGrid = () => {
 
           <div className='grid xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 gap-y-[31px] gap-x-[31px]'>
             {
-              student.map((item, i) => (
+              studentApi?.map((item:any, i: any) => (
                 <div key={i} className='w-[350px] h-auto bg-white py-[20px] px-[15px] border border-[#B0B0B0] rounded-[16px] relative'>
                   <div className='absolute top-[15px] right-[25px]'>
                      <Select >

@@ -91,3 +91,123 @@ export const updateExaminationFormSchema = z.object({
   total_score: z.number().min(1, "total score is required"),
 });
 
+export const teacherFormSchema = z.object({
+  name: z.string().min(1, "name is required"),
+    email: z.string().min(1, "email is required"),
+    password: z.string().min(1, "password is required"),
+    staff_id: z.string().min(1, "staff id is required"),
+    phone_number: z.string().min(1, "phone number is required")
+})
+
+export const smsNotificationFormSchema = z.object({
+  message_recipient: z.string().min(1, "message recipient is required"),
+  delivery_method: z.string().min(1, "delivery method is required"),
+  message_subject: z.string().min(1, "message subject is required"),
+  message: z.string().min(1, "message is required"),
+  expected_date_delivery: z.string().min(1, "expected date delivery is required"),
+  delivery_time: z.string().min(1, "delivery time is required"),
+  // type: z.string().min(1, "type is required")
+});
+
+export type SmsNotificationRequestType = z.infer<typeof smsNotificationFormSchema>;
+
+
+export const allocateModuleFormSchema = z.object({
+  teacher_id: z.string().min(1, "teacher_id is required"),
+  academic_calender_id: z.string().min(1, "academic_calender_id is required"),
+  modules: z.array(z.string().trim().min(1, {message: "Modules are required"}))
+})
+
+export const allocateStudentModuleFormSchema = z.object({
+  student_id: z.string().min(1, "student_id is required"),
+  academic_calender_id: z.string().min(1, "academic_calender_id is required"),
+  modules: z.array(z.string().trim().min(1, {message: "Modules are required"}))
+})
+
+export type StudentRequestType = z.infer<typeof allocateStudentModuleFormSchema>;
+
+export const personalDetailsSchema = z.object({
+  title: z.string().optional(),
+  gender: z.string().optional(),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  other_name: z.string().nullable().optional(),
+  dob: z.string().optional(),
+  selectNationality: z.string().optional(),
+  home_language: z.string().optional(),
+  race: z.string().optional(),
+  disability: z.string().optional(),
+  maiden_name: z.string().nullable().optional(),
+  passport_number: z.string()
+    .regex(/^[A-Z0-9]+$/, "Passport number must contain only uppercase letters and numbers")
+    .optional(),
+  country_id: z.string().uuid("Invalid country ID format").optional()
+});
+
+export const contactDetailsSchema = z.object({
+  house_number: z.string().optional(),
+  street: z.string().optional(),
+  area: z.string().optional(),
+  city: z.string().optional(),
+  postal_code: z.string().optional(),
+  state_id: z.string().uuid().optional(),
+  country_id: z.string().uuid().optional(),
+  phone_number: z.string().optional(),
+});
+
+const institutionObject = z.object({
+  institution: z.string().optional(),
+  qualification: z.string().optional()
+});
+
+export const educationHistorySchema = z.object({
+  school_name: z.string().optional(),
+  matriculation_year: z.string().optional(),
+  has_studied_beyond_matric: z.string().optional(),
+  // institution_object: z.array(institutionObject).optional()
+});
+
+export const qualificationSchema = z.object({
+  school_id: z.string().uuid().optional(),
+  qualification_id: z.string().uuid().optional(),
+  study_mode: z.string().optional(),
+  academic_session_id: z.string().uuid().optional()
+});
+
+// const documentObject = z.object({
+//   type: z.string(),
+//   url: z.string().url()
+// });
+
+// export const documentSchema = z.object({
+//   documents: z.array(documentObject).optional()
+// });
+
+
+export const presignedUrlSchema = z.object({
+  file_name: z.string(),
+  file_type: z.string(),
+  folder: z.literal('student-documents'),
+  file_extension: z.string()
+});
+
+export type PresignedUrlRequest = z.infer<typeof presignedUrlSchema>;
+
+// Document schema for form submission
+export const documentSchema = z.object({
+  documents: z.array(
+    z.object({
+      type: z.enum(['student_address', 'student_result', 'student_id']),
+      url: z.string().url()
+    })
+  ).min(1, "At least one document must be uploaded")
+});
+
+export type DocumentUpload = z.infer<typeof documentSchema>;
+
+// const documentSchema = z.object({
+//   student_address: z.string().url("Please upload a valid address document"),
+//   student_id: z.string().url("Please upload a valid ID document"),
+//   student_result: z.string().url("Please upload a valid result document")
+// });
+

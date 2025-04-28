@@ -2,8 +2,11 @@ import { application, applicationStop, avatar1, avatar2, avatar3, avatar4, avata
 import ActionIcons from '@/components/action-icon';
 import Table from '@/components/Table';
 import Image from 'next/image';
-import React from 'react'
+import React, { useState } from 'react'
 import student from "@/lib/student-mgt.json"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from '@/components/ui/select';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface student {
     avatar: string;
@@ -22,6 +25,10 @@ interface student {
     creationDate: string;
     admissionStatus: string;
     action: string;
+  }
+
+  interface ApplicantListProps {
+    studentApi: any
   }
   
   interface Column {
@@ -98,42 +105,94 @@ interface student {
     },
   ];
 
-const ApplicantList = () => {
-    const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
+const ApplicantList = ({studentApi}: ApplicantListProps) => {
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+
+  const router = useRouter();
+
+  // const items = [
+  //   "Show Student",
+  //   "Edit Student",
+  //   "Delete Account",
+  //   "Print Details",
+  // ];
+
+  const handleAction = (action: string, student: any) => {
+    setSelectedStudent(student);
+    switch (action) {
+      case 'show student':
+        router.push(`/student-mgt/${student.studentId}`);
+        break;
+      case 'edit student':
+        setEditModalOpen(true);
+        break;
+      case 'delete account':
+        setDeleteModalOpen(true);
+        break;
+      case 'print details':
+        handlePrintDetails(student);
+        break;
+    }
+  };
+
+  const handlePrintDetails = (student: any) => {
+    window.print();
+  };
+
   return (
     <div className="relative flex w-full flex-col bg-white">
 
         <div className="w-full h-full bg-white px-[8px] ">
           <Table
             columns={columns}
-            data={student}
-            renderAction={(item: any) => {
-              // Pass icons directly as props
-              const icons = [
-                
-                <Image
+            data={studentApi}
+            renderAction={(item: any) => (
+              <div className='flex items-center gap-x-[8px] w-[120px]'>
+                {
+                  item.status !== "pending" && (
+                    <Image
                 key="application-icon"
                   src={application}
                   alt="Application icon"
-                  className="h-[24px] w-[24px] "
+                  className="h-[43px] w-[43px] "
                 //   onClick={()=> setModalOpenEdit(true)}
-                />,
-                <Image
-                key="application-stop-icon"
-                  src={applicationStop}
-                  alt="Application stop icon"
-                  className="h-[24px] w-[24px]"
-                //   onClick={()=> setModalOpenEdit(true)}
-                />,
-                
-              ];
+                />
+                  )
+                }
 
-              return <ActionIcons icons={icons} status={item.status} mgt/>;
-            }}
+                <div className="">
+                <Select onValueChange={(value) => handleAction(value, item)}>
+                                <SelectTrigger
+                                  hideDropdown
+                                  className=" outline-none"
+                                >
+                                   <Image
+                                    key="application-stop-icon"
+                                      src={applicationStop}
+                                      alt="Application stop icon"
+                                      className="h-[43px] w-[43px] "
+                                    //   onClick={()=> setModalOpenEdit(true)}
+                                    />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                  <SelectItem value="show student">Show Student</SelectItem>
+                                  <SelectItem value="edit student">Edit Student</SelectItem>
+                                  <SelectItem value="delete account">Delete Account</SelectItem>
+                                  <SelectItem value="print details">Print Details</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+              </div>
+            )}
+     
 
             renderStatus={(item: any) => (
               <div className="">
-                <p className={`${item.status === "Pending" && ("text-[#1E1E1E] bg-[#E6E6E6] px-[16px] py-[8px] text-center")} ${item.status === "Approved" && ("text-[#00BF00]")} ${item.status === "Active" && ("text-[#00473E] bg-[#E3EFED] px-[16px] py-[8px] text-center")} ${item.status === "Ended" && ("text-[#ED1000]")}`}>{item.status}</p>
+                <p className={`${item.status === "pending" && ("text-[#1E1E1E] bg-[#E6E6E6] px-[16px] py-[8px] text-center")} ${item.status === "approved" && ("text-[#00BF00]")} ${item.status === "active" && ("text-[#00473E] bg-[#E3EFED] px-[16px] py-[8px] text-center")} ${item.status === "ended" && ("text-[#ED1000]")}`}>{item.status}</p>
               </div>
             )}
 
@@ -145,7 +204,7 @@ const ApplicantList = () => {
 
             renderAvatarImage={(item) => {
               // Check if item.avatar exists or if it's an empty string
-              const avatarSrc = item.avatar && item.avatar !== "" ? item.avatar : avatars[item.id % avatars.length];
+              const avatarSrc = item.avatar && item.avatar !== "" && item.avatar !== "null" ? item.avatar : null;
         
               // Only render Image if avatarSrc is valid
               if (!avatarSrc) {

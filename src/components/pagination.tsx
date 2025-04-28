@@ -73,7 +73,7 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="w-full flex items-center justify-center">
+    <div className="w-full flex items-center justify-center py-10">
       <div className="w-auto h-[40px] flex">
         <div
           className={`border cursor-pointer border-[#559C93] w-[83px] h-[40px] gap-x-[2.5px] flex justify-center items-center p-1 ${

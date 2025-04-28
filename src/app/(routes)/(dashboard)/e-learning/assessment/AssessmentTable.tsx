@@ -98,7 +98,12 @@ const AssessmentTable = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data } = useAssessmentData();
+  const { data } = useAssessmentData(
+    currentPage.toString(),
+    filters.status,
+    filters.teacher,
+    filters.module,
+  );
   const assessmentApi = data?.data?.data;
   const totalPages = data?.data?.meta?.last_page || 1;
 
@@ -109,6 +114,7 @@ const AssessmentTable = () => {
     id: item.id,
     label: item.name,
   }));
+  console.log(teacherOptions)
 
   //module 
   const {data: module } = useModuleData();

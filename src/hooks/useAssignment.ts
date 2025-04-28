@@ -3,10 +3,10 @@
 import { getAssignmentDataQueryFn, getLessonDataQueryFn, getSchoolByIdMutationFn } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 
-const useAssignmentData = () => {
+const useAssignmentData = (page?: string, status?: string, teacher?: string, module?:string) => {
   const query = useQuery({
-    queryKey: ["assignmentData"],
-    queryFn: getAssignmentDataQueryFn,
+    queryKey: ["assignmentData", page,status,teacher,module],
+    queryFn: () => getAssignmentDataQueryFn(page,status,teacher,module),
     staleTime: Infinity,
   });
   return query;

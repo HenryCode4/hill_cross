@@ -13,9 +13,10 @@ interface selectComponentProps {
     onChange?: (value: string) => void;
     border?: boolean;
     className?: string;
+    full?: boolean;
 }
 
-const SelectComponent = ({placeholder, items = [], onChange, border, className}: selectComponentProps) => {
+const SelectComponent = ({placeholder, items = [], onChange, border, className, full}: selectComponentProps) => {
   // Helper function to handle both types of items
   const renderItem = (item: Items | string) => {
     if (typeof item === 'string') {
@@ -33,7 +34,12 @@ const SelectComponent = ({placeholder, items = [], onChange, border, className}:
   }
 
   return (
-    <div className={`${border && ("border rounded-[8px]")} relative z-[99] w-full`}>
+    
+      <div className={cn(
+      "relative z-[99]",
+      border && "border rounded-[8px]",
+      !full && "w-full"
+    )}>
         <Select  onValueChange={onChange}>
                 <SelectTrigger className={cn("w-full h-[43px]", className)}>
                   <SelectValue 

@@ -6,13 +6,17 @@ import SelectComponent from "@/components/selectComponent";
 import { Button } from "@/components/ui/button";
 import { title } from "process";
 import React, { useState } from "react";
-import chartData from "@/lib/chartData1.json"
 import data from "@/lib/financeData.json"
 import Table from "@/components/Table";
 import Link from "next/link";
 import Pagination from "@/components/pagination";
 import SearchComponent from "@/components/searchComponent";
 import SortComponent from "@/components/sortComponent";
+import Chart from "./Chart";
+import PaymentListTable from "./PaymentListTable";
+import DashboardList from "./DashboardList";
+import StudentListTable from "./StudentListTable";
+import UnpaidFees from "./UnpaidFees";
 
 interface Form {
   studentId: string; 
@@ -134,75 +138,19 @@ const AccountsFinancePage = () => {
               </div>
             ))}
           </div>
-          <div className="flex gap-x-[8px] flex-1 justify-end">
-            <SelectComponent border placeholder="This Month" items={months} />
+          <div className="flex gap-x-[8px] flex-1 justify-end ">
+            <SelectComponent full border placeholder="This Month" items={months} />
 
             <Button className="h-[43px] bg-[#9D1217]">filter</Button>
           </div>
         </div>
 
-        <div className="grid w-full  xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 place-content-center gap-[28px]">
-          {finance.map((item) => (
-            <div key={item.id} className="flex h-[200px] w-[355px] flex-col items-center justify-center gap-y-[8px] bg-white relative">
-              <div className="h-[8px] w-full absolute top-0 bg-[#011F1B]" />
-              
-              <h3 className="font-[600] text-[48px] leading-[58.09px] text-[#011F1B]">{item.amount}</h3>
-              <div className="w-[38px] h-[1px] bg-[#011F1B]" />
-              <p className="text-[24px] font-[400]">{item.title}</p>
-            </div>
-          ))}
-        </div>
+        <DashboardList />
 
 
-        <div className=" flex flex-col gap-[10px] w-full">
-            <div className="flex flex-col lg:flex-row h-auto xl:h-[75px] gap-y-[10px]  xl:items-center justify-between bg-white py-[10px] px-[32px]">
-            <p className="text-[18px] font-[600] leading-[29.05px] text-[#1E1E1E]">
-              PAYMENT INFLOW REPORT
-              </p>
+        <Chart />
 
-            <div className="flex gap-x-[8px] flex-1 justify-end">
-              <SelectComponent border placeholder="This Month" items={months} />
-
-              <Button className="h-[43px] bg-[#9D1217]">filter</Button>
-            </div>
-
-            
-            </div>
-
-            <div className="h-auto w-full bg-white xl:p-[32px] ">
-            <RenderBarChart height={622} barSize={50} data={chartData}  fill="#9D1217" />
-            </div>
-          </div>
-
-          <div className="w-full flex flex-col gap-y-[16px] bg-white">
-            <div className="w-full flex flex-col lg:flex-row justify-between  gap-[24px] items-center p-[20px]">
-              <div className="w-full flex flex-col lg:flex-row gap-[24px] xl:items-center">
-                <p className="text-[24px] text-start font-[600]">PAYMENT LIST</p>
-
-                <div className="flex flex-1 justify-end gap-x-[8px]">
-              <SelectComponent border placeholder="This Month" items={months} />
-
-              <Button className="h-[43px] bg-[#9D1217]">filter</Button>
-            </div>
-              </div>
-
-              <div className="">
-
-              <SearchComponent className="bg-[#F8F8F8] w-[370px]! "/>
-              </div>
-            </div>
-             <div className="w-full bg-white px-[8px]">
-            
-            <Table 
-              columns={columns} 
-              data={data} 
-            />
-
-            <Link href={"/Accounts_&_Finance/payment_list"} className="w-full h-[75px] flex justify-end items-center">
-              <button className="h-[43px] w-[161px] bg-[#ED1000] text-[white] rounded-[8px]">View all payment</button>
-            </Link>
-          </div>
-          </div>
+        <PaymentListTable />
          
       </div>
       )
@@ -233,7 +181,7 @@ const AccountsFinancePage = () => {
         </div>
 
 
-        <div className=" flex flex-col gap-[10px] w-full">
+        {/* <div className=" flex flex-col gap-[10px] w-full">
             <div className="flex gap-x-[10px] h-[75px]  items-center justify-between bg-white px-[10px] xl:px-[32px]">
             <p className="text-[18px] font-[600] leading-[29.05px] text-[#1E1E1E]">
             Student List
@@ -242,7 +190,6 @@ const AccountsFinancePage = () => {
             <div className="flex justify-normal w-[232px] h-[53px] bg-[#F8F8F8] text-[#B0B0B0] gap-x-[8px]">
               <SortComponent border placeholder="Sort by" items={sort} />
             </div>
-
             
             </div>
           </div>
@@ -252,11 +199,10 @@ const AccountsFinancePage = () => {
               columns={columns} 
               data={data} 
             />
-
             
-          </div>
+          </div> */}
 
-          {/* <Pagination /> */}
+          <StudentListTable />
       </div>
       )
     }
@@ -279,7 +225,7 @@ const AccountsFinancePage = () => {
             ))}
           </div>
           <div className="flex gap-x-[8px] flex-1 justify-end">
-            <SelectComponent border placeholder="This Month" items={months} />
+            <SelectComponent full border placeholder="This Month" items={months} />
 
             <Button className="h-[43px] bg-[#9D1217]">filter</Button>
           </div>
@@ -296,18 +242,11 @@ const AccountsFinancePage = () => {
               <SortComponent border placeholder="Sort by" items={sort} />
             </div>
 
-            
             </div>
+            <UnpaidFees />
           </div>
 
-          <div className="w-full bg-white px-[8px]">
-            <Table 
-              columns={columns} 
-              data={data} 
-            />
-
-            
-          </div>
+          
 
           {/* <Pagination /> */}
       </div>

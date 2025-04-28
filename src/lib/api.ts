@@ -1,6 +1,8 @@
 import API from "./axios-client";
 import Cookies from 'js-cookie';
-import { NewCalendarType, NewModuleType, NewQualificationType, NewSchoolType, NewSessionType, NewStandardType, UpdateAssessmentType, UpdateAssignmentType, UpdateExaminationType, updateModuleType, UpdateSessionType } from "./interface";
+import { AllocateModuleType, NewCalendarType, NewModuleType, NewQualificationType, NewSchoolType, NewSessionType, NewStandardType, TeacherType, UpdateAssessmentType, UpdateAssignmentType, UpdateExaminationType, updateModuleType, UpdateSessionType } from "./interface";
+import { StudentFilters } from "@/hooks/useStudent";
+import { SmsNotificationRequestType, StudentRequestType } from "./schema";
 
 const token = Cookies.get('accessToken');
 console.log(token)
@@ -84,6 +86,14 @@ export const getStudentInflowDataQueryFn = async (year?: string) => {
     : '/admin/dashboard/students-inflow';
   return await API.get(endpoint);
 };
+
+export const getStudentPaymentInflowDataQueryFn = async (year?: string) => {
+  const endpoint = year 
+    ? `/admin/payment/students-payments-inflow?year=${year}`
+    : '/admin/payment/students-payments-inflow';
+  return await API.get(endpoint);
+};
+
 
 export const sessionsQueryFn = async () => {
   const response = await API.get<SessionResponseType>(`/session/all`);
@@ -175,8 +185,10 @@ export const endLessonMutationFn = async (lessonId: string) =>
   await API.patch(`/${lessonId}/end`);
 
 //e-learning/assessment
-export const getAssessmentDataQueryFn = async () => await API.get(`/administrators/assessments`);
-
+export const getAssessmentDataQueryFn = async (page?: string, status?: string, teacher?: string, module?:string) => {
+  const data = await API.get(`/administrators/assessments?page=${page || "all"}&status=${status || "all"}&teacher=${teacher || "all"}&module=${module || "all"}`);
+  return data;
+} 
 export const getAssessmentByIdMutationFn = async (id: string) =>
   await API.get(`/administrators/assessments/${id}/details`);
 
@@ -184,7 +196,10 @@ export const updateAssessmentMutationFn = async (id: string, data: UpdateAssessm
   await API.patch(`/administrators/assessments/${id}`, data);
 
 //e-learning/administrators/assignments
-export const getAssignmentDataQueryFn = async () => await API.get(`/administrators/assignments`);
+export const getAssignmentDataQueryFn = async (page?: string, status?: string, teacher?: string, module?:string) => {
+  const data = await API.get(`/administrators/assignments?page=${page || "all"}&status=${status || "all"}&teacher=${teacher || "all"}&module=${module || "all"}`);
+  return data
+}
 
 export const updateAssignmentMutationFn = async (id: string, data: UpdateAssignmentType) =>
   await API.patch(`/administrators/assignments/${id}`, data);
@@ -208,5 +223,107 @@ export const newCalendarMutationFn = async (sessionId: string, data: NewCalendar
 //semester
 export const getSemesterDataQueryFn = async () => await API.get(`/semesters`);
 
+//allocate module
+export const getAllocateModuleDataQueryFn = async (page?: string) => {
+  const endpoint = page
+  ? `/module-allocations?page=${page}`
+  : `/module-allocations?request_type=all`
+  const data = await API.get(endpoint, {
+    timeout: 120000 // 2 minutes
+  });
+  return data;
+}
+
+export const newAllocateModuleMutationFn = async (data: AllocateModuleType) =>
+  await API.post(`/module-allocations`, data);
+
+export const updateAllocatedModuleMutationFn = async (id: string, data: AllocateModuleType) =>
+  await API.patch(`/module-allocations/${id}`, data);
+
 //teacher
-export const getTeacherDataQueryFn = async () => await API.get(`/teachers?page=1&qualification=all`);
+export const getTeacherDataQueryFn = async (page?: string) => {
+  const endpoint = page 
+    ? `/teachers?page=${page}&qualification=all`
+    : `/teachers?request_type=all`;
+  const data = await API.get(endpoint, {
+    timeout: 120000 // 2 minutes
+  });
+  return data;
+}
+
+export const newTeacherMutationFn = async (data: TeacherType) =>
+  await API.post(`/teachers`, data);
+
+//student
+export const getStudentDataQueryFn = async (page?: string, filters?: StudentFilters) => {
+  const endpoint = page
+    ? `/students?page=${page}`
+    : '/students?request_type=all';
+
+  const config = {
+    timeout: 120000,
+    params: {
+      ...(filters?.qualification && { qualification: filters.qualification }),
+      ...(filters?.request_type && { request_type: filters.request_type }),
+      ...(filters?.search && { search: filters.search }),
+      ...(filters?.admission_status && { admission_status: filters.admission_status }),
+      ...(filters?.status && { status: filters.status }),
+      ...(filters?.financial_status && { financial_status: filters.financial_status }),
+      ...(filters?.school && { school: filters.school }),
+      ...(filters?.registration_status && { registration_status: filters.registration_status })
+    }
+  };
+
+  const data = await API.get(endpoint, config);
+  return data;
+}
+
+
+export const getStudentByIdMutationFn = async (id: string) =>
+  await API.get(`/students/${id}/show`);
+
+  
+  export const updateStudentMutationFn = async (id: string, queryType: string, data: any) =>
+    await API.post(`/admin/students/${id}/${queryType}`, data);
+
+
+  export const newPresignedUrlMutationFn = async (data: any) =>
+    await API.post(`/uploads/presigned-url`, data);
+
+  export const studentPaymentFees = async (latest: boolean) => {
+  const endpoint = latest ? `/admin/dashboard/latest-students-payment` 
+                          : `/get-all-student-payment`;
+      const studentFees =   await API.get(endpoint)
+      return studentFees
+  }
+
+
+  export const enrollStudentModule = async (page?: string) => 
+    await API.get(`/enrolments?page=${page}`, {
+      timeout: 120000 
+    })
+
+    export const newAllocateStudentModuleMutationFn = async (data: StudentRequestType) =>
+      await API.post(`/enrolments`, data);
+    
+    export const updateAllocatedStudentModuleMutationFn = async (id: string, data: StudentRequestType) =>
+      await API.patch(`/enrolments/${id}`, data);
+
+    // dashboard list 
+    export const getDashboardList = async () => 
+      await API.get(`/admin/dashboard/list`);
+
+    export const getUnpaidList = async () => 
+      await API.get(`/get-unpaid-payment`);
+
+
+    // sms notification 
+    export const getSmsNotification = async (type: string) => 
+      await API.get(`/get-student-payment?type=${type}`);
+
+
+    export const updateSmsNotificationMutationFn = async (id: string, data: SmsNotificationRequestType) =>
+      await API.patch(`/update-message/${id}`, data);
+
+    export const createSmsNotificationMutationFn = async (data: SmsNotificationRequestType) =>
+      await API.post(`/message-payment`, data);

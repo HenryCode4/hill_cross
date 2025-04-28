@@ -6,9 +6,11 @@ interface InputPageProps {
     title?: string;
     required?: string;
     className?: string;
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const InputPage = ({placeholder, title, required, className}: InputPageProps) => {
+const InputPage = ({placeholder, title, required, className, value, onChange}: InputPageProps) => {
   return (
     <div className={cn("flex flex-col gap-y-[8px]", className) }>
             <label className="text-[16px] font-[600]">
@@ -16,7 +18,7 @@ const InputPage = ({placeholder, title, required, className}: InputPageProps) =>
             </label>
             
             <div className="h-[43px] w-full rounded-[8px] border border-[#CEAAAA] bg-[#FCF9F9] overflow-hidden">
-                <input placeholder={placeholder} className="w-full h-full bg-[#FCF9F9] px-[16px] outline-none" />
+                <input onChange={onChange} value={value} placeholder={placeholder} className="w-full h-full bg-[#FCF9F9] px-[16px] outline-none" />
             </div>
             
 
