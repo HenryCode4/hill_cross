@@ -3,8 +3,10 @@ import {
   cancel,
   completed,
   edit,
+  green,
   option,
   play,
+  red,
   trash,
   visibility,
 } from "@/assets";
@@ -19,6 +21,8 @@ import { useTeacherData } from "@/hooks/useSchool";
 import useModuleData from "@/hooks/useModule";
 import Pagination from "@/components/pagination";
 import SelectComponent from "@/components/selectComponent";
+import useApproveExamination from "@/hooks/useApproveExamination";
+import useEndExamination from "@/hooks/useEndExamination";
 
 interface assessment {
   module: string;
@@ -28,6 +32,7 @@ interface assessment {
   examStartTime: string;
   duration: string;
   totalScore: string;
+  adminApproval: string;
   status: string;
   action: string;
 }
@@ -75,8 +80,13 @@ const columns: Column[] = [
     width: "5%",
   },
   {
-    accessorKey: "status",
+    accessorKey: "adminApproval",
     header: <div className="w-[132px]">APPROVAL STATUS</div>,
+    width: "10%",
+  },
+  {
+    accessorKey: "status",
+    header: <div className="w-[132px]">STATUS</div>,
     width: "10%",
   },
   {
@@ -87,13 +97,13 @@ const columns: Column[] = [
 ];
 
 const ExaminationTable = () => {
-   const queryClient = useQueryClient();
-    const [modalOpenEnd, setModalOpenEnd] = useState(false);
-    const [modalOpenEdit, setModalOpenEdit] = useState(false);
-    const [selectedExamination, setSelectedExamination] = useState<{
-      id: string;
-      name: string;
-    }>();
+  const queryClient = useQueryClient();
+  const [modalOpenEnd, setModalOpenEnd] = useState(false);
+  const [modalOpenEdit, setModalOpenEdit] = useState(false);
+  const [selectedExamination, setSelectedExamination] = useState<{
+    id: string;
+    name: string;
+  }>();
   const [filters, setFilters] = useState({
     teacher: "",
     module: "",
@@ -116,40 +126,45 @@ const ExaminationTable = () => {
     examStartTime: data.exam_start_time,
     duration: data.exam_duration,
     totalScore: "",
+    adminApproval: data.admin_approval,
     status: data.status,
     examination_type: data.examination_type,
     available_at: data.available_at,
     submission_date: data.submission_date,
   }));
   const totalPages = data?.data?.meta?.last_page || 1;
-   //teacher
-   const {data: teacher} = useTeacherData();
-   const teacherApi = teacher?.data?.data;
-   const teacherOptions = teacherApi?.map((item: any) => ({
-     id: item.id,
-     label: item.name,
-   }));
- 
-   //module 
-   const {data: module } = useModuleData();
-   const moduleApi = module?.data?.data;
-   const moduleOptions = moduleApi?.map((item: any) => ({
-     id: item.id,
-     label: item.name,
-   }));
- 
-   const handleFilterChange = (filterType: keyof typeof filters, value: string) => {
-     setFilters(prev => ({
-       ...prev,
-       [filterType]: value
-     }));
-     setCurrentPage(1); // Reset to first page when filter changes
-   };
+  //teacher
+  const { data: teacher } = useTeacherData();
+  const teacherApi = teacher?.data?.data;
+  const teacherOptions = teacherApi?.map((item: any) => ({
+    id: item.id,
+    label: item.name,
+  }));
 
-   const handleServerPageChange = (page: number) => {
-    setCurrentPage(page);
+  //module
+  const { data: module } = useModuleData();
+  const moduleApi = module?.data?.data;
+  const moduleOptions = moduleApi?.map((item: any) => ({
+    id: item.id,
+    label: item.name,
+  }));
+
+  const handleFilterChange = (
+    filterType: keyof typeof filters,
+    value: string,
+  ) => {
+    setFilters((prev) => ({
+      ...prev,
+      [filterType]: value,
+    }));
+    setCurrentPage(1); // Reset to first page when filter changes
   };
 
+  const handleServerPageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+  const { mutate: approveExamination } = useApproveExamination();
+  const { mutate: endAssessment } = useEndExamination();
   return (
     <>
       <div className="flex w-full flex-col gap-y-[8px] px-4 pb-2">
@@ -160,24 +175,24 @@ const ExaminationTable = () => {
               Sort by:
             </button>
             <div className="flex w-full flex-1 flex-wrap gap-[32px] xl:flex-nowrap">
-            <SelectComponent
+              <SelectComponent
                 items={teacherOptions}
                 placeholder="Select Teacher"
-                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
-                onChange={(value) => handleFilterChange('teacher', value)}
+                className="h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] text-[#B0B0B0] outline-none"
+                onChange={(value) => handleFilterChange("teacher", value)}
               />
               <SelectComponent
                 items={moduleOptions}
                 placeholder="Select Module"
-                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
-                onChange={(value) => handleFilterChange('module', value)}
+                className="h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] text-[#B0B0B0] outline-none"
+                onChange={(value) => handleFilterChange("module", value)}
               />
 
               <SelectComponent
                 items={["Approve", "Pending", "End"]}
                 placeholder="Select Status"
-                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
-                onChange={(value) => handleFilterChange('status', value)}
+                className="h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] text-[#B0B0B0] outline-none"
+                onChange={(value) => handleFilterChange("status", value)}
               />
             </div>
           </div>
@@ -190,27 +205,69 @@ const ExaminationTable = () => {
           data={examinations}
           renderAction={(item) => (
             <div className="flex w-[160px] items-start gap-x-[8px]">
-              {item.status === "Pending" ? (
+              {item.adminApproval === "Pending" ? (
                 <div className="flex items-center gap-x-[8px]">
                   <Image
-                    src={cancel}
-                    alt="completed icon"
-                    className="h-[27px] w-[24px]"
+                    key="edit-icon"
+                    src={green}
+                    onClick={() => approveExamination(item.id)}
+                    alt="Approve icon"
                   />
+
+                  <Link href={`/e-learning/examination/${item.id}`}>
+                    <Image
+                      src={visibility}
+                      alt="Visibility icon"
+                      className="h-[24px] w-[24px]"
+                    />
+                  </Link>
                   <Image
-                    src={completed}
-                    alt="completed icon"
+                    src={edit}
+                    alt="Edit icon"
                     className="h-[24px] w-[24px]"
+                    // onClick={() => {
+                    //   setSelectedAssessment(value as any);
+                    //   setModalOpenEdit(true);
+                    // }}
                   />
+                </div>
+              ) : item?.adminApproval === "End" ? (
+                <div className="flex items-center gap-x-[8px]">
                   <Image
-                    src={option}
-                    alt="Option icon"
+                    key="edit-icon"
+                    src={green}
+                    onClick={() => approveExamination(item.id)}
+                    alt="Approve icon"
+                  />
+
+                  <Link href={`/e-learning/examination/${item.id}`}>
+                    <Image
+                      src={visibility}
+                      alt="Visibility icon"
+                      className="h-[24px] w-[24px]"
+                    />
+                  </Link>
+                  <Image
+                    src={edit}
+                    alt="Edit icon"
                     className="h-[24px] w-[24px]"
+                    // onClick={() => {
+                    //   setSelectedAssessment(value as any);
+                    //   setModalOpenEdit(true);
+                    // }}
                   />
                 </div>
               ) : (
                 <div className="flex items-center gap-x-[8px]">
-                  <Link href={`/e-learning/${item.id}`}>
+                  <Image
+                    key="trash-icon"
+                    src={red}
+                    alt="Trash icon"
+                    className="h-[24px] w-[24px] cursor-pointer"
+                    onClick={() => endAssessment(item.id)}
+                  />
+
+                  <Link href={`/e-learning/exmination/${item.id}`}>
                     <Image
                       src={visibility}
                       alt="Visibility icon"
@@ -222,22 +279,10 @@ const ExaminationTable = () => {
                     src={edit}
                     alt="Edit icon"
                     className="h-[24px] w-[24px]"
-                      onClick={()=> {
-                        setSelectedExamination(item as any)
-                        setModalOpenEdit(true)
-                      }}
-                  />
-
-                  <Image
-                    src={block}
-                    alt="Block icon"
-                    className="h-[24px] w-[24px]"
-                  />
-
-                  <Image
-                    src={trash}
-                    alt="Trash icon"
-                    className="h-[24px] w-[24px]"
+                    // onClick={() => {
+                    //   setSelectedAssessment(value as any);
+                    //   setModalOpenEdit(true);
+                    // }}
                   />
                 </div>
               )}
@@ -252,7 +297,7 @@ const ExaminationTable = () => {
           renderStatus={(item) => (
             <div className="">
               <p
-                className={`${item.status === "Pending" && "text-[#5B5B5B]"} ${item.status === "Active" && "text-[#00BF00]"} ${item.status === "End" && "text-[#ED1000]"}`}
+                className={`${item.status === "Pending" && "text-[#5B5B5B]"} ${item.status === "Approved" && "text-[#00BF00]"} ${item.status === "Ended" && "text-[#ED1000]"}`}
               >
                 {item.status}
               </p>
@@ -266,22 +311,22 @@ const ExaminationTable = () => {
         />
 
         <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPrevPage={() => {}}
-                  onNextPage={() => {}}
-                  onPageChange={() => {}}
-                  isServerPagination={true}
-                  onServerPageChange={handleServerPageChange}
-                />
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPrevPage={() => {}}
+          onNextPage={() => {}}
+          onPageChange={() => {}}
+          isServerPagination={true}
+          onServerPageChange={handleServerPageChange}
+        />
 
         {modalOpenEdit && (
-                  <UpdateExamination
-                    open={modalOpenEdit}
-                    onClose={() => setModalOpenEdit(false)}
-                    event={selectedExamination}
-                  />
-                )}
+          <UpdateExamination
+            open={modalOpenEdit}
+            onClose={() => setModalOpenEdit(false)}
+            event={selectedExamination}
+          />
+        )}
       </div>
     </>
   );

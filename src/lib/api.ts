@@ -5,7 +5,7 @@ import { StudentFilters } from "@/hooks/useStudent";
 import { SmsNotificationRequestType, StudentRequestType } from "./schema";
 
 const token = Cookies.get('accessToken');
-console.log(token)
+// console.log(token)
 type forgotPasswordType = { email: string };
 type resetPasswordType = { password: string; verificationCode: string };
 
@@ -191,6 +191,8 @@ export const getAssessmentDataQueryFn = async (page?: string, status?: string, t
 } 
 export const getAssessmentByIdMutationFn = async (id: string) =>
   await API.get(`/administrators/assessments/${id}/details`);
+export const getAssessmentByTakeHomeMutationFn = async (id: string) =>
+  await API.get(`/administrators/assessments/${id}/take-home`);
 
 export const updateAssessmentMutationFn = async (id: string, data: UpdateAssessmentType) =>
   await API.patch(`/administrators/assessments/${id}`, data);
@@ -203,6 +205,9 @@ export const getAssignmentDataQueryFn = async (page?: string, status?: string, t
 
 export const updateAssignmentMutationFn = async (id: string, data: UpdateAssignmentType) =>
   await API.patch(`/administrators/assignments/${id}`, data);
+
+export const getAssignmentByIdMutationFn = async (id: string) =>
+  await API.get(`/administrators/assignments/${id}`);
 
 //e-learning/administrators/examinations
 export const getExaminationsDataQueryFn = async (page?: string, status?: string, teacher?: string, module?:string) => {
@@ -327,3 +332,23 @@ export const getStudentByIdMutationFn = async (id: string) =>
 
     export const createSmsNotificationMutationFn = async (data: SmsNotificationRequestType) =>
       await API.post(`/message-payment`, data);
+
+   
+    export const approveAdminLessonMutationFn = async (lessonId: string) =>
+      await API.get(`lessons/${lessonId}/approval`);
+    export const endAdminLessonMutationFn = async (lessonId: string) =>
+      await API.get(`lessons/${lessonId}/end`);
+    export const approveAdminAssessmentMutationFn = async (assessmentId: string) =>
+      await API.get(`administrators/assessments/${assessmentId}/approval`);
+    export const endAdminAssessmentMutationFn = async (assessmentId: string) =>
+      await API.get(`administrators/assessments/${assessmentId}/end`);
+    export const approveAdminAssignmentMutationFn = async (assessmentId: string) =>
+      await API.get(`administrators/assignments/${assessmentId}/approval`);
+    export const approveEndAssignmentMutationFn = async (assessmentId: string) =>
+      await API.get(`administrators/assignments/${assessmentId}/end`);
+    export const approveAdminExaminationMutationFn = async (examinationId: string) =>
+      await API.get(`administrators/examinations/${examinationId}/approval`);
+    export const endAdminExaminationMutationFn = async (examinationId: string) =>
+      await API.get(`administrators/examinations/${examinationId}/end`);
+
+    
