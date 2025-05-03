@@ -21,11 +21,12 @@ export const useSchoolByIdData = (id: string) => {
   return query;
 };
 
-export const useAssignmentByIdData = (id: string) => {
+export const useAssignmentByIdData = (id?: string) => {
   const query = useQuery({
     queryKey: ["assignmentDataById", id],
-    queryFn: () =>  getAssignmentByIdMutationFn(id),
+     queryFn: () => getAssignmentByIdMutationFn(id as string),
     staleTime: Infinity,
+    enabled: !!id, 
   });
   return query;
 };

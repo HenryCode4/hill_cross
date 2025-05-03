@@ -19,7 +19,6 @@ const SinglePage = () => {
 
   const isAssessment = type === "assessment";
 
-  // Fetching data based on type
   const { data: assessmentRaw } = useAssessmentTakeHomeData(
     isAssessment ? id : undefined,
   );
@@ -27,10 +26,8 @@ const SinglePage = () => {
     !isAssessment ? id : undefined,
   );
 
-  // Selecting the correct field depending on whether it's an assessment or assignment
   const fetchedData = isAssessment ? assessmentRaw?.data : assignmentRaw?.data;
 
-  // Conditionally accessing the correct field based on the type
   const submittedList = isAssessment
     ? fetchedData?.submitted_assessments || []
     : fetchedData?.submitted_assignments || [];
@@ -45,7 +42,7 @@ const SinglePage = () => {
 
       <div className="h-[61px] w-full bg-white px-[32px] py-[16px]">
         <h1 className="text-[20px] font-[600] md:text-[24px]">
-          {fetchedData?.data?.module || "Untitled Module"}
+          {fetchedData?.data?.module || ""}
         </h1>
       </div>
 

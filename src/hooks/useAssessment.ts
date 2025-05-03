@@ -21,11 +21,12 @@ export const useAssessmentByIdData = (id: string) => {
   return query;
 };
 
-export const useAssessmentTakeHomeData = (id: string) => {
+export const useAssessmentTakeHomeData = (id?: string) => {
   const query = useQuery({
     queryKey: ["assessmentDataById", id],
-    queryFn: () =>  getAssessmentByTakeHomeMutationFn(id),
+    queryFn: () => getAssessmentByTakeHomeMutationFn(id as string),
     staleTime: Infinity,
+    enabled: !!id, 
   });
   return query;
 };
