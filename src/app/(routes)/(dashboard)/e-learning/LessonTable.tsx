@@ -6,6 +6,8 @@ import Table from "@/components/Table";
 import Warning from "@/components/warning";
 import { toast } from "@/hooks/use-toast";
 import useLessonData from "@/hooks/useLession";
+import useApproveLesson from "@/hooks/useApproveLesson";
+import useEndLesson from "@/hooks/useEndLesson";
 import useModuleData from "@/hooks/useModule";
 import { useTeacherData } from "@/hooks/useSchool";
 import { endLessonMutationFn } from "@/lib/api";
@@ -81,22 +83,22 @@ const LessonTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   //teacher
-  const {data: teacher} = useTeacherData();
+  const { data: teacher } = useTeacherData();
   const teacherApi = teacher?.data?.data;
   const teacherOptions = teacherApi?.map((item: any) => ({
     id: item.id,
     label: item.name,
   }));
 
-  //module 
-  const {data: module } = useModuleData();
+  //module
+  const { data: module } = useModuleData();
   const moduleApi = module?.data?.data;
   const moduleOptions = moduleApi?.map((item: any) => ({
     id: item.id,
     label: item.name,
   }));
 
-  //Lesson endpoint 
+  //Lesson endpoint
   const { data } = useLessonData(
     currentPage.toString(),
     filters.status,
@@ -107,10 +109,13 @@ const LessonTable = () => {
   const lessonApi = data?.data?.data;
   const totalPages = data?.data?.meta?.last_page || 1;
 
-  const handleFilterChange = (filterType: keyof typeof filters, value: string ) => {
-    setFilters(prev => ({
+  const handleFilterChange = (
+    filterType: keyof typeof filters,
+    value: string,
+  ) => {
+    setFilters((prev) => ({
       ...prev,
-      [filterType]: value
+      [filterType]: value,
     }));
     setCurrentPage(1); // Reset to first page when filter changes
   };
@@ -141,6 +146,8 @@ const LessonTable = () => {
       });
     },
   });
+  const { mutate: approveLesson } = useApproveLesson();
+  const { mutate: endAdminLesson } = useEndLesson();
 
   const handleEndLesson = () => {
     endLesson();
@@ -156,28 +163,25 @@ const LessonTable = () => {
               Sort by:
             </button>
             <div className="flex w-full flex-1 flex-wrap gap-[32px] xl:flex-nowrap">
-              
-
-            <SelectComponent
+              <SelectComponent
                 items={teacherOptions}
                 placeholder="Select Teacher"
-                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
-                onChange={(value) => handleFilterChange('teacher', value)}
+                className="h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] text-[#B0B0B0] outline-none"
+                onChange={(value) => handleFilterChange("teacher", value)}
               />
               <SelectComponent
                 items={moduleOptions}
                 placeholder="Select Module"
-                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
-                onChange={(value) => handleFilterChange('module', value)}
+                className="h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] text-[#B0B0B0] outline-none"
+                onChange={(value) => handleFilterChange("module", value)}
               />
 
               <SelectComponent
                 items={["Approve", "Pending", "End"]}
                 placeholder="Select Status"
-                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
-                onChange={(value) => handleFilterChange('status', value)}
+                className="h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] text-[#B0B0B0] outline-none"
+                onChange={(value) => handleFilterChange("status", value)}
               />
-    
             </div>
           </div>
         </div>
@@ -196,17 +200,37 @@ const LessonTable = () => {
                     src={green}
                     alt="Edit icon"
                     className="h-[27px] w-[24px] cursor-pointer"
+                    onClick={() => approveLesson(value.id)}
                     // onClick={()=> {
                     //     setModalOpenEdit(true)
                     //     setSelectedLesson(value)
                     // }}
                   />
-
+                </>
+              )}
+              {value.status === "Ended" && (
+                <>
+                  <Image
+                    key="edit-icon"
+                    src={green}
+                    alt="Edit icon"
+                    className="h-[27px] w-[24px] cursor-pointer"
+                    onClick={() => approveLesson(value.id)}
+                    // onClick={()=> {
+                    //     setModalOpenEdit(true)
+                    //     setSelectedLesson(value)
+                    // }}
+                  />
+                </>
+              )}
+              {value.status === "Approved" && (
+                <>
                   <Image
                     key="edit-icon"
                     src={red}
                     alt="Edit icon"
                     className="h-[27px] w-[24px] cursor-pointer"
+                    onClick={() => endAdminLesson(value.id)}
                     //   onClick={()=> {
                     //     setModalOpenEnd(true)
                     //     setSelectedLesson(value)
