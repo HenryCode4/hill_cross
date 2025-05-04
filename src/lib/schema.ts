@@ -211,3 +211,58 @@ export type DocumentUpload = z.infer<typeof documentSchema>;
 //   student_result: z.string().url("Please upload a valid result document")
 // });
 
+export const paymentFormSchema = z.object({
+  student_id: z.string().min(1, "Student ID is required"),
+  amount_paid: z.string().min(1, "Amount paid is required"),
+  total_amount_payable: z.string().min(1, "total amount payable is required"),
+  payment_date: z.string().min(1, "payment date is required"),
+  payment_mode: z.string().min(1, "payment mode is required"),
+  fee_category: z.string().min(1, "fee category is required"),
+  no_of_month_owed: z.string().min(1, "no of month owed is required"),
+});
+
+export type paymentFormType = z.infer<typeof paymentFormSchema>;
+
+
+export const getStatementFormSchema = z.object({
+  student_id: z.string().min(1, "Student ID is required"),
+  start_date: z.string().min(1, "start date is required"),
+  end_date: z.string().min(1, "end date is required"),
+});
+
+export type getStatementFormType = z.infer<typeof getStatementFormSchema>;
+
+export const createNotificationFormSchema = z.object({
+  title: z.string().min(1, "title is required"),
+  body: z.string().min(1, "body is required"),
+});
+
+export type createNotificationFormType = z.infer<typeof createNotificationFormSchema>;
+
+export const academicStaffSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  staff_id: z.string().min(1, "Staff ID is required"),
+  email: z.string().email("Invalid email format"),
+  phone_number: z.string().min(1, "Phone number is required"),
+  dob: z.string(),
+  gender: z.string().min(1, "Gender is required"),
+  mode: z.string().min(1, "Mode is required"),
+  position: z.string().min(1, "Position is required"),
+  password: z.string().min(1, "password is required"),
+  re_password: z.string().min(1, "confirm password is required"),
+  qualification: z.string().min(1, "qualification is required"),
+  address: z.string().min(1, "address is required"),
+  role: z.string().min(1, "role is required"),
+});
+
+export type createAcademicFormType = z.infer<typeof academicStaffSchema>;
+
+export const adminSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email format"),
+  staff_id: z.string().min(1, "Staff id is required"),
+  phone_number: z.string().min(1, "Phone number is required"),
+  qualification: z.string().min(1, "qualification is required"),
+  password: z.string().min(1, "password is required"),
+  re_password: z.string().min(1, "confirm password is required"),
+});

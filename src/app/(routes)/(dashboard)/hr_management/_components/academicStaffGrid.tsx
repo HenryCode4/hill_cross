@@ -2,21 +2,62 @@ import { application, applicationStop, avatar1, avatar2, avatar3, avatar4, avata
 import ActionIcons from '@/components/action-icon';
 import Table from '@/components/Table';
 import Image from 'next/image';
-import React from 'react'
+import React, { useState } from 'react'
 import staffs from "@/lib/academicStaff.json"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from '@/components/ui/select';
 import Link from 'next/link';
 
-const AcademicStaffGrid = () => {
-    const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
+interface AcademicStaffProps {
+  staffApi: any;
+  searchQuery?: string;
+  qualificationFilter?: string;
+}
+
+const AcademicStaffGrid = ({staffApi, searchQuery, qualificationFilter}: AcademicStaffProps) => {
+     const [brokenImages, setBrokenImages] = useState<{[key: string]: boolean}>({});
+    
+      const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
+    
+      const handleImageError = (itemId: string) => {
+        setBrokenImages(prev => ({
+          ...prev,
+          [itemId]: true
+        }));
+      };
+console.log(staffApi)
+      const getAvatarSrc = (item: any) => {
+        // If image is broken or null, return random avatar
+        if (brokenImages[item.id] || !item.avatar) {
+          return avatars[Math.floor(Math.random() * avatars.length)];
+        }
+        return item.avatar;
+      };
+
     const items = ["Show Student", "Edit Student", "Registered Student", "Archive Student", "Disable Student", "Regenerate Admission Letter", "Delete Account", "View Admission Letter", "Print Details"]
+    const filteredStaffOptions = staffApi?.map((item: any) => ({
+      id: item.id,
+      avatar: item.profile.avatar,
+      name: item.name,
+      qualifications: item.qualifications,
+      createdDate: item.date_created,
+      email: item.email,
+      mode: item.mode,
+      action: item.action,
+    }))
+    ?.filter((staff: any) => {
+      const matchesName = staff.name.toLowerCase().includes(searchQuery?.toLowerCase());
+      const matchesQualification = !qualificationFilter || 
+        staff.qualifications.toLowerCase().includes(qualificationFilter.toLowerCase());
+      return matchesName && matchesQualification;
+    });
+
   return (
 
         <div className="w-full h-full  px-[8px] ">
 
           <div className='grid lg:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 gap-y-[31px] gap-x-[31px]'>
             {
-              staffs.map((item, i) => (
+              filteredStaffOptions?.map((item: any, i: any) => (
                 <div key={i} className='w-full h-auto bg-white py-[20px] px-[15px] border border-[#B0B0B0] rounded-[16px] relative'>
                   <div className='absolute top-[15px] right-[25px]'>
                      <Select >
@@ -26,7 +67,7 @@ const AcademicStaffGrid = () => {
                 <SelectContent>
                   <SelectGroup>
                     {
-                        items.map((item) => (
+                        ["admin"].map((item) => (
                             <SelectItem key={item} value={item.toLowerCase()}>{item}</SelectItem>
                         ))
                     }
@@ -36,13 +77,27 @@ const AcademicStaffGrid = () => {
                   </div>
                  
                   <div className='flex flex-col items-center justify-center w-full gap-y-[12px]'>
-                    <Image 
+                    {/* <Image 
                 src={avatars[i % avatars.length]} // This ensures avatars cycle from start after reaching the end
                 alt={`Avatar for ${item.name}`} 
                 width={100} // Set the width of the image
                 height={100} // Set the height of the image
                 className="rounded-full" // Optional: to make the avatar round
+              /> */}
+
+              <div className='w-[100px] h-[100px] '>
+              <Image 
+                width={100} 
+                height={100} 
+                className="object-cover rounded-full w-full h-full" 
+                src={getAvatarSrc(item)}
+                alt={`Avatar for ${item.name}`}
+                onError={() => handleImageError(item.id)}
+                priority // Add priority to improve loading
               />
+              </div>
+
+              
 
               <div className='w-full flex flex-col items-center gap-y-[8px]'>
               <p className='text-[20px] font-[500]'>{item.name}</p>
@@ -54,12 +109,12 @@ const AcademicStaffGrid = () => {
                   <div className='w-full pt-[46px] pb-[38px] p-2'>
                     <div className=' flex justify-between w-full border-b '>
                       <p className='py-[14px] font-[400] text-[#5B5B5B]'>Designation:</p>
-                      <p className='py-[14px] font-[500] text-[1rem] text-[#1E1E1E] text-end'>{item.designation}</p>
+                      <p className='py-[14px] font-[500] text-[1rem] text-[#1E1E1E] text-end'>{item.qualifications}</p>
                     </div>
-                    <div className=' flex justify-between w-full border-b '>
+                    {/* <div className=' flex justify-between w-full border-b '>
                       <p className='py-[14px] font-[400] text-[#5B5B5B]'>Qualification:</p>
-                      <p className='py-[14px] font-[500] text-[1rem] text-[#1E1E1E] text-end'>{"Business Management (ICB)"}</p>
-                    </div>
+                      <p className='py-[14px] font-[500] text-[1rem] text-[#1E1E1E] text-end'>{item.qualifications}</p>
+                    </div> */}
                     <div className=' flex justify-between w-full border-b '>
                       <p className='py-[14px] font-[400] text-[#5B5B5B]'>Mode:</p>
                       <p className='py-[14px] font-[500] text-[1rem] text-[#1E1E1E] text-end'>{item.mode}</p>

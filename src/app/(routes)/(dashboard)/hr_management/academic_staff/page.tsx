@@ -9,9 +9,39 @@ import React, { useState } from "react";
 import AcademicStaff from "../_components/academicStaff";
 import AcademicStaffGrid from "../_components/academicStaffGrid";
 import Link from "next/link";
+import useHrData from "@/hooks/useHrMgt";
+import Pagination from "@/components/pagination";
 
 const HrManagementPage = () => {
   const [sortButton, setSortButton] = useState("list");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [qualificationFilter, setQualificationFilter] = useState("");
+
+  const action = "teachers/academics"
+  const {data} = useHrData(action, currentPage.toString());
+  const staffApi = data?.data?.data;
+  const totalPages = data?.data?.meta?.last_page || 1;
+  
+  console.log(staffApi)
+  const handleServerPageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const getUniqueQualifications = (staffApi: any[]) => {
+    if (!staffApi) return [];
+    
+    const uniqueQualifications = Array.from(new Set(
+      staffApi
+        .map(item => item.qualifications)
+        .filter(Boolean) // Remove null/undefined values
+    ));
+    
+    return uniqueQualifications;
+  };
+
+  const uniqueQualifications = getUniqueQualifications(staffApi);
+
   return (
     <div className="flex h-full w-full flex-col gap-y-[24px] bg-[#F8F8F8] pb-[24px] pt-[90px] lg:gap-y-[43px] lg:px-[52px]">
       <Header title={"Hr Management"} />
@@ -53,6 +83,7 @@ const HrManagementPage = () => {
               <input
                 className="w-full bg-[#F9FCFB] outline-none focus:outline-none"
                 placeholder="Search Staff’s Name"
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
 
@@ -60,14 +91,25 @@ const HrManagementPage = () => {
               <SelectComponent
                 className="h-[56px] w-full 2xl:w-[457px] rounded-[8px] border border-[#AACEC9] bg-[#F9FCFB]"
                 placeholder="Select Designation"
-                items={["month"]}
+                items={uniqueQualifications}
+                onChange={(value) => setQualificationFilter(value)}
               />
             </div>
           </div>
         </div>
 
-        {sortButton === "list" ? <AcademicStaff /> : <AcademicStaffGrid />}
+        {sortButton === "list" ? <AcademicStaff staffApi={staffApi} searchQuery={searchQuery} qualificationFilter={qualificationFilter}/> : <AcademicStaffGrid staffApi={staffApi} searchQuery={searchQuery} qualificationFilter={qualificationFilter}/>}
       </div>
+
+      <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPrevPage={() => {}}  
+                onNextPage={() => {}}  
+                onPageChange={() => {}}  
+                isServerPagination={true}
+                onServerPageChange={handleServerPageChange}
+              />
     </div>
   );
 };

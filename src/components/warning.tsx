@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import Image from "next/image";
 import React from "react";
 import SelectComponent from "./selectComponent";
+import { BadgeAlert } from "lucide-react";
 
 interface DeleteClubTriggerProps {
     open: boolean;
@@ -13,9 +14,10 @@ interface DeleteClubTriggerProps {
     data?: any;
     description: string;
     onConfirm: () => void;
+    alert?: boolean;
   }
 
-const Warning = ({ open, onClose, onChange = () => {}, data, description, onConfirm}: DeleteClubTriggerProps) => {
+const Warning = ({ open, onClose, onChange = () => {}, data, description, onConfirm, alert}: DeleteClubTriggerProps) => {
   return (
     <div className="flex justify-center items-center">
       <div className={`  `}>
@@ -26,7 +28,14 @@ const Warning = ({ open, onClose, onChange = () => {}, data, description, onConf
           <AlertDialogContent className="">
             <AlertDialogHeader>
               <div className="flex items-center justify-center w-full">
-                <Image alt="Warning icon" src={warningIcon} />
+              {
+                alert ? (
+                  <BadgeAlert className="text-red-500 w-[24px] h-[24px]"/>
+                ) : (
+                  <Image alt="Warning icon" src={warningIcon} />
+                )
+              }
+                
               </div>
               <AlertDialogTitle className="text-center">Warning</AlertDialogTitle>
               <AlertDialogDescription className="text-center">

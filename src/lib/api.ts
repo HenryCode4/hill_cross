@@ -2,7 +2,7 @@ import API from "./axios-client";
 import Cookies from 'js-cookie';
 import { AllocateModuleType, NewCalendarType, NewModuleType, NewQualificationType, NewSchoolType, NewSessionType, NewStandardType, TeacherType, UpdateAssessmentType, UpdateAssignmentType, UpdateExaminationType, updateModuleType, UpdateSessionType } from "./interface";
 import { StudentFilters } from "@/hooks/useStudent";
-import { SmsNotificationRequestType, StudentRequestType } from "./schema";
+import { createAcademicFormType, createNotificationFormType, getStatementFormType, paymentFormType, SmsNotificationRequestType, StudentRequestType } from "./schema";
 
 const token = Cookies.get('accessToken');
 console.log(token)
@@ -282,6 +282,12 @@ export const getStudentDataQueryFn = async (page?: string, filters?: StudentFilt
 export const getStudentByIdMutationFn = async (id: string) =>
   await API.get(`/students/${id}/show`);
 
+export const studentPaymentMutationFn = async (data: paymentFormType) =>
+  await API.post(`/student-payment`, data);
+
+export const queryStudentActionMutationFn = async (id: string, action: string) =>
+  await API.get(`/students/${id}/${action}`);
+
   
   export const updateStudentMutationFn = async (id: string, queryType: string, data: any) =>
     await API.post(`/admin/students/${id}/${queryType}`, data);
@@ -327,3 +333,43 @@ export const getStudentByIdMutationFn = async (id: string) =>
 
     export const createSmsNotificationMutationFn = async (data: SmsNotificationRequestType) =>
       await API.post(`/message-payment`, data);
+
+    export const getStatementsMutationFn = async (data: getStatementFormType) =>
+      await API.post(`/get-statements`, data);
+
+    //push notification
+
+    export const getPushNotification = async () => 
+      await API.get(`/push-notification`)
+
+    export const resendPushNotification = async (id: string, action: string) => 
+      await API.get(`/push-notifications/${id}/${action}`)
+
+    export const createPushNotification = async (data: createNotificationFormType) => 
+      await API.post(`/push-notification-post`, data)
+
+    export const updatePushNotification = async (id: string, data: createNotificationFormType) => 
+      await API.patch(`/push-notifications/${id}`, data)
+
+    export const deletePushNotification = async (id: string) => 
+      await API.delete(`/push-notification-del/${id}`);
+
+    //HR 
+    export const getAcademicStaffs = async (action: string, page?: string) => 
+      await API.get(`/${action}?page=${page}`);
+
+    export const createAcademicStaff = async (data: any) => 
+      await API.post(`/teachers`, data);
+
+    // Role 
+    export const getRoles = async () => 
+      await API.get(`/roles`);
+
+
+    // Role 
+    export const getPermission = async () => 
+      await API.get(`/permissions`);
+
+    export const getActivityLog = async (page: string) => 
+      await API.get(`/activity-logs?page=${page}`);
+    

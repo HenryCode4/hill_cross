@@ -33,7 +33,7 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
   const items = [
     {
       title: "Dashboard",
-      url: "/",
+      url: "/dashboard",
       iconDark: dashboard,
       iconLite: dashboardLite,
     },
