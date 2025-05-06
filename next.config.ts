@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
     domains: [
       'hillcross-presigned-uploads.s3.eu-west-2.amazonaws.com',
       'hillcrosscollege.s3.eu-west-2.amazonaws.com',
+      'hillcrosscollege-prod.s3.eu-west-2.amazonaws.com',
+      'example.com',
     ],
   },
   experimental: {

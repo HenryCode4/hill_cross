@@ -9,9 +9,10 @@ interface selectProps {
     onChange?: (value: string) => void;
     defaultValue?: string;
     value?: string;
+    academic?: boolean;
 }
 
-const SelectPage = ({data, placeholder, title, required, onChange, defaultValue , value}: selectProps) => {
+const SelectPage = ({data, placeholder, title, required, onChange, defaultValue , value, academic}: selectProps) => {
     
   return (
     <div>
@@ -24,7 +25,7 @@ const SelectPage = ({data, placeholder, title, required, onChange, defaultValue 
         <div className="h-full w-full rounded-[8px] border border-[#CEAAAA] bg-[#FCF9F9]">
           <SelectTrigger className="h-[43px] w-full bg-transparent outline-none">
             <SelectValue
-              className="w-full border border-[#CEAAAA] bg-[#FCF9F9] text-[1rem] text-[#696A6A] outline-none"
+              className={`${academic ? "border-[#AACEC9]" : "border-[#CEAAAA]"}w-full border bg-[#FCF9F9] text-[1rem] text-[#696A6A] outline-none`}
               placeholder={placeholder}
             />
           </SelectTrigger>

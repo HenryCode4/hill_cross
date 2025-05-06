@@ -78,9 +78,9 @@ console.log(event)
   const form = useForm<z.infer<typeof allocateStudentModuleFormSchema>>({
     resolver: zodResolver(allocateStudentModuleFormSchema),
     defaultValues: {
-      student_id: "",
-      academic_calender_id: "",
-      modules: [""],
+      student_id: event.student_id || "",
+      academic_calender_id: event.academic_calender_id || "",
+      modules: event.module ? [event.module] : [],
     },
   });
 
@@ -88,9 +88,9 @@ console.log(event)
   useEffect(() => {
     if (event) {
       form.reset({
-        student_id: event.student_id,
-        academic_calender_id: event.academic_calender_id,
-        modules: event.modules,
+        student_id: event.student_id || "",
+      academic_calender_id: event.academic_calender_id || "",
+      modules: event.module ? [event.module] : [],
       });
     }
   }, [event, form]);
@@ -147,7 +147,7 @@ console.log(event)
                         <FormControl>
                           <SelectComponent
                             items={studentOption}
-                            placeholder="Select Student"
+                            placeholder={field.value || "Select Student"}
                             className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                             onChange={field.onChange}
                           />
@@ -170,7 +170,7 @@ console.log(event)
                         <FormControl>
                           <SelectComponent
                             items={academicOption}
-                            placeholder="Select Academic Calender"
+                            placeholder={field.value || "Select Academic Calender"}
                             className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                             onChange={field.onChange}
                           />
@@ -193,10 +193,9 @@ console.log(event)
                         <FormControl>
                           <MultiSelectComponent
                             items={modulesOption}
-                            placeholder="Select Modules"
+                            placeholder={`${field.value && ["Modules have been selected"]}` || "Select Modules"}
                             className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                             onChange={(values) => {
-                              console.log("Selected values:", values);
                               field.onChange(values);
                             }} // Handle array of values
                           />

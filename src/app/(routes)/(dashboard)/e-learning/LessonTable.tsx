@@ -10,10 +10,11 @@ import useApproveLesson from "@/hooks/useApproveLesson";
 import useEndLesson from "@/hooks/useEndLesson";
 import useModuleData from "@/hooks/useModule";
 import { useTeacherData } from "@/hooks/useSchool";
-import { endLessonMutationFn } from "@/lib/api";
+import { deleteLessonMutationFn, endLessonMutationFn } from "@/lib/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import React, { useState } from "react";
+import { Loader } from "lucide-react";
 
 interface elearning {
   module: string;
@@ -70,11 +71,9 @@ const columns: Column[] = [
 const LessonTable = () => {
   const queryClient = useQueryClient();
   const [modalOpenEnd, setModalOpenEnd] = useState(false);
-  const [selectedLesson, setSelectedLesson] = useState<{
-    id: string;
-    name: string;
-  }>();
-
+  const [modalOpenDelete, setModalOpenDelete] = useState(false);
+  const [selectedLesson, setSelectedLesson] = useState<any>();
+console.log(selectedLesson)
   const [filters, setFilters] = useState({
     teacher: "",
     module: "",
@@ -99,7 +98,7 @@ const LessonTable = () => {
   }));
 
   //Lesson endpoint
-  const { data } = useLessonData(
+  const { data, isLoading } = useLessonData(
     currentPage.toString(),
     filters.status,
     filters.teacher,
@@ -124,19 +123,19 @@ const LessonTable = () => {
     setCurrentPage(page);
   };
 
-  const { mutate: endLesson, isPending } = useMutation({
+  const { mutate: deleteLesson, isPending } = useMutation({
     mutationFn: () => {
-      if (!selectedLesson?.id) throw new Error("School ID is required");
-      return endLessonMutationFn(selectedLesson.id);
+      if (!selectedLesson?.id) throw new Error("Lesson ID is required");
+      return deleteLessonMutationFn(selectedLesson.id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessonData"] });
       toast({
         title: "Success",
-        description: "Lesson ended successfully",
+        description: "Lesson deleted successfully",
         variant: "default",
       });
-      setModalOpenEnd(false);
+      setModalOpenDelete(false);
     },
     onError: (error) => {
       toast({
@@ -149,9 +148,17 @@ const LessonTable = () => {
   const { mutate: approveLesson } = useApproveLesson();
   const { mutate: endAdminLesson } = useEndLesson();
 
-  const handleEndLesson = () => {
-    endLesson();
+  const handleDeleteLesson = () => {
+    deleteLesson();
   };
+
+  if (isLoading) {
+              return (
+                <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                           <Loader className="animate-spin h-8 w-8 text-red-700" />
+                      </div>
+              );
+            }
 
   return (
     <>
@@ -252,6 +259,10 @@ const LessonTable = () => {
                 src={trash}
                 alt="Trash icon"
                 className="h-[24px] w-[24px] cursor-pointer"
+                onClick={()=> {
+                  setModalOpenDelete(true)
+                  setSelectedLesson(value)
+                }}
               />
             </div>
           )}
@@ -283,12 +294,12 @@ const LessonTable = () => {
         />
 
         {/* Delete Qualification modal */}
-        {modalOpenEnd && selectedLesson && (
+        {modalOpenDelete && selectedLesson && (
           <Warning
-            open={modalOpenEnd}
-            onClose={() => setModalOpenEnd(false)}
-            description={`Are you sure you want to end ${selectedLesson?.name}?`}
-            onConfirm={handleEndLesson}
+            open={modalOpenDelete}
+            onClose={() => setModalOpenDelete(false)}
+            description={`Are you sure you want to delete ${selectedLesson?.module}?`}
+            onConfirm={()=> deleteLesson()}
           />
         )}
       </div>

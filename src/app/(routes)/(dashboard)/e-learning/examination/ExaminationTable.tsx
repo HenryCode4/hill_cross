@@ -23,6 +23,7 @@ import Pagination from "@/components/pagination";
 import SelectComponent from "@/components/selectComponent";
 import useApproveExamination from "@/hooks/useApproveExamination";
 import useEndExamination from "@/hooks/useEndExamination";
+import { Loader } from "lucide-react";
 
 interface assessment {
   module: string;
@@ -100,23 +101,21 @@ const ExaminationTable = () => {
   const queryClient = useQueryClient();
   const [modalOpenEnd, setModalOpenEnd] = useState(false);
   const [modalOpenEdit, setModalOpenEdit] = useState(false);
-  const [selectedExamination, setSelectedExamination] = useState<{
-    id: string;
-    name: string;
-  }>();
+  const [selectedExamination, setSelectedExamination] = useState<any>();
   const [filters, setFilters] = useState({
     teacher: "",
     module: "",
     status: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const { data } = useExaminationData(
+  const { data, isLoading } = useExaminationData(
     currentPage.toString(),
     filters.status,
     filters.teacher,
     filters.module,
   );
   const examinationApi = data?.data?.data;
+  console.log(examinationApi)
   const examinations = examinationApi?.map((data: any) => ({
     id: data.id,
     module: data.module.name,
@@ -165,6 +164,14 @@ const ExaminationTable = () => {
   };
   const { mutate: approveExamination } = useApproveExamination();
   const { mutate: endAssessment } = useEndExamination();
+
+  if (isLoading) {
+              return (
+                <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                           <Loader className="animate-spin h-8 w-8 text-red-700" />
+                      </div>
+              );
+            }
   return (
     <>
       <div className="flex w-full flex-col gap-y-[8px] px-4 pb-2">
@@ -221,15 +228,7 @@ const ExaminationTable = () => {
                       className="h-[24px] w-[24px]"
                     />
                   </Link>
-                  <Image
-                    src={edit}
-                    alt="Edit icon"
-                    className="h-[24px] w-[24px]"
-                    // onClick={() => {
-                    //   setSelectedAssessment(value as any);
-                    //   setModalOpenEdit(true);
-                    // }}
-                  />
+                  
                 </div>
               ) : item?.adminApproval === "End" ? (
                 <div className="flex items-center gap-x-[8px]">
@@ -247,15 +246,15 @@ const ExaminationTable = () => {
                       className="h-[24px] w-[24px]"
                     />
                   </Link>
-                  <Image
+                  {/* <Image
                     src={edit}
                     alt="Edit icon"
                     className="h-[24px] w-[24px]"
-                    // onClick={() => {
-                    //   setSelectedAssessment(value as any);
-                    //   setModalOpenEdit(true);
-                    // }}
-                  />
+                    onClick={() => {
+                      setSelectedExamination(item as any);
+                      setModalOpenEdit(true);
+                    }}
+                  /> */}
                 </div>
               ) : (
                 <div className="flex items-center gap-x-[8px]">
@@ -275,17 +274,27 @@ const ExaminationTable = () => {
                     />
                   </Link>
 
+                  {/* <Image
+                    src={edit}
+                    alt="Edit icon"
+                    className="h-[24px] w-[24px]"
+                    onClick={() => {
+                      setSelectedExamination(item as any);
+                      setModalOpenEdit(true);
+                    }}
+                  /> */}
+                </div>
+              )}
+
                   <Image
                     src={edit}
                     alt="Edit icon"
                     className="h-[24px] w-[24px]"
-                    // onClick={() => {
-                    //   setSelectedAssessment(value as any);
-                    //   setModalOpenEdit(true);
-                    // }}
+                    onClick={() => {
+                      setSelectedExamination(item as any);
+                      setModalOpenEdit(true);
+                    }}
                   />
-                </div>
-              )}
             </div>
           )}
           renderTopic={(item) => (

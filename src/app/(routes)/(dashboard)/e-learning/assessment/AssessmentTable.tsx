@@ -25,6 +25,7 @@ import Pagination from "@/components/pagination";
 import { useTeacherData } from "@/hooks/useSchool";
 import useApproveAssessment from "@/hooks/useApproveAssessment";
 import useEndAssessment from "@/hooks/useEndAssessment";
+import { Loader } from "lucide-react";
 
 interface assessment {
   module: string;
@@ -102,7 +103,7 @@ const AssessmentTable = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data } = useAssessmentData(
+  const { data, isLoading } = useAssessmentData(
     currentPage.toString(),
     filters.status,
     filters.teacher,
@@ -170,6 +171,15 @@ const AssessmentTable = () => {
   };
   const { mutate: approveAssessment } = useApproveAssessment();
   const { mutate: endAssessment } = useEndAssessment();
+
+  if (isLoading) {
+              return (
+                <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                           <Loader className="animate-spin h-8 w-8 text-red-700" />
+                      </div>
+              );
+            }
+
   return (
     <>
       <div className="flex w-full flex-col gap-y-[8px] px-4 pb-2">

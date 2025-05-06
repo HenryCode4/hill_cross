@@ -19,6 +19,7 @@ import DropoutGrid from "./_component/dropoutGrid";
 import GraduatedGrid from "./_component/graduatedGrid";
 import useStudentData from "@/hooks/useStudent";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
 // import UpdateSchool from "./UpdateSchool";
 
 
@@ -32,7 +33,7 @@ const StudentMgt = () => {
   const [searchQuery, setSearchQuery] = useState("");
       const [currentPage, setCurrentPage] = useState(1);
 
-      const {data: student} = useStudentData(
+      const {data: student, isLoading} = useStudentData(
         currentPage.toString(),
         {
           admission_status: studentStatus,
@@ -66,7 +67,6 @@ const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
     setSearchQuery(value);
     setCurrentPage(1); // Reset to first page when searching
   };
-  console.log(studentOptions);
 
   const studentList = [
     {
@@ -171,25 +171,30 @@ const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
           </div>
         </div>
       </div>
-      {
-  sortButton === "list" ? (
-    <>
-      {tab === 1 && <ApplicantList studentApi={studentOptions} />}
-      {tab === 2 && <AdmittedStudent studentApi={studentOptions}/>}
-      {tab === 3 && <RegisteredStudent studentApi={studentOptions}/>}
-      {tab === 4 && <Dropout studentApi={studentOptions}/>}
-      {tab === 5 && <Graduated studentApi={studentOptions}/>}
-    </>
-  ) : (
-    <>
-      {tab === 1 && <ApplicantGrid studentApi={studentOptions}/>}
-      {tab === 2 && <AdmittedStudentGrid studentApi={studentOptions}/>}
-      {tab === 3 && <RegisteredStudentGrid studentApi={studentOptions}/>}
-      {tab === 4 && <DropoutGrid studentApi={studentOptions}/>}
-      {tab === 5 && <GraduatedGrid studentApi={studentOptions}/>}
-    </>
-  )
-}
+      {isLoading ? (
+        <div className='p-[70px] flex items-center justify-center h-full w-full'>
+          <Loader className="animate-spin h-8 w-8 text-red-700" />
+        </div>
+      ) : (
+        sortButton === "list" ? (
+          <>
+            {tab === 1 && <ApplicantList studentApi={studentOptions} />}
+            {tab === 2 && <AdmittedStudent studentApi={studentOptions}/>}
+            {tab === 3 && <RegisteredStudent studentApi={studentOptions}/>}
+            {tab === 4 && <Dropout studentApi={studentOptions}/>}
+            {tab === 5 && <Graduated studentApi={studentOptions}/>}
+          </>
+        ) : (
+          <>
+            {tab === 1 && <ApplicantGrid studentApi={studentOptions}/>}
+            {tab === 2 && <AdmittedStudentGrid studentApi={studentOptions}/>}
+            {tab === 3 && <RegisteredStudentGrid studentApi={studentOptions}/>}
+            {tab === 4 && <DropoutGrid studentApi={studentOptions}/>}
+            {tab === 5 && <GraduatedGrid studentApi={studentOptions}/>}
+          </>
+        )
+      )}
+      
       
       
       {/* {modalOpenEdit && (

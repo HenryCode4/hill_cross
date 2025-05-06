@@ -12,6 +12,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import { deleteModuleMutationFn, deleteSchoolMutationFn } from '@/lib/api';
 import Pagination from '@/components/pagination';
+import { Loader } from 'lucide-react';
 
 
 interface modules {
@@ -72,8 +73,9 @@ const AddNewModule = () => {
   const [selectedModule, setSelectedModule] = useState<{id: string, school: string}>();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data } = useModuleData(currentPage.toString());
+  const { data, isLoading } = useModuleData(currentPage.toString());
   const modules = data?.data?.data;
+
   const totalPages = data?.data?.meta?.last_page || 1;
 
   const apiData = modules?.map((module: any) => ({
@@ -81,7 +83,7 @@ const AddNewModule = () => {
     qualifications: module.qualifications,
     school: module.qualification_collection[0]?.school?.name || '_',
     standard: module.standard?.name || '_',
-    semester: module.semester || '_',
+    semester: module.semester?.name || '_',
   })) || [];
 
   const handleServerPageChange = (page: number) => {
@@ -115,6 +117,13 @@ const AddNewModule = () => {
     deleteModule();
   };
 
+ if (isLoading) {
+        return (
+          <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                     <Loader className="animate-spin h-8 w-8 text-red-700" />
+                </div>
+        );
+      }
 
   return (
     <>

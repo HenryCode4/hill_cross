@@ -5,6 +5,13 @@ import useAcademicCalendarData from '@/hooks/useAcademicCalendar'
 import Image from 'next/image'
 import React, { useState } from 'react'
 import UpdateCalendar from './UpdateCalendar'
+import { Loader } from 'lucide-react'
+import { semester } from '../standards/_components/semester'
+import useActivateCalendar, { useEndCalendar } from '@/hooks/useApproveCalendar'
+import Warning from '@/components/warning'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { deleteCalendarMutationFn } from '@/lib/api'
+import { toast } from '@/hooks/use-toast'
 
 interface calendar {
   name: string;
@@ -61,23 +68,67 @@ const columns: Column[] = [
 ];
 
 const CalendarTable = () => {
+  const queryClient = useQueryClient();
   const [modalOpenEdit, setModalOpenEdit] = useState(false);
   const [modalOpenDelete, setModalOpenDelete] = useState(false);
-  const [selectedCalendar, setSelectedCalendar] = useState<{id: string, name: string}>();
+    const [modalOpenActivate, setModalOpenActivate] = useState(false);
+    const [modalOpenEnd, setModalOpenEnd] = useState(false);
+  const [selectedCalendar, setSelectedCalendar] = useState<any>();
+  
+    const { mutate: approveCalendar } = useActivateCalendar();
+      const { mutate: endCalendar } = useEndCalendar();
 
-    const {data} = useAcademicCalendarData();
+    const {data, isLoading} = useAcademicCalendarData();
     const academicApi = data?.data?.data;
-    console.log(academicApi)
-
     const calender = academicApi?.map((item: any)=> ({
         id: item.id,
+        sessionId: item.session?.id,
+        semesterId: item.semester?.id,
         name: item.name,
-        session: item.session.name,
-        semester: item.semester.name,
+        session: item.session?.name,
+        semester: item.semester?.name,
         startDate: item.start_date,
         endDate: item.end_date,
         status: item.status,
+        course_registration_end_date: item.course_registration_end_date,
+        course_registration_start_date: item.course_registration_start_date,
     }))
+
+     const { mutate: deleteCalendar, isPending } = useMutation({
+        mutationFn: () => {
+          if (!selectedCalendar?.id) throw new Error("Calendar ID is required");
+          return deleteCalendarMutationFn(selectedCalendar.id);
+        },
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["academicCalendarData"] });
+          toast({
+            title: "Success",
+            description: "Calendar deleted successfully",
+            variant: "default",
+          });
+          setModalOpenDelete(false);
+        },
+        onError: (error) => {
+          toast({
+            title: "Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        },
+      });
+    
+      const handleDeleteCalendar = () => {
+        deleteCalendar();
+      };
+    
+
+     if (isLoading) {
+            return (
+              <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                         <Loader className="animate-spin h-8 w-8 text-red-700" />
+                    </div>
+            );
+          }
 
   return (
     <div className="w-full bg-white px-[8px] pb-[8px]">
@@ -99,7 +150,7 @@ const CalendarTable = () => {
                       src={blue}
                       alt="Edit icon"
                       className="h-[27px] w-[24px] cursor-pointer"
-                     
+                      onClick={() => {setSelectedCalendar(club),setModalOpenEnd(true)}}
                     />
                   ) : (
                     <Image
@@ -107,7 +158,7 @@ const CalendarTable = () => {
                       src={green}
                       alt="Edit icon"
                       className="h-[27px] w-[24px] cursor-pointer"
-                      
+                      onClick={() => {setSelectedCalendar(club),setModalOpenActivate(true)}}
                     />
                   )}
       
@@ -129,6 +180,35 @@ const CalendarTable = () => {
               event={selectedCalendar}
             />
           )}
+
+           {modalOpenActivate && (
+                  <Warning
+                    open={modalOpenActivate}
+                    onClose={() => setModalOpenActivate(false)}
+                    description={`Are you sure you want to activate ${selectedCalendar?.name}?`}
+                    onConfirm={() => approveCalendar({ sessionId: selectedCalendar?.sessionId as string, calendarId: selectedCalendar?.id as string })}
+                    alert
+                  />
+                )}
+          
+                {modalOpenEnd && (
+                  <Warning
+                    open={modalOpenEnd}
+                    onClose={() => setModalOpenEnd(false)}
+                    description={`Are you sure you want to end ${selectedCalendar?.name}?`}
+                    onConfirm={() => endCalendar({ sessionId: selectedCalendar?.sessionId as string, calendarId: selectedCalendar?.id as string })}
+                    alert
+                  />
+                )}
+
+                {modalOpenDelete && (
+                        <Warning
+                          open={modalOpenDelete}
+                          onClose={() => setModalOpenDelete(false)}
+                          description={`Are you sure you want to delete ${selectedCalendar?.name}?`}
+                          onConfirm={handleDeleteCalendar}
+                        />
+                      )}
   </div>
   )
 }

@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { toast } from '@/hooks/use-toast';
 import Warning from '@/components/warning';
+import { Loader } from 'lucide-react';
 
 interface school {
   name: string;
@@ -60,7 +61,7 @@ const SchoolTable = () => {
   const [modalOpenDelete, setModalOpenDelete] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState<{ id: string; name: string; description: string} | undefined>();
 
-  const {data: school} = useSchoolData();
+  const {data: school, isLoading} = useSchoolData();
   const schoolApi = school?.data?.data
 
   const { mutate: deleteSchool, isPending } = useMutation({
@@ -89,6 +90,15 @@ const SchoolTable = () => {
   const handleDeleteClub = () => {
     deleteSchool();
   };
+
+  if (isLoading) {
+        return (
+          <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                     <Loader className="animate-spin h-8 w-8 text-red-700" />
+                </div>
+        );
+      }
+  
 
   return (
     <div className="w-full bg-white px-[8px]">

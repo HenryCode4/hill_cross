@@ -17,6 +17,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import Warning from "@/components/warning";
 import Link from "next/link";
+import { Loader } from "lucide-react";
 
 interface school {
   school: string;
@@ -69,7 +70,7 @@ const QualificationTable = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: qualificationsData } = useQualificationData();
+  const { data: qualificationsData, isLoading } = useQualificationData();
   const qualifications = qualificationsData?.data?.data;
   const itemsPerPage = 10;
 
@@ -132,6 +133,14 @@ const QualificationTable = () => {
   const handleDeleteQualification = () => {
     deleteQualification();
   };
+
+   if (isLoading) {
+          return (
+            <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                       <Loader className="animate-spin h-8 w-8 text-red-700" />
+                  </div>
+          );
+        }
 
   return (
     <>

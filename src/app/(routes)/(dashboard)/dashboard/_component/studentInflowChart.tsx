@@ -41,6 +41,8 @@ const StudentInflowChart = () => {
         amt: apiData[i] !== undefined ? apiData[i] : null,
     }))
 
+    
+
   return (
     <div className=" flex flex-col gap-[10px] w-full">
               <div className="flex h-[75px]  items-center justify-between bg-white px-[32px]">
