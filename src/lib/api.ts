@@ -2,7 +2,7 @@ import API from "./axios-client";
 import Cookies from 'js-cookie';
 import { AllocateModuleType, NewCalendarType, NewModuleType, NewQualificationType, NewSchoolType, NewSessionType, NewStandardType, TeacherType, UpdateAssessmentType, UpdateAssignmentType, UpdateExaminationType, updateModuleType, UpdateSessionType } from "./interface";
 import { StudentFilters } from "@/hooks/useStudent";
-import { SmsNotificationRequestType, StudentRequestType } from "./schema";
+import { createAcademicFormType, createNotificationFormType, createSemesterFormType, getStatementFormType, paymentFormType, SmsNotificationRequestType, StudentRequestType } from "./schema";
 
 const token = Cookies.get('accessToken');
 // console.log(token)
@@ -146,6 +146,16 @@ export const updateStandardMutationFn = async (id: string, data: NewStandardType
 export const deleteStandardMutationFn = async (id: string) =>
   await API.delete(`/standards/${id}`);
 
+//semester
+export const updateSemesterMutation = async (id: string, body: createSemesterFormType) => 
+  await API.patch(`/semesters/${id}`, body)
+
+export const deleteSemesterMutation = async (id: string) => 
+  await API.delete(`/semesters/${id}`)
+
+export const newSemesterMutation = async (body: createSemesterFormType) => 
+  await API.post(`/semesters`, body)
+
 
 //modules?fetch=all
 export const getModuleDataQueryFn = async (page?: string) => {
@@ -180,6 +190,11 @@ export const getLessonDataQueryFn = async (page?: string, status?: string, teach
 } 
 
 
+
+
+
+export const deleteLessonMutationFn = async (id: string) =>
+  await API.delete(`/lessons/${id}`);
 
 export const endLessonMutationFn = async (lessonId: string) =>
   await API.patch(`/${lessonId}/end`);
@@ -223,6 +238,9 @@ export const getAcademicCalendarDataQueryFn = async () => await API.get(`/academ
 
 export const newCalendarMutationFn = async (sessionId: string, data: NewCalendarType) =>
   await API.post(`/academic-sessions/${sessionId}/academic-calenders`, data);
+
+export const deleteCalendarMutationFn = async (id: string) =>
+  await API.delete(`academic-calenders/${id}`);
 
 
 //semester
@@ -287,6 +305,12 @@ export const getStudentDataQueryFn = async (page?: string, filters?: StudentFilt
 export const getStudentByIdMutationFn = async (id: string) =>
   await API.get(`/students/${id}/show`);
 
+export const studentPaymentMutationFn = async (data: paymentFormType) =>
+  await API.post(`/student-payment`, data);
+
+export const queryStudentActionMutationFn = async (id: string, action: string) =>
+  await API.get(`/students/${id}/${action}`);
+
   
   export const updateStudentMutationFn = async (id: string, queryType: string, data: any) =>
     await API.post(`/admin/students/${id}/${queryType}`, data);
@@ -333,7 +357,64 @@ export const getStudentByIdMutationFn = async (id: string) =>
     export const createSmsNotificationMutationFn = async (data: SmsNotificationRequestType) =>
       await API.post(`/message-payment`, data);
 
-   
+    export const getStatementsMutationFn = async (data: getStatementFormType) =>
+      await API.post(`/get-statements`, data);
+
+    //push notification
+
+    export const getPushNotification = async () => 
+      await API.get(`/push-notification`)
+
+    export const resendPushNotification = async (id: string, action: string) => 
+      await API.get(`/push-notifications/${id}/${action}`)
+
+    export const createPushNotification = async (data: createNotificationFormType) => 
+      await API.post(`/push-notification-post`, data)
+
+    export const updatePushNotification = async (id: string, data: createNotificationFormType) => 
+      await API.patch(`/push-notifications/${id}`, data)
+
+    export const deletePushNotification = async (id: string) => 
+      await API.delete(`/push-notification-del/${id}`);
+
+    //HR 
+    export const getAcademicStaffs = async (action: string, page?: string) => 
+      await API.get(`/${action}?page=${page}`);
+
+    export const createAcademicStaff = async (data: any) => 
+      await API.post(`/teachers`, data);
+
+    export const deleteAcademicStaff = async (id: string) => 
+      await API.delete(`/teachers/${id}`);
+
+    // Role 
+    export const getRoles = async () => 
+      await API.get(`/roles`);
+
+
+    // Permision 
+    export const getPermission = async () => 
+      await API.get(`/permissions`);
+
+    export const getActivityLog = async (page: string) => 
+      await API.get(`/activity-logs?page=${page}`);
+    
+
+    export const approveAcademicSessionMutationFn = async (id: string) =>
+      await API.get(`academic-sessions/${id}/activate`);
+
+    export const endAcademicSessionMutationFn = async (id: string) =>
+      await API.get(`academic-sessions/${id}/end`);
+
+    export const activateCalendarMutationFn = async (sessionId: string, calendarId: string) =>
+      await API.get(`/academic-sessions/${sessionId}/academic-calenders/${calendarId}/activate`);
+
+    export const updateCalendarMutationFn = async (sessionId: string, calendarId: string, data: any) =>
+      await API.patch(`/academic-sessions/${sessionId}/academic-calenders/${calendarId}`, data);
+
+    export const endCalendarMutationFn = async (sessionId: string, calendarId: string) =>
+      await API.get(`/academic-sessions/${sessionId}/academic-calenders/${calendarId}/end`);
+
     export const approveAdminLessonMutationFn = async (lessonId: string) =>
       await API.get(`lessons/${lessonId}/approval`);
     export const endAdminLessonMutationFn = async (lessonId: string) =>

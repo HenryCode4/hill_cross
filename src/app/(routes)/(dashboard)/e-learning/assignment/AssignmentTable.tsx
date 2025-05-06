@@ -33,6 +33,7 @@ import Pagination from "@/components/pagination";
 import useApproveAssignment from "@/hooks/useApproveAssignment";
 import useEndAssignment from "@/hooks/useEndAssignment";
 import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react";
 
 interface assessment {
   module: string;
@@ -105,7 +106,7 @@ const AssignmentTable = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
-  const { data } = useAssignmentData(
+  const { data, isLoading } = useAssignmentData(
     currentPage.toString(),
     filters.status,
     filters.teacher,
@@ -171,6 +172,14 @@ const AssignmentTable = () => {
   });
   const { mutate: approveAssignment } = useApproveAssignment();
   const { mutate: endAssessment } = useEndAssignment();
+
+  if (isLoading) {
+              return (
+                <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                           <Loader className="animate-spin h-8 w-8 text-red-700" />
+                      </div>
+              );
+            }
   return (
     <>
       <div className="flex w-full flex-col gap-y-[8px] px-4 pb-2">

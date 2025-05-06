@@ -53,7 +53,7 @@ const SelectComponent = ({placeholder, items = [], onChange, border, className, 
                       const renderedItem = renderItem(item);
                       return (
                         <SelectItem 
-                          className='hover:bg-[#F8F8F8]' 
+                          className='hover:bg-[#F8F8F8] max-w-[400px]' 
                           key={renderedItem.id} 
                           value={renderedItem.value}
                         >

@@ -52,13 +52,12 @@ const Card = () => {
     const {data: standard } = useStandardData();
     const {data: moduleApi } = useModuleData();
     const {data: academic } = useAcademicData();
-    console.log(moduleApi)
     const apiDataSchool = school?.data?.data;
     const apiDataQualification = qualification?.data?.data;
     const apiDataStandard = standard?.data?.data;
     const apiDataModule = moduleApi?.data?.data ;
     const apiDataAcademic = academic?.data?.data;
-    console.log(apiDataModule)
+
   return (
     <div className="grid grid-cols-1 gap-[24px] lg:grid-cols-2 lg:gap-[59px] 2xl:grid-cols-3">
       {academics.map((academic, i) => (

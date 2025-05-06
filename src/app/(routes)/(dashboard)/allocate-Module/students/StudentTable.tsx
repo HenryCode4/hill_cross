@@ -70,15 +70,16 @@ const StudentTable = () => {
   const {data: studentEnrollment} = useStudentEnrollmentData(currentPage.toString());
   const enrollmentApi = studentEnrollment?.data?.data;
   const totalPages = studentEnrollment?.data?.meta?.last_page || 1;
-  console.log("enrollmentApi", enrollmentApi)
-
+console.log(enrollmentApi)
   const enrollmentOptions = enrollmentApi?.map((item: any) => ({
     name: item.student,
     qualification: item.qualification,
-    academicCalendar: item.academic_calendar,
+    academic_calender: item.academic_calender?.name,
+    academic_calender_id: item.academic_calender?.id,
     module: item.modules_implode,
     enrollmentDate: item.enrolment_date,
     status: item.status,
+    student_id: item.student_id
   }))
 
   const handleServerPageChange = (page: number) => {

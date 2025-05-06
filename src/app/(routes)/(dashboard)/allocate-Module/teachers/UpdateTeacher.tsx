@@ -52,7 +52,6 @@ const UpdateAllocatedModule = ({
     mutationFn: (values: z.infer<typeof allocateModuleFormSchema>) =>
       updateAllocatedModuleMutationFn(event?.id, values),
   });
-console.log(event)
   const {data: teacher} = useTeacherData();
         const {data: academicCalender} = useAcademicCalendarData()
         const {data: modules} = useModuleData()
@@ -77,9 +76,9 @@ console.log(event)
   const form = useForm<z.infer<typeof allocateModuleFormSchema>>({
     resolver: zodResolver(allocateModuleFormSchema),
     defaultValues: {
-      teacher_id: "",
-      academic_calender_id: "",
-      modules: [""],
+      teacher_id: event.teacher_id || "",
+      academic_calender_id: event.academic_calender_id || "",
+      modules: event.module ? [event.module] : [],
     },
   });
 
@@ -87,9 +86,9 @@ console.log(event)
   useEffect(() => {
     if (event) {
       form.reset({
-        teacher_id: event.teacher_id,
-        academic_calender_id: event.academic_calender_id,
-        modules: event.modules,
+        teacher_id: event.teacher_id || "",
+        academic_calender_id: event.academic_calender_id || "",
+        modules: event.module ? [event.module] : [],
       });
     }
   }, [event, form]);
@@ -146,9 +145,10 @@ console.log(event)
                         <FormControl>
                           <SelectComponent
                             items={teacherOption}
-                            placeholder="Select Teacher"
+                            placeholder={field.value || "Select Teacher"}
                             className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                             onChange={field.onChange}
+
                           />
                         </FormControl>
                         <FormMessage />
@@ -160,7 +160,7 @@ console.log(event)
                 <div className="flex flex-col gap-y-[8px]">
                   <FormField
                     control={form.control}
-                    name="academic_calender_id" // or whatever field you want to bind this to
+                    name="academic_calender_id"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="font-[600] text-[#1E1E1E]">
@@ -169,7 +169,7 @@ console.log(event)
                         <FormControl>
                           <SelectComponent
                             items={academicOption}
-                            placeholder="Select Academic Calender"
+                            placeholder={field.value || "Select Academic Calender"}
                             className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                             onChange={field.onChange}
                           />
@@ -192,10 +192,9 @@ console.log(event)
                         <FormControl>
                           <MultiSelectComponent
                             items={modulesOption}
-                            placeholder="Select Modules"
+                            placeholder={`${field.value && ["Modules have been selected"]}` || "Select Modules"}
                             className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                             onChange={(values) => {
-                              console.log("Selected values:", values);
                               field.onChange(values);
                             }} // Handle array of values
                           />

@@ -2,17 +2,30 @@ import { application, applicationStop, avatar1, avatar2, avatar3, avatar4, avata
 import ActionIcons from '@/components/action-icon';
 import Table from '@/components/Table';
 import Image from 'next/image';
-import React from 'react'
+import React, { useState } from 'react'
 import staffs from "@/lib/academicStaff.json"
+import Pagination from '@/components/pagination';
+import CustomDropdown, { DropdownOption } from '@/components/customDropdownOptional';
+import { useRouter } from 'next/navigation';
+import Warning from '@/components/warning';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from '@/hooks/use-toast';
+import { deleteAcademicStaff } from '@/lib/api';
 
 interface student {
     avatar: string;
     name: string;
-    designation: number;
+    qualifications: number;
     createdDate: string;
     email: string;
     mode: string;
     action: string;
+  }
+
+  interface AcademicStaffProps {
+    staffApi: any;
+    searchQuery?: string;
+    qualificationFilter?: string; 
   }
   
   interface Column {
@@ -33,8 +46,8 @@ interface student {
       width: "250px",
     },
     {
-      accessorKey: "designation",
-      header: "DESIGNATION",
+      accessorKey: "qualifications",
+      header: <div className='w-[344px]'>DESIGNATION</div>,
       width: "300px", 
     },
     {
@@ -59,34 +72,132 @@ interface student {
     },
   ];
 
-const AcademicStaff = () => {
-    const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
+const AcademicStaff = ({staffApi, searchQuery, qualificationFilter}: AcademicStaffProps) => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [brokenImages, setBrokenImages] = useState<{[key: string]: boolean}>({});
+  const [selectedStaff, setSelectedStaff] = useState<any>();
+  const [deleteStaff, setDeleteStaff] = useState<boolean>(false);
+
+  const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
+
+  const handleImageError = (itemId: string) => {
+    setBrokenImages(prev => ({
+      ...prev,
+      [itemId]: true
+    }));
+  };
+
+
+  const filteredStaffOptions = staffApi?.map((item: any) => ({
+    id: item.id,
+    avatar: item.profile.avatar,
+    name: item.name,
+    qualifications: item.qualifications,
+    createdDate: item.date_created,
+    email: item.email,
+    mode: item.mode,
+    action: item.action,
+  }))
+  ?.filter((staff: any) => {
+    const matchesName = staff.name.toLowerCase().includes(searchQuery?.toLowerCase());
+    const matchesQualification = !qualificationFilter || 
+      staff.qualifications.toLowerCase().includes(qualificationFilter.toLowerCase());
+    return matchesName && matchesQualification;
+  });
+
+  const dropdownOptions: DropdownOption[] = [
+        {
+          id: 'show',
+          label: 'Show Staff',
+          action: 'show staff',
+        },
+        {
+          id: 'delete',
+          label: 'Delete Staff',
+          action: 'delete staff',
+        }
+      ];
+  
+      const handleAction = (action: string, staff: any) => {
+        setSelectedStaff(staff);
+        switch (action) {
+          case 'show staff':
+            router.push(`/hr_management/academic_staff/${staff.id}`);
+            break;
+          case 'delete staff':
+            setDeleteStaff(true);
+            break;
+        default:
+          console.log('Unhandled action:', action);
+      }
+    };
+
+     const { mutate: deleteStaffFn, isPending } = useMutation({
+        mutationFn: () => {
+          if (!selectedStaff?.id) throw new Error("Staff ID is required");
+          return deleteAcademicStaff(selectedStaff.id);
+        },
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["hrData"] });
+          toast({
+            title: "Success",
+            description: "Staff deleted successfully",
+            variant: "default",
+          });
+          setDeleteStaff(false);
+        },
+        onError: (error) => {
+          toast({
+            title: "Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        },
+      });
+    
+      const handleDeleteQualification = () => {
+        deleteStaffFn();
+      };
+  
   return (
     <div className="relative flex w-full flex-col bg-white">
 
         <div className="w-full h-full bg-white px-[8px] ">
           <Table
             columns={columns}
-            data={staffs}
-            renderAction={(item: any) => {
-              // Pass icons directly as props
-              const icons = [
-                <Image
-                key="application-icon"
-                  src={applicationStop}
-                  alt="Application stop icon"
-                  className="h-[24px] w-[24px]"
-                //   onClick={()=> setModalOpenEdit(true)}
-                />,
+            data={filteredStaffOptions}
+            // renderAction={(item: any) => {
+            //   // Pass icons directly as props
+            //   const icons = [
+            //     <Image
+            //     key="application-icon"
+            //       src={applicationStop}
+            //       alt="Application stop icon"
+            //       className="h-[24px] w-[24px]"
+            //     //   onClick={()=> setModalOpenEdit(true)}
+            //     />,
                 
-              ];
+            //   ];
 
-              return <ActionIcons  icons={icons} status={item.status} mgt financialStatus={item.financialStatus}/>;
-            }}
+            //   return <ActionIcons  icons={icons} status={item.status} mgt financialStatus={item.financialStatus}/>;
+            // }}
+
+             renderAction={(item: any) => (
+                                     <div className='flex items-center gap-x-[8px]'>
+                                        <CustomDropdown 
+                                            triggerIcon={applicationStop}
+                                            options={dropdownOptions}
+                                            item={item}
+                                            onActionSelect={handleAction}
+                                            position="auto" // Display dropdown above the trigger button
+                                          />
+                                     </div>
+                                   )}
 
            renderDesignation={(item: any)=> (
             <div className="w-[300px]">
-              <p>{item.designation}</p>
+              <p>{item.qualifications}</p>
             </div>
            )}
 
@@ -102,22 +213,36 @@ const AcademicStaff = () => {
             )}
 
             renderAvatarImage={(item) => {
-              // Check if item.avatar exists or if it's an empty string
-              const avatarSrc = item.avatar && item.avatar !== "" ? item.avatar : avatars[item.id % avatars.length];
-        
-              // Only render Image if avatarSrc is valid
-              if (!avatarSrc) {
-                return null; // Do not render the image if no valid src is available
-              }
-        
+              // Use random avatar from array if original image is broken or null
+              const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+              const avatarSrc = brokenImages[item.id] ? randomAvatar : (item.avatar || randomAvatar);
+          
               return (
-                <div>
-                  <Image className="object-cover" src={avatarSrc} alt="avatar image" />
+                <div className='w-[76px] h-[76px]'>
+                  <Image 
+                    width={76} 
+                    height={76} 
+                    className="object-cover rounded-full w-full h-full" 
+                    src={avatarSrc} 
+                    alt={`Avatar for ${item.name}`}
+                    onError={() => handleImageError(item.id)}
+                  />
                 </div>
               );
             }}
           />
         </div>
+
+        {deleteStaff && selectedStaff && (
+                              <Warning 
+                                alert
+                                open={deleteStaff}
+                                onClose={()=>setDeleteStaff(false)}
+                                description={`Are you sure you want to delete ${selectedStaff?.name}?`}
+                                onConfirm={handleDeleteQualification}
+                              />
+                            )}
+
       </div>
   )
 }

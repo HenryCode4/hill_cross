@@ -3,9 +3,11 @@ import ActionIcons from "@/components/action-icon";
 import Table from "@/components/Table";
 import { toast } from "@/hooks/use-toast";
 import useAcademicData from "@/hooks/useAcademicSession";
+import useActivateSession from "@/hooks/useApproveSession";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 interface sessions {
   name: string;
@@ -18,7 +20,9 @@ interface sessions {
 interface SessionTableProps {
   setModalOpenEdit: (value: boolean) => void;
   setModalOpenDelete: (value: boolean) => void;
+  setModalOpenActivate: (value: boolean) => void;
   setSelectedSession: (value: any) => void;
+  setModalOpenEnd: (value: any) => void;
 }
 
 interface Column {
@@ -55,33 +59,40 @@ const columns: Column[] = [
   },
 ];
 
-const SessionTable = ({ setModalOpenDelete, setModalOpenEdit,  setSelectedSession}: SessionTableProps) => {
+const SessionTable = ({setModalOpenEnd, setModalOpenActivate, setModalOpenDelete, setModalOpenEdit,  setSelectedSession}: SessionTableProps) => {
 
-  const { data } = useAcademicData();
+  const { data, isLoading } = useAcademicData();
   const sessionApi = data?.data?.data;
-  console.log(sessionApi);
+
+   if (isLoading) {
+          return (
+            <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                       <Loader className="animate-spin h-8 w-8 text-red-700" />
+                  </div>
+          );
+        }
   
   return (
     <div className="w-full bg-white px-[8px] pb-[8px]">
       <Table
         columns={columns}
         data={sessionApi}
-        renderAction={(club: any) => (
+        renderAction={(item: any) => (
           <div className="flex justify-between w-full items-center">
             <Image
               key="edit-icon"
               src={edit}
               alt="Edit icon"
               className="h-[27px] w-[24px] cursor-pointer"
-              onClick={() => {setSelectedSession(club),setModalOpenEdit(true)}}
+              onClick={() => {setSelectedSession(item),setModalOpenEdit(true)}}
             />
-            {club.status === "Active" ? (
+            {item.status === "Active" ? (
               <Image
                 key="edit-icon"
                 src={blue}
                 alt="Edit icon"
                 className="h-[27px] w-[24px] cursor-pointer"
-               
+                onClick={() => {setSelectedSession(item),setModalOpenEnd(true)}}
               />
             ) : (
               <Image
@@ -89,7 +100,7 @@ const SessionTable = ({ setModalOpenDelete, setModalOpenEdit,  setSelectedSessio
                 src={green}
                 alt="Edit icon"
                 className="h-[27px] w-[24px] cursor-pointer"
-                
+                onClick={() => {setSelectedSession(item),setModalOpenActivate(true)}}
               />
             )}
 
@@ -98,7 +109,7 @@ const SessionTable = ({ setModalOpenDelete, setModalOpenEdit,  setSelectedSessio
               src={trash}
               alt="Trash icon"
               className="h-[24px] w-[24px] cursor-pointer"
-              onClick={() => {setSelectedSession(club),setModalOpenDelete(true)}}
+              onClick={() => {setSelectedSession(item),setModalOpenDelete(true)}}
             />
           </div>
         )}

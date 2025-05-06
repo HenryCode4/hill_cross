@@ -7,6 +7,7 @@ import {
   staffs as staffsIcon,
 } from "@/assets";
 import useDashboardCountData from "@/hooks/useDashboardCountData";
+import { Loader } from "lucide-react";
 import Image from "next/image";
 
 const staffs = [
@@ -40,9 +41,15 @@ const DashboardCount = () => {
     isFetching,
     refetch,
   } = useDashboardCountData();
-  console.log(fetchedData?.data?.data);
-  console.log(error);
   const staffsCount = fetchedData?.data?.data;
+
+  if (isLoading) {
+    return (
+      <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                 <Loader className="animate-spin h-8 w-8 text-red-700" />
+            </div>
+    );
+  }
   return (
     <div className="grid h-auto w-full gap-y-[48px] bg-white px-[15px] py-[33px] xl:grid-cols-2 xl:px-[40px] 2xl:grid-cols-4">
       {staffs?.map((staff, i) => (
