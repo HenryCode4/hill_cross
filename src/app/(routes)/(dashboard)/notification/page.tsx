@@ -13,6 +13,7 @@ import UpdateNotification from "./UpdateNotification";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { deletePushNotification } from "@/lib/api";
+import { Loader } from "lucide-react";
 
 interface Form {
   title: string;
@@ -63,7 +64,7 @@ const NotificationPage = () => {
   const [selectedNotification, setSelectedNotification] = useState<any>();
   const [resend, setResend] = useState(false);
 
-  const {data: notification} = usePushNotificationData();
+  const {data: notification, isLoading} = usePushNotificationData();
   const notificationApi = notification?.data?.data;
   console.log(notificationApi)
   const {mutate: resentAction, isPending: isStudentActionLoading,} = useResend(
@@ -113,7 +114,13 @@ const NotificationPage = () => {
     <div className="flex h-full w-full flex-col gap-y-[24px] bg-[#F8F8F8] pb-[24px] pt-[90px] lg:gap-y-[43px] lg:px-[52px]">
       <Header title={"Upload’s Notification"} hideSearch notification />
 
-      <div className="w-full bg-white px-[8px]">
+      {
+        isLoading ? (
+        <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                              <Loader className="animate-spin h-8 w-8 text-red-700" />
+                          </div>
+        ) : (
+          <div className="w-full bg-white px-[8px]">
         <Table
           columns={columns}
           data={notificationApi}
@@ -151,15 +158,22 @@ const NotificationPage = () => {
           )}
         />
       </div>
+        )
+      }
+            
+        
+
+
+      
 
        {modalOpenDelete && (
-                            <Warning 
-                              open={modalOpenDelete}
-                              onClose={()=>setModalOpenDelete(false)}
-                              description={`Are you sure you want to delete this notification?`}
-                              onConfirm={handleDeleteNotification}
-                            />
-                          )}
+          <Warning 
+            open={modalOpenDelete}
+            onClose={()=>setModalOpenDelete(false)}
+            description={`Are you sure you want to delete this notification?`}
+            onConfirm={handleDeleteNotification}
+          />
+        )}
 
       {modalOpenUpdate && (
                     <UpdateNotification

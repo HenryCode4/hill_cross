@@ -11,6 +11,7 @@ import AcademicStaffGrid from "../_components/academicStaffGrid";
 import Link from "next/link";
 import useHrData from "@/hooks/useHrMgt";
 import Pagination from "@/components/pagination";
+import { Loader } from "lucide-react";
 
 const HrManagementPage = () => {
   const [sortButton, setSortButton] = useState("list");
@@ -19,7 +20,7 @@ const HrManagementPage = () => {
   const [qualificationFilter, setQualificationFilter] = useState("");
 
   const action = "teachers/academics"
-  const {data} = useHrData(action, currentPage.toString());
+  const {data, isLoading} = useHrData(action, currentPage.toString());
   const staffApi = data?.data?.data;
   const totalPages = data?.data?.meta?.last_page || 1;
   
@@ -64,7 +65,6 @@ const HrManagementPage = () => {
             className="transform cursor-pointer duration-100 active:scale-105"
           />
           </div>
-          
 
           <Link className="flex w-full xl:w-[217px] justify-end" href={"/hr_management/add_new_academic_staff"}>
             <button
@@ -98,7 +98,28 @@ const HrManagementPage = () => {
           </div>
         </div>
 
-        {sortButton === "list" ? <AcademicStaff staffApi={staffApi} searchQuery={searchQuery} qualificationFilter={qualificationFilter}/> : <AcademicStaffGrid staffApi={staffApi} searchQuery={searchQuery} qualificationFilter={qualificationFilter}/>}
+        {
+        isLoading ? (
+          <div className='p-[70px] flex items-center justify-center h-full w-full'>
+            <Loader className="animate-spin h-8 w-8 text-red-700" />
+          </div>
+        ) : (
+          sortButton === "list" ? 
+            <AcademicStaff 
+              staffApi={staffApi} 
+              searchQuery={searchQuery} 
+              qualificationFilter={qualificationFilter}
+            /> : 
+            <AcademicStaffGrid 
+              staffApi={staffApi} 
+              searchQuery={searchQuery} 
+              qualificationFilter={qualificationFilter}
+            />
+        )
+      }
+                    
+                
+       
       </div>
 
       <Pagination

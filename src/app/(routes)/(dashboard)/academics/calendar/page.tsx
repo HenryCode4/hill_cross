@@ -8,16 +8,6 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
-
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import SelectComponent from "@/components/selectComponent";
-import Pagination from "@/components/pagination";
-import { DatePicker } from "@/components/date_pickerNew";
-import { DatePickerDemo } from "@/components/datepicker";
-import UpdateCalendar from "./UpdateCalendar";
-import DropdownSelect from "@/components/customDropdown";
 import CalendarTable from "./CalendarTable";
 import NewCalendar from "./NewCalendar";
 

@@ -2,10 +2,10 @@ import API from "./axios-client";
 import Cookies from 'js-cookie';
 import { AllocateModuleType, NewCalendarType, NewModuleType, NewQualificationType, NewSchoolType, NewSessionType, NewStandardType, TeacherType, UpdateAssessmentType, UpdateAssignmentType, UpdateExaminationType, updateModuleType, UpdateSessionType } from "./interface";
 import { StudentFilters } from "@/hooks/useStudent";
-import { createAcademicFormType, createNotificationFormType, getStatementFormType, paymentFormType, SmsNotificationRequestType, StudentRequestType } from "./schema";
+import { createAcademicFormType, createNotificationFormType, createSemesterFormType, getStatementFormType, paymentFormType, SmsNotificationRequestType, StudentRequestType } from "./schema";
 
 const token = Cookies.get('accessToken');
-console.log(token)
+// console.log(token)
 type forgotPasswordType = { email: string };
 type resetPasswordType = { password: string; verificationCode: string };
 
@@ -146,6 +146,16 @@ export const updateStandardMutationFn = async (id: string, data: NewStandardType
 export const deleteStandardMutationFn = async (id: string) =>
   await API.delete(`/standards/${id}`);
 
+//semester
+export const updateSemesterMutation = async (id: string, body: createSemesterFormType) => 
+  await API.patch(`/semesters/${id}`, body)
+
+export const deleteSemesterMutation = async (id: string) => 
+  await API.delete(`/semesters/${id}`)
+
+export const newSemesterMutation = async (body: createSemesterFormType) => 
+  await API.post(`/semesters`, body)
+
 
 //modules?fetch=all
 export const getModuleDataQueryFn = async (page?: string) => {
@@ -181,6 +191,11 @@ export const getLessonDataQueryFn = async (page?: string, status?: string, teach
 
 
 
+
+
+export const deleteLessonMutationFn = async (id: string) =>
+  await API.delete(`/lessons/${id}`);
+
 export const endLessonMutationFn = async (lessonId: string) =>
   await API.patch(`/${lessonId}/end`);
 
@@ -191,6 +206,8 @@ export const getAssessmentDataQueryFn = async (page?: string, status?: string, t
 } 
 export const getAssessmentByIdMutationFn = async (id: string) =>
   await API.get(`/administrators/assessments/${id}/details`);
+export const getAssessmentByTakeHomeMutationFn = async (id: string) =>
+  await API.get(`/administrators/assessments/${id}/take-home`);
 
 export const updateAssessmentMutationFn = async (id: string, data: UpdateAssessmentType) =>
   await API.patch(`/administrators/assessments/${id}`, data);
@@ -203,6 +220,9 @@ export const getAssignmentDataQueryFn = async (page?: string, status?: string, t
 
 export const updateAssignmentMutationFn = async (id: string, data: UpdateAssignmentType) =>
   await API.patch(`/administrators/assignments/${id}`, data);
+
+export const getAssignmentByIdMutationFn = async (id: string) =>
+  await API.get(`/administrators/assignments/${id}`);
 
 //e-learning/administrators/examinations
 export const getExaminationsDataQueryFn = async (page?: string, status?: string, teacher?: string, module?:string) => {
@@ -218,6 +238,9 @@ export const getAcademicCalendarDataQueryFn = async () => await API.get(`/academ
 
 export const newCalendarMutationFn = async (sessionId: string, data: NewCalendarType) =>
   await API.post(`/academic-sessions/${sessionId}/academic-calenders`, data);
+
+export const deleteCalendarMutationFn = async (id: string) =>
+  await API.delete(`academic-calenders/${id}`);
 
 
 //semester
@@ -361,15 +384,52 @@ export const queryStudentActionMutationFn = async (id: string, action: string) =
     export const createAcademicStaff = async (data: any) => 
       await API.post(`/teachers`, data);
 
+    export const deleteAcademicStaff = async (id: string) => 
+      await API.delete(`/teachers/${id}`);
+
     // Role 
     export const getRoles = async () => 
       await API.get(`/roles`);
 
 
-    // Role 
+    // Permision 
     export const getPermission = async () => 
       await API.get(`/permissions`);
 
     export const getActivityLog = async (page: string) => 
       await API.get(`/activity-logs?page=${page}`);
+    
+
+    export const approveAcademicSessionMutationFn = async (id: string) =>
+      await API.get(`academic-sessions/${id}/activate`);
+
+    export const endAcademicSessionMutationFn = async (id: string) =>
+      await API.get(`academic-sessions/${id}/end`);
+
+    export const activateCalendarMutationFn = async (sessionId: string, calendarId: string) =>
+      await API.get(`/academic-sessions/${sessionId}/academic-calenders/${calendarId}/activate`);
+
+    export const updateCalendarMutationFn = async (sessionId: string, calendarId: string, data: any) =>
+      await API.patch(`/academic-sessions/${sessionId}/academic-calenders/${calendarId}`, data);
+
+    export const endCalendarMutationFn = async (sessionId: string, calendarId: string) =>
+      await API.get(`/academic-sessions/${sessionId}/academic-calenders/${calendarId}/end`);
+
+    export const approveAdminLessonMutationFn = async (lessonId: string) =>
+      await API.get(`lessons/${lessonId}/approval`);
+    export const endAdminLessonMutationFn = async (lessonId: string) =>
+      await API.get(`lessons/${lessonId}/end`);
+    export const approveAdminAssessmentMutationFn = async (assessmentId: string) =>
+      await API.get(`administrators/assessments/${assessmentId}/approval`);
+    export const endAdminAssessmentMutationFn = async (assessmentId: string) =>
+      await API.get(`administrators/assessments/${assessmentId}/end`);
+    export const approveAdminAssignmentMutationFn = async (assessmentId: string) =>
+      await API.get(`administrators/assignments/${assessmentId}/approval`);
+    export const approveEndAssignmentMutationFn = async (assessmentId: string) =>
+      await API.get(`administrators/assignments/${assessmentId}/end`);
+    export const approveAdminExaminationMutationFn = async (examinationId: string) =>
+      await API.get(`administrators/examinations/${examinationId}/approval`);
+    export const endAdminExaminationMutationFn = async (examinationId: string) =>
+      await API.get(`administrators/examinations/${examinationId}/end`);
+
     

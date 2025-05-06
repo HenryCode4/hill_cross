@@ -71,6 +71,16 @@ export const calendarFormSchema = z.object({
   course_registration_end_date: z.string().min(1, "Course registration start date is required"),
 });
 
+export const updateCalendarFormSchema = z.object({
+  name: z.string().min(1, "Session name is required"),
+  semester_id: z.string().optional(),
+  session_id: z.string().min(1, "Session id is required"),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+  course_registration_start_date: z.string().optional(),
+  course_registration_end_date: z.string().optional(),
+});
+
 export const updateAssessmentFormSchema = z.object({
   assessment_type: z.string().min(1, "assessment type is required"),
   available_at: z.string().min(1, "available date is required"),
@@ -266,3 +276,8 @@ export const adminSchema = z.object({
   password: z.string().min(1, "password is required"),
   re_password: z.string().min(1, "confirm password is required"),
 });
+
+export const semesterSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+});
+export type createSemesterFormType = z.infer<typeof semesterSchema>;

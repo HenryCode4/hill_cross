@@ -1,5 +1,6 @@
 import { avatar1, avatar2, avatar3, avatar4, avatar5 } from '@/assets';
 import useHrData from '@/hooks/useHrMgt';
+import { Loader } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
@@ -8,9 +9,16 @@ const AdminUsers = () => {
     const [currentPage, setCurrentPage] = React.useState(1);
     const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
     const action = "administrators/non-academics"
-      const {data} = useHrData(action, currentPage.toString());
+      const {data, isLoading} = useHrData(action, currentPage.toString());
       const staffApi = data?.data?.data;
-    console.log(staffApi)
+      
+  if (isLoading) {
+          return (
+            <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                       <Loader className="animate-spin h-8 w-8 text-red-700" />
+                  </div>
+          );
+        }
   return (
      <div className="grid grid-col-1 xl:grid-cols-2  2xl:grid-cols-3 place-content-center xl:place-content-start gap-x-[31px] gap-y-[31px]">
               {staffApi?.map((item: any, i: any) => (

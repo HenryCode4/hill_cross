@@ -41,6 +41,7 @@ export const useStudentPaymentFees = (latest: boolean) => {
   });
   return query;
 };
+
 export const useUnpaidStudentList = () => {
   const query = useQuery({
     queryKey: ["unpaidListData"],

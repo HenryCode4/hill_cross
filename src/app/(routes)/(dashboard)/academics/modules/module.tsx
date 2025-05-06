@@ -29,9 +29,38 @@ import { z } from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { newModuleMutationFn } from "@/lib/api";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import SelectComponent from "@/components/selectComponent";
+import useSemesterData from "@/hooks/useSemester";
+import useStandardData from "@/hooks/useStandard";
+import MultiSelectComponent from "@/components/multiSelectComponent";
+import useQualificationData from "@/hooks/useQualification";
 
 const ModuleComponent = () => {
     const queryClient = useQueryClient();
+
+    const {data} = useSemesterData();
+    const semesterApi = data?.data?.data;
+      const semesterOptions = semesterApi?.map((school: { id: string; name: string }) => ({
+        id: school.id,
+        label: school.name
+      }))
+
+    const {data: standard} = useStandardData();
+    const standardApi = standard?.data?.data;
+      const standardOptions = standardApi?.map((school: { id: string; name: string }) => ({
+        id: school.id,
+        label: school.name
+      }))
+
+      const {data: qualification} = useQualificationData();
+      const qualificationApi = qualification?.data?.data;
+      const qualificationOptions = qualificationApi?.map((school: { id: string; name: string }) => ({
+        id: school.id,
+        label: school.name
+      }))
+
+
+
     const [modalOpen, setModalOpen] = useState(false);
     const { mutate, isPending } = useMutation({
       mutationFn: newModuleMutationFn,
@@ -49,7 +78,6 @@ const ModuleComponent = () => {
     });
   
     const onSubmit = (values: z.infer<typeof moduleFormSchema>) => {
-        console.log(values)
       mutate(values, {
         onSuccess: (response) => {
           // if (response.data.mfaRequired) {
@@ -128,15 +156,16 @@ const ModuleComponent = () => {
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormLabel className="font-[600] text-[#1E1E1E]">
-                                        Semester Id
+                                        Semester
                                       </FormLabel>
                                       <FormControl>
-                                        <Input
-                                          className="h-[48px] rounded-[8px] outline outline-1 outline-[#AACEC9] focus-visible:outline"
-                                          placeholder="Semester Id"
-                                          {...field}
+                                        <SelectComponent
+                                        items={semesterOptions}
+                                        placeholder="Select Semester"
+                                        className="h-[48px] rounded-[8px] border border-[#AACEC9]"
+                                        onChange={field.onChange}
                                         />
-                                      </FormControl>
+                                    </FormControl>
                                       <FormMessage />
                                     </FormItem>
                                   )}
@@ -149,13 +178,14 @@ const ModuleComponent = () => {
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormLabel className="font-[600] text-[#1E1E1E]">
-                                       Standard Id
+                                       Standard
                                       </FormLabel>
                                       <FormControl>
-                                        <Input
-                                          className="h-[48px] rounded-[8px] outline outline-1 outline-[#AACEC9] focus-visible:outline"
-                                          placeholder="Standard Id"
-                                          {...field}
+                                        <SelectComponent
+                                        items={standardOptions}
+                                        placeholder="Select Standard"
+                                        className="h-[48px] rounded-[8px] border border-[#AACEC9]"
+                                        onChange={field.onChange}
                                         />
                                       </FormControl>
                                       <FormMessage />
@@ -174,15 +204,11 @@ const ModuleComponent = () => {
                                         Qualification
                                       </FormLabel>
                                       <FormControl>
-                                        <Input
-                                          className="h-[48px] rounded-[8px] outline outline-1 outline-[#AACEC9] focus-visible:outline"
-                                          placeholder="Qualification (separate with commas)"
-                                        //   {...field}
-                                          onChange={(e) => {
-                                            const values = e.target.value.split(',').map(v => v.trim());
-                                            field.onChange(values);
-                                          }}
-                                          value={field.value.join(', ')}
+                                        <MultiSelectComponent
+                                        items={qualificationOptions}
+                                        placeholder="Select question"
+                                        className="h-[48px] rounded-[8px] border border-[#AACEC9]"
+                                        onChange={field.onChange}
                                         />
                                       </FormControl>
                                       <FormMessage />

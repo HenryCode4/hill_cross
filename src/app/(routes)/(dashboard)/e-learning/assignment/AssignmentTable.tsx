@@ -3,8 +3,10 @@ import {
   cancel,
   completed,
   edit,
+  green,
   option,
   play,
+  red,
   trash,
   visibility,
 } from "@/assets";
@@ -28,6 +30,10 @@ import SelectComponent from "@/components/selectComponent";
 import useModuleData from "@/hooks/useModule";
 import { useTeacherData } from "@/hooks/useSchool";
 import Pagination from "@/components/pagination";
+import useApproveAssignment from "@/hooks/useApproveAssignment";
+import useEndAssignment from "@/hooks/useEndAssignment";
+import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react";
 
 interface assessment {
   module: string;
@@ -99,8 +105,8 @@ const AssignmentTable = () => {
     status: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
-
-  const { data } = useAssignmentData(
+  const router = useRouter();
+  const { data, isLoading } = useAssignmentData(
     currentPage.toString(),
     filters.status,
     filters.teacher,
@@ -108,31 +114,32 @@ const AssignmentTable = () => {
   );
   const assignmentApi = data?.data?.data;
   const totalPages = data?.data?.meta?.last_page || 1;
-  console.log(assignmentApi);
+  // console.log(assignmentApi);
 
   //teacher
-  const {data: teacher} = useTeacherData();
+  const { data: teacher } = useTeacherData();
   const teacherApi = teacher?.data?.data;
   const teacherOptions = teacherApi?.map((item: any) => ({
     id: item.id,
     label: item.name,
   }));
-  console.log(teacherOptions)
+  // console.log(teacherOptions);
 
-  //module 
-  const {data: module } = useModuleData();
+  //module
+  const { data: module } = useModuleData();
   const moduleApi = module?.data?.data;
   const moduleOptions = moduleApi?.map((item: any) => ({
     id: item.id,
     label: item.name,
   }));
 
-  
-
-  const handleFilterChange = (filterType: keyof typeof filters, value: string) => {
-    setFilters(prev => ({
+  const handleFilterChange = (
+    filterType: keyof typeof filters,
+    value: string,
+  ) => {
+    setFilters((prev) => ({
       ...prev,
-      [filterType]: value
+      [filterType]: value,
     }));
     setCurrentPage(1); // Reset to first page when filter changes
   };
@@ -163,7 +170,16 @@ const AssignmentTable = () => {
       });
     },
   });
+  const { mutate: approveAssignment } = useApproveAssignment();
+  const { mutate: endAssessment } = useEndAssignment();
 
+  if (isLoading) {
+              return (
+                <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                           <Loader className="animate-spin h-8 w-8 text-red-700" />
+                      </div>
+              );
+            }
   return (
     <>
       <div className="flex w-full flex-col gap-y-[8px] px-4 pb-2">
@@ -174,24 +190,24 @@ const AssignmentTable = () => {
               Sort by:
             </button>
             <div className="flex w-full flex-1 flex-wrap gap-[32px] xl:flex-nowrap">
-            <SelectComponent
+              <SelectComponent
                 items={teacherOptions}
                 placeholder="Select Teacher"
-                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
-                onChange={(value) => handleFilterChange('teacher', value)}
+                className="h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] text-[#B0B0B0] outline-none"
+                onChange={(value) => handleFilterChange("teacher", value)}
               />
               <SelectComponent
                 items={moduleOptions}
                 placeholder="Select Module"
-                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
-                onChange={(value) => handleFilterChange('module', value)}
+                className="h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] text-[#B0B0B0] outline-none"
+                onChange={(value) => handleFilterChange("module", value)}
               />
 
               <SelectComponent
                 items={["Approve", "Pending", "End"]}
                 placeholder="Select Status"
-                className="text-[#B0B0B0] h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] outline-none "
-                onChange={(value) => handleFilterChange('status', value)}
+                className="h-[56px] w-full rounded-[8px] border border-[#AACEC9] bg-transparent px-[8px] text-[20px] font-[500] text-[#B0B0B0] outline-none"
+                onChange={(value) => handleFilterChange("status", value)}
               />
             </div>
           </div>
@@ -206,14 +222,29 @@ const AssignmentTable = () => {
               {item.status === "Pending" ? (
                 <div className="flex items-center gap-x-[8px]">
                   <Image
-                    src={cancel}
-                    alt="completed icon"
-                    className="h-[27px] w-[24px]"
+                    key="edit-icon"
+                    src={green}
+                    onClick={() => approveAssignment(item?.id)}
+                    alt="Approve icon"
+                    className="cursor-pointer"
                   />
+
+                  <Link href={`/e-learning/assignments/${item.id}`}>
+                    <Image
+                      src={visibility}
+                      alt="Visibility icon"
+                      className="h-[24px] w-[24px] cursor-pointer"
+                    />
+                  </Link>
+
                   <Image
-                    src={completed}
-                    alt="completed icon"
-                    className="h-[24px] w-[24px]"
+                    src={edit}
+                    alt="Edit icon"
+                    className="h-[24px] w-[24px] cursor-pointer"
+                    onClick={() => {
+                      setSelectedAssignment(item as any);
+                      setModalOpenEdit(true);
+                    }}
                   />
 
                   <CustomDropdownMenu
@@ -227,11 +258,13 @@ const AssignmentTable = () => {
                     options={[
                       {
                         label: "Details",
-                        onClick: () => console.log("Details clicked"),
+                        onClick: () => {
+                          router.push(`/e-learning/assignments/${item.id}`);
+                        },
                       },
                       {
                         label: "Open File",
-                        onClick: () => console.log("Open File clicked"),
+                        onClick: () => window.open(item.file_url, "_blank"),
                       },
                       {
                         label: "Edit File",
@@ -240,43 +273,123 @@ const AssignmentTable = () => {
                           setModalOpenEdit(true);
                         },
                       },
-                      {
-                        label: "End Assignment",
-                        onClick: () => console.log("End Assignment clicked"),
-                      },
+                      // {
+                      //   label: "End Assignment",
+                      //   onClick: () => console.log("End Assignment clicked"),
+                      // },
                     ]}
                   />
                 </div>
-              ) : (
+              ) : item.status === "End" ? (
                 <div className="flex items-center gap-x-[8px]">
-                  <Link href={"/e-learning/1"}>
+                  <Image
+                    key="edit-icon"
+                    src={green}
+                    onClick={() => approveAssignment(item?.id)}
+                    alt="Approve icon"
+                    className="cursor-pointer"
+                  />
+
+                  <Link href={`/e-learning/assignments/${item.id}`}>
                     <Image
                       src={visibility}
                       alt="Visibility icon"
-                      className="h-[24px] w-[24px]"
+                      className="h-[24px] w-[24px] cursor-pointer"
                     />
                   </Link>
 
                   <Image
                     src={edit}
                     alt="Edit icon"
-                    className="h-[24px] w-[24px]"
+                    className="h-[24px] w-[24px] cursor-pointer"
                     onClick={() => {
                       setSelectedAssignment(item as any);
                       setModalOpenEdit(true);
                     }}
                   />
-
+                  <CustomDropdownMenu
+                    trigger={
+                      <Image
+                        src={option}
+                        alt="Option icon"
+                        className="h-[24px] w-[24px]"
+                      />
+                    }
+                    options={[
+                      {
+                        label: "Details",
+                        onClick: () => {
+                          router.push(`/e-learning/assignments/${item.id}`);
+                        },
+                      },
+                      {
+                        label: "Open File",
+                        onClick: () => window.open(item.file_url, "_blank"),
+                      },
+                      {
+                        label: "Edit File",
+                        onClick: () => {
+                          setSelectedAssignment(item as any);
+                          setModalOpenEdit(true);
+                        },
+                      },
+                    ]}
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center gap-x-[8px]">
                   <Image
-                    src={block}
-                    alt="Block icon"
-                    className="h-[24px] w-[24px]"
+                    key="trash-icon"
+                    src={red}
+                    alt="Trash icon"
+                    className="h-[24px] w-[24px] cursor-pointer"
+                    onClick={() => endAssessment(item.id)}
                   />
 
+                  <Link href={`/e-learning/assignments/${item.id}`}>
+                    <Image
+                      src={visibility}
+                      alt="Visibility icon"
+                      className="h-[24px] w-[24px] cursor-pointer"
+                    />
+                  </Link>
+
                   <Image
-                    src={trash}
-                    alt="Trash icon"
-                    className="h-[24px] w-[24px]"
+                    src={edit}
+                    alt="Edit icon"
+                    className="h-[24px] w-[24px] cursor-pointer"
+                    onClick={() => {
+                      setSelectedAssignment(item as any);
+                      setModalOpenEdit(true);
+                    }}
+                  />
+                  <CustomDropdownMenu
+                    trigger={
+                      <Image
+                        src={option}
+                        alt="Option icon"
+                        className="h-[24px] w-[24px] cursor-pointer"
+                      />
+                    }
+                    options={[
+                      {
+                        label: "Details",
+                        onClick: () => {
+                          router.push(`/e-learning/assignments/${item.id}`);
+                        },
+                      },
+                      {
+                        label: "Open File",
+                        onClick: () => window.open(item.file_url, "_blank"),
+                      },
+                      {
+                        label: "Edit File",
+                        onClick: () => {
+                          setSelectedAssignment(item as any);
+                          setModalOpenEdit(true);
+                        },
+                      },
+                    ]}
                   />
                 </div>
               )}
@@ -304,16 +417,15 @@ const AssignmentTable = () => {
           )}
         />
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPrevPage={() => {}}
-            onNextPage={() => {}}
-            onPageChange={() => {}}
-            isServerPagination={true}
-            onServerPageChange={handleServerPageChange}
-          />
-        
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPrevPage={() => {}}
+          onNextPage={() => {}}
+          onPageChange={() => {}}
+          isServerPagination={true}
+          onServerPageChange={handleServerPageChange}
+        />
 
         {modalOpenEdit && (
           <UpdateAssignment

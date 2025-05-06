@@ -2,7 +2,7 @@
 import Header from "@/components/header";
 import ModuleCOmponent from "./module";
 
-const SchoolsPage = () => {
+const ModulesPage = () => {
   
   return (
     <div className="flex h-full w-full flex-col gap-y-[24px] bg-[#F8F8F8] pb-[24px] pt-[90px] lg:gap-y-[43px] lg:px-[52px]">
@@ -13,4 +13,4 @@ const SchoolsPage = () => {
   );
 };
 
-export default SchoolsPage;
+export default ModulesPage;

@@ -6,6 +6,12 @@ import React, { useState } from 'react'
 import staffs from "@/lib/academicStaff.json"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from '@/components/ui/select';
 import Link from 'next/link';
+import CustomDropdown, { DropdownOption } from '@/components/customDropdownOptional';
+import { toast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteAcademicStaff } from '@/lib/api';
+import Warning from '@/components/warning';
 
 interface AcademicStaffProps {
   staffApi: any;
@@ -14,8 +20,12 @@ interface AcademicStaffProps {
 }
 
 const AcademicStaffGrid = ({staffApi, searchQuery, qualificationFilter}: AcademicStaffProps) => {
-     const [brokenImages, setBrokenImages] = useState<{[key: string]: boolean}>({});
-    
+  const queryClient = useQueryClient();
+  const [brokenImages, setBrokenImages] = useState<{[key: string]: boolean}>({});
+  const [selectedStaff, setSelectedStaff] = useState<any>();
+  const [deleteStaff, setDeleteStaff] = useState<boolean>(false);
+  
+  const router = useRouter();
       const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
     
       const handleImageError = (itemId: string) => {
@@ -24,7 +34,7 @@ const AcademicStaffGrid = ({staffApi, searchQuery, qualificationFilter}: Academi
           [itemId]: true
         }));
       };
-console.log(staffApi)
+
       const getAvatarSrc = (item: any) => {
         // If image is broken or null, return random avatar
         if (brokenImages[item.id] || !item.avatar) {
@@ -33,7 +43,6 @@ console.log(staffApi)
         return item.avatar;
       };
 
-    const items = ["Show Student", "Edit Student", "Registered Student", "Archive Student", "Disable Student", "Regenerate Admission Letter", "Delete Account", "View Admission Letter", "Print Details"]
     const filteredStaffOptions = staffApi?.map((item: any) => ({
       id: item.id,
       avatar: item.profile.avatar,
@@ -51,6 +60,60 @@ console.log(staffApi)
       return matchesName && matchesQualification;
     });
 
+     const dropdownOptions: DropdownOption[] = [
+            {
+              id: 'show',
+              label: 'Show Staff',
+              action: 'show staff',
+            },
+            {
+              id: 'delete',
+              label: 'Delete Staff',
+              action: 'delete staff',
+            }
+          ];
+      
+          const handleAction = (action: string, staff: any) => {
+            setSelectedStaff(staff);
+            switch (action) {
+              case 'show staff':
+                router.push(`/hr_management/academic_staff/${staff.id}`);
+                break;
+              case 'delete staff':
+                setDeleteStaff(true);
+                break;
+            default:
+              console.log('Unhandled action:', action);
+          }
+        };
+    
+         const { mutate: deleteStaffFn, isPending } = useMutation({
+            mutationFn: () => {
+              if (!selectedStaff?.id) throw new Error("Staff ID is required");
+              return deleteAcademicStaff(selectedStaff.id);
+            },
+            onSuccess: () => {
+              queryClient.invalidateQueries({ queryKey: ["hrData"] });
+              toast({
+                title: "Success",
+                description: "Staff deleted successfully",
+                variant: "default",
+              });
+              setDeleteStaff(false);
+            },
+            onError: (error) => {
+              toast({
+                title: "Error",
+                description: error.message,
+                variant: "destructive",
+              });
+            },
+          });
+        
+          const handleDeleteQualification = () => {
+            deleteStaffFn();
+          };
+
   return (
 
         <div className="w-full h-full  px-[8px] ">
@@ -60,7 +123,7 @@ console.log(staffApi)
               filteredStaffOptions?.map((item: any, i: any) => (
                 <div key={i} className='w-full h-auto bg-white py-[20px] px-[15px] border border-[#B0B0B0] rounded-[16px] relative'>
                   <div className='absolute top-[15px] right-[25px]'>
-                     <Select >
+                     {/* <Select >
                 <SelectTrigger hideDropdown  className="w-full h-[43px] bg-transparent outline-none">
                 <Image className='' src={horizontal} alt='horizontal'/>
                 </SelectTrigger>
@@ -73,7 +136,16 @@ console.log(staffApi)
                     }
                   </SelectGroup>
                 </SelectContent>
-              </Select>
+              </Select> */}
+
+              <CustomDropdown 
+                                                          triggerIcon={applicationStop}
+                                                          options={dropdownOptions}
+                                                          item={item}
+                                                          onActionSelect={handleAction}
+                                                          position="auto" // Display dropdown above the trigger button
+                                                          grid
+                                                        />
                   </div>
                  
                   <div className='flex flex-col items-center justify-center w-full gap-y-[12px]'>
@@ -135,7 +207,15 @@ console.log(staffApi)
             }
           </div>
 
-
+             {deleteStaff && selectedStaff && (
+                <Warning 
+                  alert
+                  open={deleteStaff}
+                  onClose={()=>setDeleteStaff(false)}
+                  description={`Are you sure you want to delete ${selectedStaff?.name}?`}
+                  onConfirm={handleDeleteQualification}
+                />
+              )}
         </div>
   )
 }

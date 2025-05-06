@@ -12,6 +12,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { deleteStandardMutationFn } from "@/lib/api";
 import Warning from "@/components/warning";
+import { Loader } from "lucide-react";
 
 interface school {
   name: string;
@@ -44,7 +45,7 @@ const Standards = () => {
   const [modalOpenEdit, setModalOpenEdit] = useState(false)
   const [modalOpenDelete, setModalOpenDelete] = useState(false)
 
-  const { data: standardData } = useStandardData();
+  const { data: standardData, isLoading } = useStandardData();
   const standardApi = standardData?.data?.data;
 
   const { mutate: deleteQualification, isPending } = useMutation({
@@ -73,6 +74,14 @@ const Standards = () => {
     const handleDeleteQualification = () => {
       deleteQualification();
     };
+
+     if (isLoading) {
+            return (
+              <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                         <Loader className="animate-spin h-8 w-8 text-red-700" />
+                    </div>
+            );
+          }
 
   return (
     <div className="w-full flex flex-col gap-y-[52px]">
