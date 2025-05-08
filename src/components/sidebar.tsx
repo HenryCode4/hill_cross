@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { ChevronDown, LogOut, X } from 'lucide-react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { dashboard, dashboardLite, academics, academicsLite, account, accountLite, admin, adminLite, elearning, elearningLite, moduleAl, moduleLite2, studentMgt, studentMgtLite, notification, notificationLite, marketing, marketingLite, hrMgt, hrMgtLite, Logo, adminLite1 } from '@/assets'; 
 import Link from 'next/link';
+import Cookies from "js-cookie";
+
 
 interface SidebarProps {
   toggle: boolean;
@@ -14,6 +16,7 @@ interface SidebarProps {
 
 const Sidebar = ({toggle, setToggle}:SidebarProps) => {
   const pathname = usePathname();
+  const router = useRouter();
 
   // State to manage the open/close state of dropdowns
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
@@ -33,7 +36,7 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
   const items = [
     {
       title: "Dashboard",
-      url: "/",
+      url: "/dashboard",
       iconDark: dashboard,
       iconLite: dashboardLite,
     },
@@ -165,6 +168,12 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
       ],
     },
   ];
+  
+  const handleLogout = () => {
+    Cookies.remove("accessToken");
+    router.replace("/"); 
+  };
+
 
   return (
     <>
@@ -268,7 +277,7 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
       </div>
 
       {/* Logout Section */}
-      <div className="flex gap-x-[16px] items-center px-[20px] py-[8px] mt-auto">
+      <div onClick={handleLogout} className="flex gap-x-[16px] items-center px-[20px] py-[8px] mt-auto cursor-pointer">
         <div className="flex justify-center items-center w-[48px] h-[48px] bg-white text-[#9D1217] rounded-[8px]">
           <LogOut />
         </div>
@@ -385,8 +394,8 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
       </div>
 
       {/* Logout Section */}
-      <div className="flex gap-x-[16px] items-center px-[20px] py-[8px] mt-auto">
-        <div className="flex justify-center items-center w-[48px] h-[48px] bg-white text-[#9D1217] rounded-[8px]">
+      <div className="flex gap-x-[16px] items-center px-[20px] py-[8px] mt-auto cursor-pointer">
+        <div onClick={handleLogout} className="flex justify-center items-center w-[48px] h-[48px] bg-white text-[#9D1217] rounded-[8px]">
           <LogOut />
         </div>
         <p className="text-white font-[600] text-[16px]">Logout</p>

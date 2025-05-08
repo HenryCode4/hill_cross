@@ -97,28 +97,7 @@ const AccountsFinancePage = () => {
     },
   ];
 
-  const finance = [
-    {
-      id: 1,
-      amount: "R240,546",
-      title: "Expected Revenue",
-    },
-    {
-      id: 2,
-      amount: "R47,839",
-      title: "Generated Revenue",
-    },
-    {
-      id: 3,
-      amount: "R192,707",
-      title: "Outstanding Payments",
-    },
-    {
-      id: 4,
-      amount: "3,500",
-      title: "Student Full Payment",
-    },
-  ];
+  
   return (
     <>
     {
@@ -180,28 +159,6 @@ const AccountsFinancePage = () => {
           </div>
         </div>
 
-
-        {/* <div className=" flex flex-col gap-[10px] w-full">
-            <div className="flex gap-x-[10px] h-[75px]  items-center justify-between bg-white px-[10px] xl:px-[32px]">
-            <p className="text-[18px] font-[600] leading-[29.05px] text-[#1E1E1E]">
-            Student List
-              </p>
-
-            <div className="flex justify-normal w-[232px] h-[53px] bg-[#F8F8F8] text-[#B0B0B0] gap-x-[8px]">
-              <SortComponent border placeholder="Sort by" items={sort} />
-            </div>
-            
-            </div>
-          </div>
-
-          <div className="w-full bg-white px-[8px]">
-            <Table 
-              columns={columns} 
-              data={data} 
-            />
-            
-          </div> */}
-
           <StudentListTable />
       </div>
       )
@@ -245,8 +202,6 @@ const AccountsFinancePage = () => {
             </div>
             <UnpaidFees />
           </div>
-
-          
 
           {/* <Pagination /> */}
       </div>

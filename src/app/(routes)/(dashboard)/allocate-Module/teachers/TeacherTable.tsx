@@ -9,11 +9,13 @@ import { useTeacherData } from '@/hooks/useSchool';
 import Image from 'next/image';
 import React, { useState } from 'react'
 import UpdateAllocatedModule from './UpdateTeacher';
+import { Loader } from 'lucide-react';
+
 
 interface school {
   teacher: string;
   qualification: number;
-  academicCalendar: string;
+  academic_calendar: string;
   module: string;
   status: string;
   action: string;
@@ -37,13 +39,13 @@ const columns: Column[] = [
     width: "20%", // New column
   },
   {
-    accessorKey: "academicCalendar",
+    accessorKey: "academic_calendar",
     header: <div className="w-[172px]">ACADEMIC CALENDAR</div>,
     width: "15%",
   },
   {
     accessorKey: "module",
-    header: <div className="w-[344px]">MODULE</div>,
+    header: <div className="w-[444px]">MODULE</div>,
     width: "25%",
   },
   {
@@ -59,26 +61,35 @@ const columns: Column[] = [
 ];
 const TeacherTable = () => {
   const [modalOpenEdit, setModalOpenEdit] = useState(false);
-  const [selectedModule, setSelectedModule] = useState();
+  const [selectedModule, setSelectedModule] = useState<any>();
       const [currentPage, setCurrentPage] = useState(1);
-    const {data: teacher} = useAllocateModuleData(
+    const {data: teacher, isLoading} = useAllocateModuleData(
         currentPage.toString()
     );
       const teacherApi = teacher?.data?.data;
       const totalPages = teacher?.data?.meta?.last_page || 1;
-    console.log(teacher)
       const teacherOption = teacherApi?.map((item: any)=> ({
         id: item.id,
         teacher: item.teacher,
         qualification: item.qualification,
-        academicCalendar: item.academic_calender.name,
+        academic_calendar: item.academic_calender?.name,
         module: item.modules_implode,
-        status: item.status
+        status: item.status,
+        teacher_id: item.teacher_id,
+        academic_calender_id: item.academic_calender?.id
       }))
-
+      
       const handleServerPageChange = (page: number) => {
         setCurrentPage(page);
       };
+
+       if (isLoading) {
+              return (
+                <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                           <Loader className="animate-spin h-8 w-8 text-red-700" />
+                      </div>
+              );
+            }
 
   return (
     <div className="w-full bg-white px-[8px]">
@@ -86,7 +97,7 @@ const TeacherTable = () => {
             columns={columns}
             data={teacherOption}
             renderAction={(item: any) => (
-                <div className=''>
+                <div className='cursor-pointer'>
                      <Image
                         key="edit-icon"
                         src={edit}

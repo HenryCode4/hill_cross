@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import { DatePicker } from '@/components/date_pickerNew';
 import UpdateSmsNotification from './UpdateSmsNotification';
 import { useQueryClient } from '@tanstack/react-query';
+import { Loader } from 'lucide-react';
 
 interface Form {
     title: string;
@@ -69,32 +70,9 @@ interface Form {
     const handleDateChange = (date: string | undefined) => {
         setDateFilter(date);
     };
-    console.log(dateFilter)
-    const {data: sms} = useSmsNotificationData(type);
+
+    const {data: sms, isLoading} = useSmsNotificationData(type);
     const smsApi = sms?.data;
-    // Filter and map the data
-    // const filteredSmsOptions = React.useMemo(() => {
-    //     return smsApi?.filter((item: any) => {
-    //         // Title filter
-    //         const titleMatch = titleFilter === "" || 
-    //             item.message_subject.toLowerCase().includes(titleFilter.toLowerCase());
-
-    //         // Recipients filter
-    //         const recipientMatch = recipientFilter === "" || 
-    //             item.message_recipient.toLowerCase().includes(recipientFilter.toLowerCase());
-
-    //         // Date filter
-    //         const dateMatch = !dateFilter || item.expected_date_delivery === dateFilter;
-
-    //         return titleMatch && recipientMatch && dateMatch;
-    //     }).map((item: any) => ({
-    //         title: item.message_subject,
-    //         recipients: item.message_recipient,
-    //         channel: item.delivery_method,
-    //         deliveryDate: item.expected_date_delivery,
-    //         action: item.action,
-    //     }));
-    // }, [smsApi, titleFilter, recipientFilter, dateFilter]);
 
     useEffect(() => {
         if (smsApi && smsApi.length > 0) {
@@ -147,10 +125,13 @@ interface Form {
 
     console.log("smsApi", smsApi)
 
-    // const handleFilter = () => {
-    //     // Filtering is now handled automatically through the useMemo hook
-    //     console.log("Filtered Results:", filteredSmsOptions);
-    // };
+    if (isLoading) {
+             return (
+               <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                          <Loader className="animate-spin h-8 w-8 text-red-700" />
+                     </div>
+             );
+           }
   return (
     <div className="flex flex-col gap-y-[16px]">
         <div className="flex w-full flex-col gap-[10px]">

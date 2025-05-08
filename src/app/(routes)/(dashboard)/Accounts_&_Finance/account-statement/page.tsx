@@ -3,6 +3,7 @@ import Header from '@/components/header'
 import SelectComponent from '@/components/selectComponent'
 import { Input } from '@/components/ui/input'
 import React from 'react'
+import GetStatements from './GetStatements'
 
 const AccountStatementPage = () => {
   return (
@@ -13,21 +14,7 @@ const AccountStatementPage = () => {
         subTitle={"Accounting & Finance"}
       />
 
-    <div className='w-full h-auto 2xl:h-[88px] bg-white py-[16px] px-[8px] grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-5 gap-[24px]'>
-        <Input className='w-full h-[56px] rounded-[8px] border border-[#AACEC9]' placeholder='Student Name/ Id Passport Number' />
-        <SelectComponent className='border h-[56px] w-full border-[#AACEC9] rounded-[8px]' items={["Unpaid Student sponsors"]} placeholder="All" />
-        <DatePickerDemo placeholder='From: mm/dd/yyyy' className='h-[56px] w-full border-[#AACEC9] rounded-[8px]' />
-        <DatePickerDemo placeholder='to: mm/dd/yyyy' className='h-[56px] w-full border-[#AACEC9] rounded-[8px]'/>
-        <button
-              className={`bg-[#ED1000] h-[56px] w-[131px] rounded-[8px] px-[16px] py-[12px] text-white`}
-            >
-              Search
-            </button>
-    </div>
-
-    <div className='px-[32px] py-[16px] bg-white h-[61px]'>
-        <h3 className='font-[600] text-[24px]'>Student Statement</h3>
-    </div>
+    <GetStatements />
     </div>
   )
 }

@@ -8,6 +8,7 @@ import student from "@/lib/students.json"
 import { useStudentEnrollmentData } from '@/hooks/useStudent';
 import Pagination from '@/components/pagination';
 import UpdateAllocatedModule from './UpdateStudent';
+import { Loader } from 'lucide-react';
 
 interface student {
   name: string;
@@ -67,23 +68,33 @@ const StudentTable = () => {
      const [modalOpenEdit, setModalOpenEdit] = useState(false);
       const [selectedModule, setSelectedModule] = useState();
           const [currentPage, setCurrentPage] = useState(1);
-  const {data: studentEnrollment} = useStudentEnrollmentData(currentPage.toString());
+  const {data: studentEnrollment, isLoading} = useStudentEnrollmentData(currentPage.toString());
   const enrollmentApi = studentEnrollment?.data?.data;
   const totalPages = studentEnrollment?.data?.meta?.last_page || 1;
-  console.log("enrollmentApi", enrollmentApi)
-
+console.log(enrollmentApi)
   const enrollmentOptions = enrollmentApi?.map((item: any) => ({
     name: item.student,
     qualification: item.qualification,
-    academicCalendar: item.academic_calendar,
+    academic_calender: item.academic_calender?.name,
+    academic_calender_id: item.academic_calender?.id,
     module: item.modules_implode,
     enrollmentDate: item.enrolment_date,
     status: item.status,
+    student_id: item.student_id
   }))
 
   const handleServerPageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+   if (isLoading) {
+                return (
+                  <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                             <Loader className="animate-spin h-8 w-8 text-red-700" />
+                        </div>
+                );
+              }
+
     return (
     <div className="w-full bg-white px-[8px]">
           <Table
