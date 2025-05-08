@@ -165,13 +165,7 @@ const ExaminationTable = () => {
   const { mutate: approveExamination } = useApproveExamination();
   const { mutate: endAssessment } = useEndExamination();
 
-  if (isLoading) {
-              return (
-                <div className='p-[70px] flex items-center justify-center h-full w-full'>
-                           <Loader className="animate-spin h-8 w-8 text-red-700" />
-                      </div>
-              );
-            }
+
   return (
     <>
       <div className="flex w-full flex-col gap-y-[8px] px-4 pb-2">
@@ -206,7 +200,13 @@ const ExaminationTable = () => {
         </div>
       </div>
 
-      <div className="w-full bg-white px-[8px] pb-[8px]">
+      {
+        isLoading ? (
+          <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                           <Loader className="animate-spin h-8 w-8 text-red-700" />
+                      </div>
+        ) : (
+          <div className="w-full bg-white px-[8px] pb-[8px]">
         <Table
           columns={columns}
           data={examinations}
@@ -337,6 +337,10 @@ const ExaminationTable = () => {
           />
         )}
       </div>
+        )
+      }
+
+      
     </>
   );
 };
