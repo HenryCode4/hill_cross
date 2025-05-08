@@ -1,8 +1,9 @@
 import { useDashboardList } from '@/hooks/useDashboardCountData'
+import { Loader } from 'lucide-react';
 import React from 'react'
 
 const DashboardList = () => {
-    const {data} = useDashboardList()
+    const {data, isLoading} = useDashboardList()
     const financeApi = data?.data?.data;
     console.log(financeApi)
 
@@ -28,6 +29,16 @@ const DashboardList = () => {
           title: "Student Full Payment",
         },
       ];
+
+       if (isLoading) {
+              return (
+                <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                           <Loader className="animate-spin h-8 w-8 text-red-700" />
+                      </div>
+              );
+            }
+
+
   return (
     <div className="grid w-full  xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 place-content-center gap-[28px]">
               {finance.map((item) => (

@@ -8,6 +8,7 @@ import student from "@/lib/students.json"
 import { useStudentEnrollmentData } from '@/hooks/useStudent';
 import Pagination from '@/components/pagination';
 import UpdateAllocatedModule from './UpdateStudent';
+import { Loader } from 'lucide-react';
 
 interface student {
   name: string;
@@ -67,7 +68,7 @@ const StudentTable = () => {
      const [modalOpenEdit, setModalOpenEdit] = useState(false);
       const [selectedModule, setSelectedModule] = useState();
           const [currentPage, setCurrentPage] = useState(1);
-  const {data: studentEnrollment} = useStudentEnrollmentData(currentPage.toString());
+  const {data: studentEnrollment, isLoading} = useStudentEnrollmentData(currentPage.toString());
   const enrollmentApi = studentEnrollment?.data?.data;
   const totalPages = studentEnrollment?.data?.meta?.last_page || 1;
 console.log(enrollmentApi)
@@ -85,6 +86,15 @@ console.log(enrollmentApi)
   const handleServerPageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+   if (isLoading) {
+                return (
+                  <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                             <Loader className="animate-spin h-8 w-8 text-red-700" />
+                        </div>
+                );
+              }
+
     return (
     <div className="w-full bg-white px-[8px]">
           <Table

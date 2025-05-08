@@ -3,6 +3,7 @@ import SelectComponent from '@/components/selectComponent'
 import Table from '@/components/Table'
 import { Button } from '@/components/ui/button'
 import { useStudentPaymentFees } from '@/hooks/useStudent'
+import { Loader } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
@@ -55,7 +56,7 @@ interface Form {
 ];
 
 const PaymentListTable = () => {
-    const {data} = useStudentPaymentFees(true);
+    const {data, isLoading} = useStudentPaymentFees(true);
     const feesApi = data?.data?.map((item: any)=> ({
         studentId: item.student_id,
         name: item.name,
@@ -81,6 +82,14 @@ const PaymentListTable = () => {
         { label: "Fee Status", key: "feeStatus" },
         { label: "Amount", key: "amount" }
       ];
+
+      if (isLoading) {
+        return (
+          <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                     <Loader className="animate-spin h-8 w-8 text-red-700" />
+                </div>
+        );
+      }
       
   return (
     <div className="w-full flex flex-col gap-y-[16px] bg-white">
