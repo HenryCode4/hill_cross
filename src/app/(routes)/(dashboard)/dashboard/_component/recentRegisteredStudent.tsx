@@ -24,7 +24,7 @@ interface Form {
   const columns: Column[] = [
     {
         accessorKey: 'studentId', 
-        header: <div className='w-[178px]'>STUDENT ID</div>, 
+        header: <div className='w-[378px]'>STUDENT ID</div>, 
         width: '10%', 
     },
     {
@@ -39,7 +39,7 @@ interface Form {
     },
     {
         accessorKey: 'paymentDate', 
-        header: <div className='w-[168px]'>PAYMENT DATE</div>, 
+        header: <div className='w-[268px]'>PAYMENT DATE</div>, 
         width: '20%',
     },
     {
