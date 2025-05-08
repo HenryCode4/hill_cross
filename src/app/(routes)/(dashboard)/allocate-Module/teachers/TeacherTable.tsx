@@ -9,6 +9,7 @@ import { useTeacherData } from '@/hooks/useSchool';
 import Image from 'next/image';
 import React, { useState } from 'react'
 import UpdateAllocatedModule from './UpdateTeacher';
+import { Loader } from 'lucide-react';
 
 
 interface school {
@@ -62,7 +63,7 @@ const TeacherTable = () => {
   const [modalOpenEdit, setModalOpenEdit] = useState(false);
   const [selectedModule, setSelectedModule] = useState<any>();
       const [currentPage, setCurrentPage] = useState(1);
-    const {data: teacher} = useAllocateModuleData(
+    const {data: teacher, isLoading} = useAllocateModuleData(
         currentPage.toString()
     );
       const teacherApi = teacher?.data?.data;
@@ -81,6 +82,14 @@ const TeacherTable = () => {
       const handleServerPageChange = (page: number) => {
         setCurrentPage(page);
       };
+
+       if (isLoading) {
+              return (
+                <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                           <Loader className="animate-spin h-8 w-8 text-red-700" />
+                      </div>
+              );
+            }
 
   return (
     <div className="w-full bg-white px-[8px]">
