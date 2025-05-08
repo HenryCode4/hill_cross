@@ -172,14 +172,6 @@ const AssessmentTable = () => {
   const { mutate: approveAssessment } = useApproveAssessment();
   const { mutate: endAssessment } = useEndAssessment();
 
-  if (isLoading) {
-              return (
-                <div className='p-[70px] flex items-center justify-center h-full w-full'>
-                           <Loader className="animate-spin h-8 w-8 text-red-700" />
-                      </div>
-              );
-            }
-
   return (
     <>
       <div className="flex w-full flex-col gap-y-[8px] px-4 pb-2">
@@ -214,136 +206,146 @@ const AssessmentTable = () => {
         </div>
       </div>
 
-      <div className="w-full bg-white px-[8px] pb-[8px]">
-        <Table
-          columns={columns}
-          data={assessmentApi}
-          renderAction={(value) => (
-            <div className="flex w-[160px] items-start gap-x-[8px]">
-              {value.admin_approval === "Pending" ? (
-                <div className="flex items-center gap-x-[8px]">
-                  <Image
-                    key="edit-icon"
-                    src={green}
-                    onClick={() => approveAssessment(value.id)}
-                    alt="Approve icon"
-                  />
-
-                  <Link href={`/e-learning/assessment/${value.id}`}>
+      {
+        isLoading ? (
+           <div className='p-[70px] flex items-center justify-center h-full w-full'>
+                    <Loader className="animate-spin h-8 w-8 text-red-700" />
+               </div>
+        ) : (
+          <div className="w-full bg-white px-[8px] pb-[8px]">
+          <Table
+            columns={columns}
+            data={assessmentApi}
+            renderAction={(value) => (
+              <div className="flex w-[160px] items-start gap-x-[8px]">
+                {value.admin_approval === "Pending" ? (
+                  <div className="flex items-center gap-x-[8px]">
                     <Image
-                      src={visibility}
-                      alt="Visibility icon"
-                      className="h-[24px] w-[24px]"
+                      key="edit-icon"
+                      src={green}
+                      onClick={() => approveAssessment(value.id)}
+                      alt="Approve icon"
                     />
-                  </Link>
-                  <Image
-                    src={edit}
-                    alt="Edit icon"
-                    className="h-[24px] w-[24px]"
-                    onClick={() => {
-                      setSelectedAssessment(value as any);
-                      setModalOpenEdit(true);
-                    }}
-                  />
-                </div>
-              ) : value.admin_approval === "End" ? (
-                <div className="flex items-center gap-x-[8px]">
-                  <Image
-                    key="edit-icon"
-                    src={green}
-                    onClick={() => approveAssessment(value.id)}
-                    alt="Approve icon"
-                  />
-
-                  <Link href={`/e-learning/assessment/${value.id}`}>
+  
+                    <Link href={`/e-learning/assessment/${value.id}`}>
+                      <Image
+                        src={visibility}
+                        alt="Visibility icon"
+                        className="h-[24px] w-[24px]"
+                      />
+                    </Link>
                     <Image
-                      src={visibility}
-                      alt="Visibility icon"
+                      src={edit}
+                      alt="Edit icon"
                       className="h-[24px] w-[24px]"
+                      onClick={() => {
+                        setSelectedAssessment(value as any);
+                        setModalOpenEdit(true);
+                      }}
                     />
-                  </Link>
-
-                  <Image
-                    src={edit}
-                    alt="Edit icon"
-                    className="h-[24px] w-[24px]"
-                    onClick={() => {
-                      setSelectedAssessment(value as any);
-                      setModalOpenEdit(true);
-                    }}
-                  />
-                </div>
-              ) : (
-                <div className="flex items-center gap-x-[8px]">
-                  <Image
-                    key="trash-icon"
-                    src={red}
-                    alt="Trash icon"
-                    className="h-[24px] w-[24px] cursor-pointer"
-                    onClick={() => endAssessment(value.id)}
-                  />
-
-                  <Link href={`/e-learning/assessment/${value.id}`}>
+                  </div>
+                ) : value.admin_approval === "End" ? (
+                  <div className="flex items-center gap-x-[8px]">
                     <Image
-                      src={visibility}
-                      alt="Visibility icon"
-                      className="h-[24px] w-[24px]"
+                      key="edit-icon"
+                      src={green}
+                      onClick={() => approveAssessment(value.id)}
+                      alt="Approve icon"
                     />
-                  </Link>
-
-                  <Image
-                    src={edit}
-                    alt="Edit icon"
-                    className="h-[24px] w-[24px]"
-                    onClick={() => {
-                      setSelectedAssessment(value as any);
-                      setModalOpenEdit(true);
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          )}
-          renderTopic={(item) => (
-            <div className="flex items-start gap-x-[8px]">
-              <Image src={play} alt="play icon" />
-              <p className="underline">{item.topic}</p>
-            </div>
-          )}
-          renderStatus={(item) => (
-            <div className="">
-              <p
-                className={`${item.status === "Pending" && "text-[#5B5B5B]"} ${item.status === "Active" && "text-[#00BF00]"} ${item.status === "End" && "text-[#ED1000]"}`}
-              >
-                {item.status}
-              </p>
-            </div>
-          )}
-          renderAdditionalInfo={(item) => (
-            <div className="">
-              {item.additionalInfo === null ? "-" : item.additionalInfo}
-            </div>
-          )}
-        />
-
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPrevPage={() => {}}
-          onNextPage={() => {}}
-          onPageChange={() => {}}
-          isServerPagination={true}
-          onServerPageChange={handleServerPageChange}
-        />
-
-        {modalOpenEdit && (
-          <UpdateAssessment
-            open={modalOpenEdit}
-            onClose={() => setModalOpenEdit(false)}
-            event={selectedAssessment}
+  
+                    <Link href={`/e-learning/assessment/${value.id}`}>
+                      <Image
+                        src={visibility}
+                        alt="Visibility icon"
+                        className="h-[24px] w-[24px]"
+                      />
+                    </Link>
+  
+                    <Image
+                      src={edit}
+                      alt="Edit icon"
+                      className="h-[24px] w-[24px]"
+                      onClick={() => {
+                        setSelectedAssessment(value as any);
+                        setModalOpenEdit(true);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-x-[8px]">
+                    <Image
+                      key="trash-icon"
+                      src={red}
+                      alt="Trash icon"
+                      className="h-[24px] w-[24px] cursor-pointer"
+                      onClick={() => endAssessment(value.id)}
+                    />
+  
+                    <Link href={`/e-learning/assessment/${value.id}`}>
+                      <Image
+                        src={visibility}
+                        alt="Visibility icon"
+                        className="h-[24px] w-[24px]"
+                      />
+                    </Link>
+  
+                    <Image
+                      src={edit}
+                      alt="Edit icon"
+                      className="h-[24px] w-[24px]"
+                      onClick={() => {
+                        setSelectedAssessment(value as any);
+                        setModalOpenEdit(true);
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+            renderTopic={(item) => (
+              <div className="flex items-start gap-x-[8px]">
+                <Image src={play} alt="play icon" />
+                <p className="underline">{item.topic}</p>
+              </div>
+            )}
+            renderStatus={(item) => (
+              <div className="">
+                <p
+                  className={`${item.status === "Pending" && "text-[#5B5B5B]"} ${item.status === "Active" && "text-[#00BF00]"} ${item.status === "End" && "text-[#ED1000]"}`}
+                >
+                  {item.status}
+                </p>
+              </div>
+            )}
+            renderAdditionalInfo={(item) => (
+              <div className="">
+                {item.additionalInfo === null ? "-" : item.additionalInfo}
+              </div>
+            )}
           />
-        )}
-      </div>
+  
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPrevPage={() => {}}
+            onNextPage={() => {}}
+            onPageChange={() => {}}
+            isServerPagination={true}
+            onServerPageChange={handleServerPageChange}
+          />
+  
+          {modalOpenEdit && (
+            <UpdateAssessment
+              open={modalOpenEdit}
+              onClose={() => setModalOpenEdit(false)}
+              event={selectedAssessment}
+            />
+          )}
+        </div>
+        )
+      }
+
+      
     </>
   );
 };

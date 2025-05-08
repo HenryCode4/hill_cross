@@ -152,14 +152,6 @@ console.log(selectedLesson)
     deleteLesson();
   };
 
-  if (isLoading) {
-              return (
-                <div className='p-[70px] flex items-center justify-center h-full w-full'>
-                           <Loader className="animate-spin h-8 w-8 text-red-700" />
-                      </div>
-              );
-            }
-
   return (
     <>
       <div className="flex w-full flex-col gap-y-[8px] px-4 pb-2">
@@ -194,115 +186,126 @@ console.log(selectedLesson)
         </div>
       </div>
 
-      <div className="w-full bg-white px-[8px] pb-[8px]">
-        <Table
-          columns={columns}
-          data={lessonApi || []}
-          renderAction={(value: any) => (
-            <div className="flex w-full items-center justify-start gap-x-[8px] px-[10px]">
-              {value.status === "Pending" && (
-                <>
-                  <Image
-                    key="edit-icon"
-                    src={green}
-                    alt="Edit icon"
-                    className="h-[27px] w-[24px] cursor-pointer"
-                    onClick={() => approveLesson(value.id)}
-                    // onClick={()=> {
-                    //     setModalOpenEdit(true)
-                    //     setSelectedLesson(value)
-                    // }}
-                  />
-                </>
-              )}
-              {value.status === "Ended" && (
-                <>
-                  <Image
-                    key="edit-icon"
-                    src={green}
-                    alt="Edit icon"
-                    className="h-[27px] w-[24px] cursor-pointer"
-                    onClick={() => approveLesson(value.id)}
-                    // onClick={()=> {
-                    //     setModalOpenEdit(true)
-                    //     setSelectedLesson(value)
-                    // }}
-                  />
-                </>
-              )}
-              {value.status === "Approved" && (
-                <>
-                  <Image
-                    key="edit-icon"
-                    src={red}
-                    alt="Edit icon"
-                    className="h-[27px] w-[24px] cursor-pointer"
-                    onClick={() => endAdminLesson(value.id)}
-                    //   onClick={()=> {
-                    //     setModalOpenEnd(true)
-                    //     setSelectedLesson(value)
-                    // }}
-                  />
-                </>
-              )}
-
-              <Image
-                key="edit-icon"
-                src={visibility}
-                alt="Edit icon"
-                className="h-[27px] w-[24px] cursor-pointer"
-                //   onClick={()=> setModalOpenEdit(true)}
-              />
-
-              <Image
-                key="trash-icon"
-                src={trash}
-                alt="Trash icon"
-                className="h-[24px] w-[24px] cursor-pointer"
-                onClick={()=> {
-                  setModalOpenDelete(true)
-                  setSelectedLesson(value)
-                }}
-              />
-            </div>
-          )}
-          renderTopic={(item) => (
-            <div className="flex items-start gap-x-[8px]">
-              <Image src={play} alt="play icon" />
-              <p className="underline">{item.topic}</p>
-            </div>
-          )}
-          renderStatus={(item) => (
-            <div className="">
-              <p
-                className={`${item.status === "Pending" && "text-[#5B5B5B]"} ${item.status === "Approved" && "text-[#00BF00]"} ${item.status === "Ended" && "text-[#ED1000]"}`}
-              >
-                {item.status}
-              </p>
-            </div>
-          )}
-        />
-
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPrevPage={() => {}}
-          onNextPage={() => {}}
-          onPageChange={() => {}}
-          isServerPagination={true}
-          onServerPageChange={handleServerPageChange}
-        />
-
-        {/* Delete Qualification modal */}
-        {modalOpenDelete && selectedLesson && (
-          <Warning
-            open={modalOpenDelete}
-            onClose={() => setModalOpenDelete(false)}
-            description={`Are you sure you want to delete ${selectedLesson?.module}?`}
-            onConfirm={()=> deleteLesson()}
+      {
+        isLoading ? (
+          <div className='p-[70px] flex items-center justify-center h-full w-full'>
+          <Loader className="animate-spin h-8 w-8 text-red-700" />
+     </div>
+        ) : (
+          <div className="w-full bg-white px-[8px] pb-[8px]">
+          <Table
+            columns={columns}
+            data={lessonApi || []}
+            renderAction={(value: any) => (
+              <div className="flex w-full items-center justify-start gap-x-[8px] px-[10px]">
+                {value.status === "Pending" && (
+                  <>
+                    <Image
+                      key="edit-icon"
+                      src={green}
+                      alt="Edit icon"
+                      className="h-[27px] w-[24px] cursor-pointer"
+                      onClick={() => approveLesson(value.id)}
+                      // onClick={()=> {
+                      //     setModalOpenEdit(true)
+                      //     setSelectedLesson(value)
+                      // }}
+                    />
+                  </>
+                )}
+                {value.status === "Ended" && (
+                  <>
+                    <Image
+                      key="edit-icon"
+                      src={green}
+                      alt="Edit icon"
+                      className="h-[27px] w-[24px] cursor-pointer"
+                      onClick={() => approveLesson(value.id)}
+                      // onClick={()=> {
+                      //     setModalOpenEdit(true)
+                      //     setSelectedLesson(value)
+                      // }}
+                    />
+                  </>
+                )}
+                {value.status === "Approved" && (
+                  <>
+                    <Image
+                      key="edit-icon"
+                      src={red}
+                      alt="Edit icon"
+                      className="h-[27px] w-[24px] cursor-pointer"
+                      onClick={() => endAdminLesson(value.id)}
+                      //   onClick={()=> {
+                      //     setModalOpenEnd(true)
+                      //     setSelectedLesson(value)
+                      // }}
+                    />
+                  </>
+                )}
+  
+                <Image
+                  key="edit-icon"
+                  src={visibility}
+                  alt="Edit icon"
+                  className="h-[27px] w-[24px] cursor-pointer"
+                  //   onClick={()=> setModalOpenEdit(true)}
+                />
+  
+                <Image
+                  key="trash-icon"
+                  src={trash}
+                  alt="Trash icon"
+                  className="h-[24px] w-[24px] cursor-pointer"
+                  onClick={()=> {
+                    setModalOpenDelete(true)
+                    setSelectedLesson(value)
+                  }}
+                />
+              </div>
+            )}
+            renderTopic={(item) => (
+              <div className="flex items-start gap-x-[8px]">
+                <Image src={play} alt="play icon" />
+                <p className="underline">{item.topic}</p>
+              </div>
+            )}
+            renderStatus={(item) => (
+              <div className="">
+                <p
+                  className={`${item.status === "Pending" && "text-[#5B5B5B]"} ${item.status === "Approved" && "text-[#00BF00]"} ${item.status === "Ended" && "text-[#ED1000]"}`}
+                >
+                  {item.status}
+                </p>
+              </div>
+            )}
           />
-        )}
-      </div>
+  
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPrevPage={() => {}}
+            onNextPage={() => {}}
+            onPageChange={() => {}}
+            isServerPagination={true}
+            onServerPageChange={handleServerPageChange}
+          />
+  
+          {/* Delete Qualification modal */}
+          {modalOpenDelete && selectedLesson && (
+            <Warning
+              open={modalOpenDelete}
+              onClose={() => setModalOpenDelete(false)}
+              description={`Are you sure you want to delete ${selectedLesson?.module}?`}
+              onConfirm={()=> deleteLesson()}
+            />
+          )}
+        </div>
+        )
+      }
+
+
+      
     </>
   );
 };
