@@ -387,6 +387,9 @@ export const queryStudentActionMutationFn = async (id: string, action: string) =
     export const deleteAcademicStaff = async (id: string) => 
       await API.delete(`/teachers/${id}`);
 
+    export const activateAcademicStaff = async (id: string) => 
+      await API.get(`/staff/archived/${id}/activate`);
+
     // Role 
     export const getRoles = async () => 
       await API.get(`/roles`);
@@ -431,5 +434,22 @@ export const queryStudentActionMutationFn = async (id: string, action: string) =
       await API.get(`administrators/examinations/${examinationId}/approval`);
     export const endAdminExaminationMutationFn = async (examinationId: string) =>
       await API.get(`administrators/examinations/${examinationId}/end`);
+    export const updateAcademicStaff = async (id: string, payload: any) => {
+      return await API.patch(`teachers/${id}`, payload);
+    };
+    
+
+    export const getAcademicStaffById = async (id: string) => {
+      try {
+          const response = await API.get(`/teachers/${id}`);
+          
+          return response.data.data;  
+      } catch (error) {
+          console.error("Error fetching academic staff:", error);
+          throw error;
+      }
+  };
+  
+
 
     
