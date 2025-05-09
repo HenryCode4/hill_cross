@@ -24,7 +24,6 @@ const HrManagementPage = () => {
   const staffApi = data?.data?.data;
   const totalPages = data?.data?.meta?.last_page || 1;
   
-  console.log(staffApi)
   const handleServerPageChange = (page: number) => {
     setCurrentPage(page);
   };

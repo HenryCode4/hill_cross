@@ -17,6 +17,7 @@ import { Loader } from 'lucide-react';
 
 interface modules {
   school: string;
+  name: string;
   qualifications: number;
   standard: string;
   semester: string;
@@ -38,6 +39,11 @@ interface Column {
 }
 
 const columns: Column[] = [
+  {
+    accessorKey: "name",
+    header: "NAME",
+    width: "20%",
+  },
   {
     accessorKey: "qualifications",
     header: "QUALIFICATIONS",
@@ -80,6 +86,7 @@ const AddNewModule = () => {
 
   const apiData = modules?.map((module: any) => ({
     id: module.id,
+    name: module.name,
     qualifications: module.qualifications,
     school: module.qualification_collection[0]?.school?.name || '_',
     standard: module.standard?.name || '_',
