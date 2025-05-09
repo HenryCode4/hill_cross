@@ -383,6 +383,8 @@ export const queryStudentActionMutationFn = async (id: string, action: string) =
 
     export const createAcademicStaff = async (data: any) => 
       await API.post(`/teachers`, data);
+    export const createNonAcademicStaff = async (data: any) => 
+      await API.post(`/administrators`, data);
 
     export const deleteAcademicStaff = async (id: string) => 
       await API.delete(`/teachers/${id}`);
