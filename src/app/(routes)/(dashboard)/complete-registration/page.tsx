@@ -21,18 +21,19 @@ const CompleteRegistrationPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-    const {data: student} = useStudentPaymentData(
-    currentPage.toString(),
-        // {
-        //     payment_status: tab == "Approve Payment" ? "pending" : "completed",
-        //     // search: searchQuery || undefined
-        // }
-    );
+    // const {data: student} = useStudentPaymentData(
+    // currentPage.toString(),
+    //     // {
+    //     //     payment_status: tab == "Approve Payment" ? "pending" : "completed",
+    //     //     // search: searchQuery || undefined
+    //     // }
+    // );
     
 
   const getActiveComponent = {
     "Approve Payment": (
-      <ApprovePayment student={student} />
+    //   <ApprovePayment student={student} />
+    <></>
     ),
     'Completed': <CompletedPayment />,
     "Track Book Delivery": <TrackBook />,
