@@ -40,6 +40,7 @@ import { Loader } from "lucide-react";
 import useSchoolData from "@/hooks/useSchool";
 import SelectComponent from "@/components/selectComponent";
 import { useStudentContext } from "@/context/studentContext";
+import useQualificationData from "@/hooks/useQualification";
 // import UpdateSchool from "./UpdateSchool";
 
 const StudentMgt = () => {
@@ -122,13 +123,18 @@ const [selectedQualification, setSelectedQualification] = useState<string | unde
     school: item.school?.name,
     qualification: item.qualifications?.name,
   }));
-  console.log(studentOptions)
 
   const { data: school } = useSchoolData();
     // Transform school data into simple array of strings
     const schoolOptions = school?.data?.data?.map((school: { id: string; name: string }) => ({
       id: school.id,
       label: school.name
+    })) || [];
+
+  const {data: qualification } = useQualificationData();
+    const qualificationOptions = qualification?.data?.data?.map((qualification: { id: string; name: string }) => ({
+      id: qualification.id,
+      label: qualification.name
     })) || [];
 
 
@@ -312,11 +318,11 @@ const [selectedQualification, setSelectedQualification] = useState<string | unde
                     }}
               />
               <SelectComponent
-                  items={schoolOptions || []}
-                  placeholder="Select School"
+                  items={qualificationOptions || []}
+                  placeholder="Select qualification"
                   className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                   onChange={(value) => {
-                      setSelectedSchool(value);
+                    setSelectedQualification(value);
                     }}
               />
 
