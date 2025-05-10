@@ -45,9 +45,9 @@ const AcademicStaffGrid = ({staffApi, searchQuery, qualificationFilter}: Academi
 
     const filteredStaffOptions = staffApi?.map((item: any) => ({
       id: item.id,
-      avatar: item.profile.avatar,
+      avatar: item.profile?.avatar,
       name: item.name,
-      qualifications: item.qualifications,
+      qualifications: item.qualifications?.name,
       createdDate: item.date_created,
       email: item.email,
       mode: item.mode,
