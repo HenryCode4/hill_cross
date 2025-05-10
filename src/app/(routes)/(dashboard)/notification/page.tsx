@@ -66,7 +66,6 @@ const NotificationPage = () => {
 
   const {data: notification, isLoading} = usePushNotificationData();
   const notificationApi = notification?.data?.data;
-  console.log(notificationApi)
   const {mutate: resentAction, isPending: isStudentActionLoading,} = useResend(
         {
         onSuccess: () => {

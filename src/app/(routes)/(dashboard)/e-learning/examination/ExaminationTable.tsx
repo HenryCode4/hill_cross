@@ -116,7 +116,6 @@ const ExaminationTable = () => {
     filters.module,
   );
   const examinationApi = data?.data?.data;
-  console.log(examinationApi)
   const examinations = examinationApi?.map((data: any) => ({
     id: data.id,
     file_url: data.file_url,

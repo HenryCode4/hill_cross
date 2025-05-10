@@ -5,7 +5,6 @@ import React from 'react'
 const DashboardList = () => {
     const {data, isLoading} = useDashboardList()
     const financeApi = data?.data?.data;
-    console.log(financeApi)
 
     const finance = [
         {

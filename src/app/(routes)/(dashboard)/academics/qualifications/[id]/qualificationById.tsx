@@ -25,10 +25,8 @@ const QualificationById = () => {
     const params = useParams();
   const qualificationId = params.id as string;
   const [modalOpenEdit, setModalOpenEdit] = useState(false);
-  console.log(qualificationId)
   const {data, isLoading, error} = useQualificationByIdData(qualificationId);
   const qualificationData = data?.data?.data;
-  console.log(qualificationData)
   // const queryClient = useQueryClient();
   //    const { mutate, isPending } = useMutation({
   //       mutationFn: (values: z.infer<typeof schoolFormSchema>) => updateQualificationMutationFn(qualificationId, schooData.id, values),

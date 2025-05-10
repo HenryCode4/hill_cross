@@ -29,7 +29,6 @@ const SchoolId = () => {
   const {data, isLoading, error} = useSchoolByIdData(schoolId);
   const schooData = data?.data?.data;
   const qualificationData = data?.data?.qualifications;
-  console.log(qualificationData)
 
   const queryClient = useQueryClient();
      const { mutate, isPending } = useMutation({

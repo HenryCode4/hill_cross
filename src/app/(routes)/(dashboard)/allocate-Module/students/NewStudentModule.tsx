@@ -39,7 +39,7 @@ const NewStudent = () => {
       const { data: modules } = useModuleData({ request_type: "all" });
 
       const studentApi = student?.data?.data;
-      console.log(studentApi)
+
       const academicCalenderApi = academicCalender?.data?.data;
       const modulesApi = modules?.data?.data;
 

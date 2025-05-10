@@ -43,9 +43,7 @@ const MessagePage = () => {
     });
 
     const onSubmit = (values: z.infer<typeof smsNotificationFormSchema>) => {
-      console.log(values)
       const payload = { ...values, type: messageType };
-      console.log(payload);
       mutate(payload, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['smsNotification'] });

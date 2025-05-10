@@ -120,10 +120,8 @@ interface Form {
         
         setFilteredData(filtered);
         setIsFiltered(true);
-        console.log("Filtered Results:", filtered);
-    };
 
-    console.log("smsApi", smsApi)
+    };
 
     if (isLoading) {
              return (

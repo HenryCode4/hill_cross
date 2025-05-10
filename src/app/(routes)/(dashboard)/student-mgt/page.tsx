@@ -86,7 +86,6 @@ const StudentMgt = () => {
   } = useStudentContext();
 
   const studentApi = students;
-  console.log(studentApi);
 
   useEffect(() => {
     setCurrentPage(1);

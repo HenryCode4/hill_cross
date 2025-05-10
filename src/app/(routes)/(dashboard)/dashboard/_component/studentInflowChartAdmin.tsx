@@ -23,7 +23,6 @@ const StudentInflowChartAdmin = () => {
    const { data, isLoading } = useStudentInflowAdminData(filterYear)
 
     const apiData = data?.data?.total_amount || []
-    console.log(apiData)
 
        // Just updates the dropdown selection, doesn't trigger API call
   const handleYearChange = (year: string) => {

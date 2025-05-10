@@ -34,7 +34,6 @@ const NewTeacher = () => {
       const academicCalenderApi = academicCalender?.data?.data;
       const modulesApi = modules?.data?.data;
 
-      console.log(academicCalenderApi)
       const teacherOption = teacherApi?.map((item: any)=> ({
         id: item.id,
         label: item.name

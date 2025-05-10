@@ -75,7 +75,6 @@ const PaymentListPage = () => {
 
      const {data:list} = useDashboardList()
         const financeApi = list?.data?.data;
-        console.log(financeApi)
     
         const finance = [
             {

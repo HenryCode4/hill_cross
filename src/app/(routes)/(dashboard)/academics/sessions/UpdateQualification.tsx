@@ -37,7 +37,6 @@ const UpdateSchool = ({
   onClose,
   event,
 }: UpdateQualificationTriggerProps) => {
-console.log(event)
    const queryClient = useQueryClient();
     const { mutate, isPending } = useMutation({
       mutationFn: (values: z.infer<typeof updateSessionFormSchema>) =>

@@ -144,7 +144,7 @@ const NewQualification = () => {
                                 placeholder="Select School"
                                 className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                                 onChange={(value) => {
-                                    console.log('Selected school ID:', value); // This will show the original ID
+                      
                                     setSchoolState(value);
                                   }}
                             />
