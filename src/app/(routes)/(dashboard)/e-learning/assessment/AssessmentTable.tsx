@@ -26,6 +26,7 @@ import { useTeacherData } from "@/hooks/useSchool";
 import useApproveAssessment from "@/hooks/useApproveAssessment";
 import useEndAssessment from "@/hooks/useEndAssessment";
 import { Loader } from "lucide-react";
+import CustomDropdownMenu from "@/components/customDropdownMenu";
 
 interface assessment {
   module: string;
@@ -298,8 +299,42 @@ const AssessmentTable = () => {
                         setModalOpenEdit(true);
                       }}
                     />
+
+                   
                   </div>
                 )}
+                 <CustomDropdownMenu
+                                                        trigger={
+                                                          <Image
+                                                            src={option}
+                                                            alt="Option icon"
+                                                            className="h-[24px] w-[24px]"
+                                                          />
+                                                        }
+                                                        options={[
+                                                          // {
+                                                          //   label: "Details",
+                                                          //   onClick: () => {
+                                                          //     router.push(`/e-learning/assignments/${value.id}`);
+                                                          //   },
+                                                          // },
+                                                          {
+                                                            label: "Open File",
+                                                            onClick: () => window.open(value.file_url, "_blank"),
+                                                          },
+                                                          {
+                                                            label: "Edit File",
+                                                            onClick: () => {
+                                                              setSelectedAssessment(value as any);
+                                                              setModalOpenEdit(true);
+                                                            },
+                                                          },
+                                                          // {
+                                                          //   label: "End Assignment",
+                                                          //   onClick: () => console.log("End Assignment clicked"),
+                                                          // },
+                                                        ]}
+                                                      />
               </div>
             )}
             renderTopic={(item) => (

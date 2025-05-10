@@ -87,6 +87,13 @@ export const getStudentInflowDataQueryFn = async (year?: string) => {
   return await API.get(endpoint);
 };
 
+export const getStudentInflowDataAdminQueryFn = async (year?: string) => {
+  const endpoint = year 
+    ? `/admin/payment/students-payments-inflow?year=${year}`
+    : '/admin/payment/students-payments-inflow';
+  return await API.get(endpoint);
+};
+
 export const getStudentPaymentInflowDataQueryFn = async (year?: string) => {
   const endpoint = year 
     ? `/admin/payment/students-payments-inflow?year=${year}`
@@ -158,10 +165,22 @@ export const newSemesterMutation = async (body: createSemesterFormType) =>
 
 
 //modules?fetch=all
-export const getModuleDataQueryFn = async (page?: string) => {
- const data = await API.get(`/modules?page=${page}&qualification=all`);
- return data
-}
+export const getModuleDataQueryFn = async (page?: string, request_type?: string) => {
+  // Build query parameters conditionally
+  const params = new URLSearchParams();
+  
+  if (page) params.append('page', page);
+  if (request_type) params.append('request_type', request_type);
+  params.append('qualification', 'all'); // This seems to be a constant
+  
+  const queryString = params.toString();
+  const endpoint = `/modules${queryString ? `?${queryString}` : ''}`;
+  
+  const data = await API.get(endpoint,  {
+    timeout: 120000 // 2 minutes
+  });
+  return data;
+};
  
 export const newModuleMutationFn = async (data: NewModuleType) =>
   await API.post(`/modules`, data);
@@ -234,7 +253,12 @@ export const updateExaminationMutationFn = async (id: string, data: UpdateExamin
   await API.patch(`/administrators/examinations/${id}`, data);
 
 //AcademicCalendar
-export const getAcademicCalendarDataQueryFn = async () => await API.get(`/academic-calenders`);
+export const getAcademicCalendarDataQueryFn = async (status?: string) => {
+  const endpoint = status ? `/academic-calenders?status=${status}`
+  : `/academic-calenders`
+  const data = await API.get(endpoint);
+  return data
+} 
 
 export const newCalendarMutationFn = async (sessionId: string, data: NewCalendarType) =>
   await API.post(`/academic-sessions/${sessionId}/academic-calenders`, data);

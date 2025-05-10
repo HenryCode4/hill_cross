@@ -24,6 +24,7 @@ import SelectComponent from "@/components/selectComponent";
 import useApproveExamination from "@/hooks/useApproveExamination";
 import useEndExamination from "@/hooks/useEndExamination";
 import { Loader } from "lucide-react";
+import CustomDropdownMenu from "@/components/customDropdownMenu";
 
 interface assessment {
   module: string;
@@ -118,6 +119,7 @@ const ExaminationTable = () => {
   console.log(examinationApi)
   const examinations = examinationApi?.map((data: any) => ({
     id: data.id,
+    file_url: data.file_url,
     module: data.module.name,
     teacher: data.teacher,
     academicCalender: data.academic_calender.name,
@@ -286,6 +288,7 @@ const ExaminationTable = () => {
                 </div>
               )}
 
+
                   <Image
                     src={edit}
                     alt="Edit icon"
@@ -295,6 +298,39 @@ const ExaminationTable = () => {
                       setModalOpenEdit(true);
                     }}
                   />
+
+                   <CustomDropdownMenu
+                      trigger={
+                        <Image
+                          src={option}
+                          alt="Option icon"
+                          className="h-[24px] w-[24px]"
+                        />
+                      }
+                      options={[
+                        // {
+                        //   label: "Details",
+                        //   onClick: () => {
+                        //     router.push(`/e-learning/assignments/${value.id}`);
+                        //   },
+                        // },
+                        {
+                          label: "Open File",
+                          onClick: () => window.open(item.file_url, "_blank"),
+                        },
+                        {
+                          label: "Edit File",
+                          onClick: () => {
+                            setSelectedExamination(item as any);
+                            setModalOpenEdit(true);
+                          },
+                        },
+                        // {
+                        //   label: "End Assignment",
+                        //   onClick: () => console.log("End Assignment clicked"),
+                        // },
+                      ]}
+                    />
             </div>
           )}
           renderTopic={(item) => (

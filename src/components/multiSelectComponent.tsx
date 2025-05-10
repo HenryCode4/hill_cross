@@ -1,98 +1,119 @@
-import React, { useState } from 'react'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { cn } from "@/lib/utils";
 
-interface Items {
+interface Item {
   id: string;
   label: string;
 }
 
-interface MultiSelectProps {
+interface CustomMultiSelectProps {
   placeholder: string;
-  items: Items[] | string[];
-  onChange?: (values: string[]) => void;
-  border?: boolean;
+  items: Item[];
+  value: string[];
+  onChange: (values: string[]) => void;
   className?: string;
 }
 
-const MultiSelectComponent = ({
+const CustomMultiSelectComponent = ({
   placeholder,
-  items = [],
+  items,
+  value,
   onChange,
-  border,
-  className
-}: MultiSelectProps) => {
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-
-  const handleValueChange = (value: string) => {
-    const newValues = selectedValues.includes(value)
-      ? selectedValues.filter(v => v !== value)
-      : [...selectedValues, value];
-    
-    setSelectedValues(newValues);
-    onChange?.(newValues);
+  className,
+}: CustomMultiSelectProps) => {
+  const toggleItem = (id: string) => {
+    if (value.includes(id)) {
+      onChange(value.filter((v) => v !== id));
+    } else {
+      onChange([...value, id]);
+    }
   };
 
-  const renderItem = (item: Items | string) => {
-    if (typeof item === 'string') {
-      return {
-        id: item,
-        label: item,
-        value: item
-      }
-    }
-    return {
-      id: item.id,
-      label: item.label,
-      value: item.id
-    }
-  }
+  const removeItem = (id: string) => {
+    onChange(value.filter((v) => v !== id));
+  };
+
+  const selectedLabels = items?.filter((i) => value.includes(i.id));
 
   return (
-    <div className={`${border && ("border rounded-[8px]")} relative z-[99] w-full`}>
-      <Select onValueChange={handleValueChange}>
-        <SelectTrigger className={cn("w-full h-[43px]", className)}>
-          <SelectValue 
-            className='text-[#696A6A] text-[1rem] outline-none focus:outline-none' 
-            placeholder={
-              selectedValues.length 
-                ? `${selectedValues.length} selected`
-                : placeholder
-            } 
-          />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            {items.map((item) => {
-              const renderedItem = renderItem(item);
-              return (
-                <SelectItem 
-                  className={cn(
-                    'hover:bg-[#F8F8F8]',
-                    selectedValues.includes(renderedItem.value) && 'bg-[#F0F0F0]'
-                  )}
-                  key={renderedItem.id} 
-                  value={renderedItem.value}
-                >
-                  <div className="flex items-center gap-2 w-full">
-                    <div className={cn(
-                      'flex-shrink-0 w-4 h-4 border rounded flex items-center justify-center',
-                      selectedValues.includes(renderedItem.value) && 'bg-primary border-primary'
-                    )}>
-                      {selectedValues.includes(renderedItem.value) && (
-                        <span className="text-white text-xs">✓</span>
-                      )}
-                    </div>
-                    <span className="truncate max-w-[150px] xl:max-w-full">{renderedItem.label}</span>
-                  </div>
-                </SelectItem>
-              )
-            })}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
-  )
-}
+    <div className={cn("relative w-full", className)}>
+      {/* Dropdown Trigger Button */}
+      <details className="w-full rounded border border-[#AACEC9] bg-white">
+        <summary className="cursor-pointer px-4 py-2 select-none flex justify-between items-center">
+          <span className="text-[#696A6A]">
+            {value.length > 0 ? `${value.length} selected` : placeholder}
+          </span>
+          <svg
+            className="w-4 h-4 ml-2"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
 
-export default MultiSelectComponent
+        {/* Dropdown Options */}
+        <div className="max-h-[200px] overflow-y-auto border-t">
+          {items?.map((item) => {
+            const checked = value.includes(item.id);
+            return (
+              <div
+                key={item.id}
+                onClick={() => toggleItem(item.id)}
+                className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
+                <div
+                  className={cn(
+                    "w-4 h-4 border rounded flex items-center justify-center mr-2",
+                    checked && "bg-primary border-primary text-white"
+                  )}
+                >
+                  {checked && <span className="text-xs">✓</span>}
+                </div>
+                <span>{item.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </details>
+
+      {/* Selected Tags */}
+      {selectedLabels?.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {selectedLabels?.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center bg-gray-100 px-2 py-1 rounded-md text-sm"
+            >
+              <span className="mr-1">{item.label}</span>
+              <button
+                type="button"
+                onClick={() => removeItem(item.id)}
+                className="text-gray-500 hover:text-gray-700 focus:outline-none"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CustomMultiSelectComponent;
