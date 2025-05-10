@@ -19,7 +19,6 @@ import NewTeacher from "./NewTeacher";
 // import UpdateSchool from "./UpdateSchool";
 
 
-
 const SchoolsPage = () => {
  
   

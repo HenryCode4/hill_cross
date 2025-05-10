@@ -13,7 +13,7 @@ import {
 } from "@/assets";
 import Header from "@/components/header";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Pagination from "@/components/pagination";
 import {
@@ -39,7 +39,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import useSchoolData from "@/hooks/useSchool";
 import SelectComponent from "@/components/selectComponent";
-import useQualificationData from "@/hooks/useQualification";
+import { useStudentContext } from "@/context/studentContext";
 // import UpdateSchool from "./UpdateSchool";
 
 const StudentMgt = () => {
@@ -57,24 +57,59 @@ const StudentMgt = () => {
   const [selectedSchool, setSelectedSchool] = useState<string | undefined>(undefined);
 const [selectedQualification, setSelectedQualification] = useState<string | undefined>(undefined);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: student, isLoading } = useStudentData(currentPage.toString(), {
-    admission_status: studentStatus,
-    search: searchQuery || undefined,
-    ...(financialStatus !== undefined && { financial_status: financialStatus }),
-    ...(status !== undefined && { status: status }),
-    ...(registrationStatus !== undefined && { registration_status: registrationStatus }),
-    ...(selectedSchool !== undefined && { school: selectedSchool }),
-    ...(selectedQualification !== undefined && { qualification: selectedQualification }),
-  });
+  // const { data: student, isLoading } = useStudentData(currentPage.toString(), {
+  //   admission_status: studentStatus,
+  //   search: searchQuery || undefined,
+  //   ...(financialStatus !== undefined && { financial_status: financialStatus }),
+  //   ...(status !== undefined && { status: status }),
+  //   ...(registrationStatus !== undefined && { registration_status: registrationStatus }),
+  //   ...(selectedSchool !== undefined && { school: selectedSchool }),
+  //   ...(selectedQualification !== undefined && { qualification: selectedQualification }),
+  // });
 
-  const studentApi = student?.data?.data;
-  const totalPages = student?.data?.meta?.last_page || 1;
+  // const studentApi = student?.data?.data;
+
+  const {
+    students,
+    setFilters,
+    currentPage,
+    setCurrentPage,
+    isLoading,
+    totalPages
+  } = useStudentContext();
+
+  const studentApi = students;
+  console.log(studentApi)
+
+  useEffect(() => {
+    setCurrentPage(1);
+
+    setFilters({
+      admission_status: studentStatus,
+      search: searchQuery || undefined,
+      ...(financialStatus !== undefined && { financial_status: financialStatus }),
+      ...(status !== undefined && { status: status }),
+      ...(registrationStatus !== undefined && { registration_status: registrationStatus }),
+      ...(selectedSchool !== undefined && { school: selectedSchool }),
+      ...(selectedQualification !== undefined && { qualification: selectedQualification }),
+    });
+  }, [
+    studentStatus,
+    searchQuery,
+    financialStatus,
+    status,
+    registrationStatus,
+    selectedSchool,
+    selectedQualification,
+    setFilters
+  ]);
+
   const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
   const studentOptions = studentApi?.map((item: any, index: number) => ({
     id: item.id,
-    avatar: item.profile.avatar || avatars[index % avatars.length],
+    avatar: item.profile?.avatar || avatars[index % avatars.length],
     name: item.name,
     phoneNumber: item.phone_number,
     studentId: item.student_id,
@@ -84,9 +119,10 @@ const [selectedQualification, setSelectedQualification] = useState<string | unde
     creationDate: item.date_created,
     admissionStatus: item.admission_status,
     status: item.status,
-    school: item.school.name,
-    qualification: item.qualifications,
+    school: item.school?.name,
+    qualification: item.qualifications?.name,
   }));
+  console.log(studentOptions)
 
   const { data: school } = useSchoolData();
     // Transform school data into simple array of strings
@@ -94,13 +130,6 @@ const [selectedQualification, setSelectedQualification] = useState<string | unde
       id: school.id,
       label: school.name
     })) || [];
-
-     const {data: qualification} = useQualificationData();
-      const qualificationApi = qualification?.data?.data;
-      const qualificationOptions = qualificationApi?.map((school: { id: string; name: string }) => ({
-        id: school.id,
-        label: school.name
-      }))
 
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -246,7 +275,9 @@ const [selectedQualification, setSelectedQualification] = useState<string | unde
                   </SelectContent>
                 </Select>
               </div>
-              <div className="w-full border border-[#AACEC9]">
+              {
+                tab === 1 && (
+                  <div className="w-full border border-[#AACEC9]">
                 <Select onValueChange={(value) => setRegistrationStatus(value)}>
                   <SelectTrigger className="h-[43px] w-full bg-transparent outline-none">
                     <SelectValue
@@ -265,6 +296,9 @@ const [selectedQualification, setSelectedQualification] = useState<string | unde
                   </SelectContent>
                 </Select>
               </div>
+                )
+              }
+              
             </div>
 
             <div className="flex h-[56px] w-full flex-1 items-center gap-x-4 overflow-hidden rounded-[8px] text-[20px] text-[#B0B0B0] xl:w-[457px]">
@@ -272,17 +306,17 @@ const [selectedQualification, setSelectedQualification] = useState<string | unde
               <SelectComponent
                   items={schoolOptions || []}
                   placeholder="Select School"
-                  className="h-[48px] rounded-[8px] border border-[#AACEC9] w-full"
+                  className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                   onChange={(value) => {
                       setSelectedSchool(value);
                     }}
               />
               <SelectComponent
-                  items={qualificationOptions || []}
-                  placeholder="Select Qualification"
-                  className="h-[48px] rounded-[8px] border border-[#AACEC9] w-full"
+                  items={schoolOptions || []}
+                  placeholder="Select School"
+                  className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                   onChange={(value) => {
-                    setSelectedQualification(value);
+                      setSelectedSchool(value);
                     }}
               />
 

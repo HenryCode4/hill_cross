@@ -1,3 +1,4 @@
+import CustomMultiSelectComponent from "@/components/multiSelectComponent";
 import MultiSelectComponent from "@/components/multiSelectComponent";
 import SelectComponent from "@/components/selectComponent";
 import { Button } from "@/components/ui/button";
@@ -56,7 +57,7 @@ const UpdateAllocatedModule = ({
 console.log(event)
   const {data: student} = useStudentData();
         const {data: academicCalender} = useAcademicCalendarData()
-        const {data: modules} = useModuleData()
+        const { data: modules } = useModuleData({ request_type: "all" });
   
         const studentApi = student?.data?.data;
         const academicCalenderApi = academicCalender?.data?.data;
@@ -86,14 +87,31 @@ console.log(event)
 
   // Update form values when event changes
   useEffect(() => {
-    if (event) {
-      form.reset({
-        student_id: event.student_id || "",
-      academic_calender_id: event.academic_calender_id || "",
-      modules: event.module ? [event.module] : [],
-      });
-    }
-  }, [event, form]);
+     if (event) {
+       let moduleIds: string[] = [];
+   
+       if (typeof event.module === "string") {
+         // Split by commas and 'and'
+         const rawNames = event.module
+           .split(/,| and /i)
+           .map((name: string) => name.trim());
+   
+         // Match labels to find module IDs
+         moduleIds = modulesOption
+           ?.filter((mod: any) => rawNames.includes(mod.label))
+           .map((mod: any) => mod.id) ?? [];
+       } else if (Array.isArray(event.module)) {
+         moduleIds = event.module;
+       }
+   
+       form.reset({
+         student_id: event.student_id || "",
+         academic_calender_id: event.academic_calender_id || "",
+         modules: moduleIds,
+       });
+     }
+   }, [event, form, modulesOption]);
+   
 
   const onSubmit = (values: z.infer<typeof allocateStudentModuleFormSchema>) => {
     mutate(values, {
@@ -191,14 +209,13 @@ console.log(event)
                           Select Modules
                         </FormLabel>
                         <FormControl>
-                          <MultiSelectComponent
-                            items={modulesOption}
-                            placeholder={`${field.value && ["Modules have been selected"]}` || "Select Modules"}
-                            className="h-[48px] rounded-[8px] border border-[#AACEC9]"
-                            onChange={(values) => {
-                              field.onChange(values);
-                            }} // Handle array of values
-                          />
+                           <CustomMultiSelectComponent
+                              placeholder="Select Modules"
+                              items={modulesOption}
+                              value={field.value}
+                              onChange={(values) => field.onChange(values)}
+                              className="h-[auto]"
+                            />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

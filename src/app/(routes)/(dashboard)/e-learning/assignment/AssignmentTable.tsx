@@ -105,7 +105,9 @@ const AssignmentTable = () => {
     status: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
+
   const router = useRouter();
+  
   const { data, isLoading } = useAssignmentData(
     currentPage.toString(),
     filters.status,

@@ -79,7 +79,7 @@ const AddNewModule = () => {
   const [selectedModule, setSelectedModule] = useState<{id: string, school: string}>();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, isLoading } = useModuleData(currentPage.toString());
+  const { data, isLoading } = useModuleData({ page: currentPage.toString() });
   const modules = data?.data?.data;
 
   const totalPages = data?.data?.meta?.last_page || 1;

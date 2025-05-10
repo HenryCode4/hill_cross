@@ -22,6 +22,7 @@ export default function RootLayout({
         className={`antialiased`}
       >
         <QueryProvider>
+          
           {children}
           <Toaster />
         </QueryProvider>
