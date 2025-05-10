@@ -10,7 +10,7 @@ import CompletedPayment from './_components/CompletedPayment'
 import TrackBook from './_components/TrackBook'
 import Pagination from '@/components/pagination'
 import { useStudentPaymentData } from '@/hooks/useFinalRegistration'
-import UploadModal from './_components/uploadModal'
+import UploadModal from './_components/UploadModal'
 
 type Tab = "Approve Payment" | "Completed" | "Track Book Delivery"
 

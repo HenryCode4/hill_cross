@@ -6,21 +6,33 @@ interface selectProps {
     placeholder: string;
     title?: string;
     required?: string
-    onChange?: (value: {label:string,key:string}) => void;
+    onChange?: (value: {label:string,key:string},index?:number) => void;
     defaultValue?: string;
     value?: string;
 }
 
 const SelectPage2 = ({data, placeholder, title, required, onChange, defaultValue , value}: selectProps) => {
 
-    const handleValueChange = (selected: string) => {
-        const selectedItem = data.find(
-            (item) => item.label.toLowerCase() === selected
-        );
-        if (selectedItem && onChange) {
-            onChange(selectedItem);
-        }
-    };
+  const handleValueChange = (selected: string) => {
+    console.log("new");
+    
+    console.log({selected});
+    
+    let index = 0
+      const selectedItem = data.find(
+          (item, i) =>{
+            index = i;
+            return item.label.toLowerCase() === selected.toLowerCase()
+          }
+      );
+
+      console.log({selectedItem});
+      
+
+      if (selectedItem && onChange) {
+          onChange(selectedItem,index);
+      }
+  };
 
   return (
     <div>
@@ -29,7 +41,7 @@ const SelectPage2 = ({data, placeholder, title, required, onChange, defaultValue
         {title} <span className="text-[#930C02]">{required}</span>
       </label>
 
-      <Select onValueChange={handleValueChange} defaultValue={defaultValue}>
+      <Select onValueChange={handleValueChange} value={value}>
         <div className="h-full w-full rounded-[8px] border border-[#CEAAAA] bg-[#FCF9F9]">
           <SelectTrigger className="h-[43px] w-full bg-transparent outline-none">
             <SelectValue
@@ -41,7 +53,7 @@ const SelectPage2 = ({data, placeholder, title, required, onChange, defaultValue
         <SelectContent>
           <SelectGroup>
             {data.map((item) => (
-              <SelectItem key={item.key} value={item.label.toLowerCase() || item.key}>
+              <SelectItem key={item.key} value={item.label}>
                 {item.label}
               </SelectItem>
             ))}

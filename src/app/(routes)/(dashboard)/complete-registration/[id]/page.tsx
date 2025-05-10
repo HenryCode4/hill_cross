@@ -18,13 +18,14 @@ import PortalCreation from "../_components/PortalCreation";
 import ConfirmPayment from "../_components/ConfirmPayment";
 import BookProcess from "../_components/BookProcess";
 import ConfirmLetter from "../_components/ConfirmLetter";
+import PaymentHistory from "../_components/PaymentHistory";
 
-type ActiveProps = "Registration" | "Student Details" | "Submission of Document" | "Confirmation of Admission" | "Portal Creation" | "Payment Confirmation" | "Books Process" | "Confirmation Letter"
+type ActiveProps =  "Payment History" | "Registration" | "Student Details" | "Submission of Document" | "Confirmation of Admission" | "Portal Creation" | "Payment Confirmation" | "Books Process" | "Confirmation Letter"
 
 const page = () => {
   const pathname = usePathname();
   
-  const [active,setActive] = useState<ActiveProps>("Registration");
+  const [active,setActive] = useState<ActiveProps>("Payment History");
 
   const onSave = (name:ActiveProps) => {
     setActive(name);
@@ -32,6 +33,9 @@ const page = () => {
   
   const details = ['Student ID','Registration ID','Amount Paid']
   const links = [
+    {
+        name: "Payment History"
+    },
       {  
           name: "Registration",
           link: `/complete-registration/1/registration`
@@ -66,6 +70,7 @@ const page = () => {
       }];
   
   const renderItem = {
+    "Payment History": <PaymentHistory />,
     "Registration": (<Registration save={() => setActive("Student Details")} />),
     "Student Details": <StudentDetails save={() => setActive("Submission of Document")}/>,
     "Submission of Document": <SubmitDocs save={() => setActive("Confirmation of Admission")}/>,

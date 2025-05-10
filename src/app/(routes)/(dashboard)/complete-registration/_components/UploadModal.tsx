@@ -22,7 +22,23 @@ type UploadModalProps = {
 
 const UploadModal = ({showModal,onClose}:UploadModalProps) => {
 
-    const [formData,setFormData] =  useState({studentName:"",student_id:"",fee_category:"",amount_paid:"",file_url:"",file_name:""});
+    const [formData,setFormData] =  useState({studentName:"",student_id:"",payment_type:"",amount_paid:"",file_url:"",file_name:"",index:0,msg:""});
+
+    const paymentsData = [
+        {label:"Registration Fee (R 1,000)",key: "1,000"},
+        {label:"Student Card (R 250)",key: "250"},
+        {label:"Both (R 1,250",key: "1,250"},
+    ]
+
+    const checkAmount = () => {
+        if(formData.amount_paid > paymentsData[formData.index].label){
+            setFormData({...formData,msg:"Amount entered is too large"})
+        }else if(formData.amount_paid < paymentsData[formData.index].label){
+            setFormData({...formData,msg:`Remaining balance: ${Number(paymentsData[formData.index].key) - Number(formData.amount_paid)}`})
+        }else{
+            setFormData({...formData,msg:""})
+        }
+    }
 
       const fileInputRef = useRef<HTMLInputElement>(null);
       
@@ -35,16 +51,18 @@ const UploadModal = ({showModal,onClose}:UploadModalProps) => {
     const {data: students,isLoading} = useAllStudents();
     // const data = students?.data.data.map((student:any) => ({label:`${student.first_name} ${student.last_name}`,key:student.id}));
 
+    
+
     const data = useMemo(() => {
         return students?.data.data.map((student: any) => ({
-          label: `${student.first_name} ${student.last_name}`,
+          label: `${student.first_name} ${student.last_name} - ${student.student_id}`,
           key: student.student_id,
         })) || [];
       }, [students]);
 
+      
       console.log({data});
       
-
     const { getPresignedUrl, isLoading: loading } = usePresignedUrl({
         onSuccess: (url,file) => {
           setFormData({...formData,file_url:url,file_name:file.name})
@@ -74,7 +92,13 @@ const UploadModal = ({showModal,onClose}:UploadModalProps) => {
     };
 
     const handleStudentChange = (value: {label:string,key:string}) => {
+        console.log({value});
+        
         setFormData({...formData,studentName:value.label,student_id:value.key})
+    };
+
+    const handlePaymentChange = (value: {label:string,key:string},index:number | undefined) => {
+        setFormData({...formData,payment_type:value.label,index:index!})
     };
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
@@ -82,40 +106,43 @@ const UploadModal = ({showModal,onClose}:UploadModalProps) => {
         setFormData({...formData,[name]:value});
     }
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: uploadStudentPatment,
-    });
+    console.log({formData,data});
+    
 
-    const onSubmit = (e:any) => {
-        e.preventDefault();
-        console.log({formData});
+    // const { mutate, isPending } = useMutation({
+    //     mutationFn: uploadStudentPatment,
+    // });
+
+    // const onSubmit = (e:any) => {
+    //     e.preventDefault();
+    //     console.log({formData});
         
-        mutate(formData, {
-            onSuccess: (response) => {
-                console.log({response});
+    //     mutate(formData, {
+    //         onSuccess: (response) => {
+    //             console.log({response});
                 
-            // if (response.data.mfaRequired) {
-            //   router.replace(`/verify-mfa?email=${values.email}`);
-            //   return;
-            // }
-            // queryClient.invalidateQueries({ queryKey: ['allocateStudentModuleData'] });
-            // toast({
-            //     title: "Success",
-            //     description: "Module added successfully",
-            //     variant: "default",
-            //     });
-            // setModalOpen(false);
-            },
-            onError: (error) => {
-            console.log(error.message);
-            // toast({
-            //     title: "Error",
-            //     description: error.message,
-            //     variant: "destructive",
-            // });
-            },
-        });
-    };
+    //         // if (response.data.mfaRequired) {
+    //         //   router.replace(`/verify-mfa?email=${values.email}`);
+    //         //   return;
+    //         // }
+    //         // queryClient.invalidateQueries({ queryKey: ['allocateStudentModuleData'] });
+    //         // toast({
+    //         //     title: "Success",
+    //         //     description: "Module added successfully",
+    //         //     variant: "default",
+    //         //     });
+    //         // setModalOpen(false);
+    //         },
+    //         onError: (error) => {
+    //         console.log(error.message);
+    //         // toast({
+    //         //     title: "Error",
+    //         //     description: error.message,
+    //         //     variant: "destructive",
+    //         // });
+    //         },
+    //     });
+    // };
         
     
       
@@ -132,38 +159,33 @@ const UploadModal = ({showModal,onClose}:UploadModalProps) => {
                     <SelectPage2
                         data={data}
                         // data={[]}
-                        title={"Student Name"}
-                        placeholder="Enter Student Name"
-                        defaultValue={formData.studentName}
-                        onChange={handleStudentChange}
+                        title={"Student ID"}
+                        placeholder="Enter Student ID"
+                        onChange={(value) => handleStudentChange(value)}
+                        value={formData.studentName}
                         
                     />
+
+                    <SelectPage2
+                        data={paymentsData}
+                        title={"For Book Payment"}
+                        placeholder="Enter Payment Type"
+                        onChange={(value,index) => handlePaymentChange(value,index)}
+                        value={formData.payment_type}
+                    />
+
                     <div className="grid gap-2">
-                        <label htmlFor="fee_category">What are you Paying?</label>
-                        <input 
-                        type="text" 
-                        name="fee_category" 
-                        className="h-[48px] px-2 rounded-[8px] outline outline-1 outline-[#AACEC9] focus-visible:outline w-full" 
-                        value={formData.fee_category} 
-                        placeholder="What are you paying?"
-                        onChange={handleChange} />
-                    </div>
-                    <div className="grid gap-2">
-                        <label htmlFor="amount_paid">Amount Paid</label>
+                        <label htmlFor="amount_paid" className="text-base font-semibold text-[#1E1E1E]">Amount paid {formData.payment_type && `(${formData.payment_type.split("(")[0].trim()})`}</label>
                         <input 
                         type="text" 
                         name="amount_paid" 
-                        className="h-[48px] px-2 rounded-[8px] outline outline-1 outline-[#AACEC9] focus-visible:outline" 
-                        value={formData.amount_paid}
+                        className="h-[48px] px-2 rounded-[8px] outline outline-1 outline-[#AACEC9] focus-visible:outline w-full" 
+                        value={formData.amount_paid} 
                         placeholder="Enter Amount"
                         onChange={handleChange} />
+                        <p >{formData.msg && formData.msg}</p>
                     </div>
-                    <SelectPage
-                        data={["Fully Paid","Partially Paid"]}
-                        title={"For Book Payment"}
-                        placeholder="Full or Partially Paid"
-                    />
-
+                    
                     <input
                     type="file"
                     ref={fileInputRef}
@@ -172,21 +194,24 @@ const UploadModal = ({showModal,onClose}:UploadModalProps) => {
                     className="hidden"
                     />
 
-                    <div onClick={handleClick}>
-                        <p className="text-sm text-gray-600">Click to upload PDF, DOC or DOCX (max. 1MB)</p>
-                        <ul className="mt-2 space-y-1">
-                            <li className="flex justify-between items-center text-sm">
-                            {formData.file_name}
-                            </li>
-                        </ul>
-                        {loading && (
+                    <p className="text-base font-semibold text-[#1E1E1E]">Upload Proof of payment</p>
+                    <div onClick={handleClick} className="w-full border border-[#CEAAAA] flex items-center rounded-md overflow-clip cursor-pointer">
+                        <div className="w-fit px-4 py-4 bg-[#F2F2F2] text-[#4F4F4F] mr-2 text-sm">Choose File</div>
+                        <div className="flex-1 flex justify-between pr-2 items-center">
+                            <p className="text-[#888888] text-sm">Upload your proof of payment</p>
+                            {loading && (
                             <Loader className="h-4 w-4 animate-spin text-gray-400" />
                         )}
+                        </div>
+                        {/* {!formData.file_name ? <p className="text-[#888888] text-sm">Upload your proof of payment</p>
+                        : <p>{formData.file_name}</p>} */}
                     </div>
+                    <p>{formData.file_name}</p>
+
                     <button
                         type="submit"
-                        className="h-[48px] w-[161px] rounded-[8px] bg-[#ED1000] text-white"
-                        onClick={onSubmit}
+                        className="h-[48px] w-[161px] rounded-[8px] bg-[#ED1000] text-white mx-auto mt-4"
+                        // onClick={onSubmit}
                     >
                         Submit Payment
                     </button>
