@@ -1,222 +1,240 @@
-"use client"
+"use client";
 
 import { detailsAvatar } from "@/assets";
 import Header from "@/components/header";
 import Image from "next/image";
-import React, { useState } from "react";
-import student from "@/lib/student-mgt.json"
-import leave from "@/lib/leave.json"
+import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import InputPage from "../../../student-mgt/_component/input";
-import { Eye, EyeClosed, EyeOff } from "lucide-react";
-import SelectPage from "../../../student-mgt/_component/select";
-import Table from "@/components/Table";
-
-interface Student {
-  requestDate: string;
-  leaveType: string;
-  startDate: number;
-  endDate: string;
-  status: string;
-  }
-  
-  interface Column {
-    accessorKey: keyof Student;
-    header: React.ReactNode;
-    width: string;
-  }
-  
-  const columns: Column[] = [
-    {
-      accessorKey: "requestDate",
-      header: "REQUEST DATE",
-      width: "178px",
-    },
-    {
-      accessorKey: "leaveType",
-      header: "LEAVE TYPE",
-      width: "260px",
-    },
-    {
-      accessorKey: "startDate",
-      header: "START DATE",
-      width: "160px", 
-    },
-    {
-      accessorKey: "endDate",
-      header: "END DATE",
-      width: "160px",
-    },
-    {
-      accessorKey: "status",
-      header: "STATUS",
-      width: "222px",
-    }
-  ];
-
+import { useQuery } from "@tanstack/react-query";
+import { getAcademicStaffById } from "@/lib/api";
+import { useUpdateAcademicStaffById } from "@/hooks/useHrMgt";
+import { toast } from "@/hooks/use-toast";
 
 const AcademicStaffSinglePage = () => {
-    const [active, setActive] = useState(1);
-    const [showPassword, setShowPassword] = useState(false);
+  const params = useParams();
+  const staffId = params?.id as string;
+  const { mutate: updateStaff } = useUpdateAcademicStaffById();
 
-    const params = useParams();
-    const studentId = params?.studentId;
-    const filteredStudent = student.find(studentObj => studentObj.studentId === String(studentId));
+  const [formState, setFormState] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    dob: "",
+    gender: "",
+    mode: "",
+    // qualification: "",
+    position: "",
+    address: "",
+    profileImage: "",
+    staffId: "",
+    password: "",
+    rePassword: "",
+  });
 
-    const tabs = [
-        {
-          id: 1,
-          title: "Personal Information",
-        },
-        {
-          id: 2,
-          title: "Contact Details",
-        },
-        {
-          id: 3,
-          title: "Education History",
-        },
-        {
-          id: 4,
-          title: "Qualification Information",
-        },
-        {
-          id: 5,
-          title: "Documents",
-        }
-      ];
+  const {
+    data: staffData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["hrData", staffId],
+    queryFn: () => getAcademicStaffById(staffId),
+    enabled: !!staffId,
+  });
+
+  useEffect(() => {
+    if (!staffData) return;
+    console.log(staffData);
+
+    const profile = staffData.profile || {};
+
+    setFormState({
+      firstName: staffData.name?.split(" ")[0] || "",
+      lastName: staffData.name?.split(" ").slice(1).join(" ") || "",
+      email: staffData.email || "",
+      phoneNumber: staffData.phone_number || "",
+      dob: profile.dob || "",
+      gender: profile.gender || "",
+      mode: staffData.mode || "",
+      // qualification: profile.qualification || "",
+      position: profile.position || "",
+      address: profile.address || "",
+      profileImage: profile.profile_photo || "",
+      staffId: profile.staff_id || "",
+      password: "",
+      rePassword: "",
+    });
+  }, [staffData]);
+
+  const handleInputChange =
+    (field: keyof typeof formState) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormState((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+  const handleSubmit = () => {
+    if (formState.password !== formState.rePassword) {
+      toast({
+        title: "Error",
+        description: "Password do not match",
+        variant: "destructive",
+      });
+      return;
+    }
+    updateStaff({
+      id: staffId,
+      payload: {
+        file_type: "image",
+        first_name: formState.firstName,
+        last_name: formState.lastName,
+        email: formState.email,
+        phone_number: formState.phoneNumber,
+        dob: formState.dob,
+        gender: formState.gender,
+        mode: formState.mode,
+        // qualification: formState.qualification,
+        position: formState.position,
+        address: formState.address,
+        staff_id: formState.staffId,
+        password: formState.password,
+        re_password: formState.rePassword,
+        avatar: formState.profileImage,
+        file_url: formState.profileImage,
+      },
+    });
+  };
 
   return (
     <div className="flex h-full w-full flex-col gap-y-[24px] pb-[24px] pt-[90px] lg:gap-y-[43px] lg:px-[52px]">
-      <div className="flex flex-col gap-y-[82px]">
-        <Header
-          title={"Academic Staff’s Profile"}
-          subTitle={"Hr Management"}
-          hideSearch
-          backIcon
-        />
+      <Header
+        title={"Academic Staff’s Profile"}
+        subTitle={"HR Management"}
+        hideSearch
+        backIcon
+      />
 
-        <div className="relative flex h-auto w-full flex-col overflow-hidden rounded-[24px] bg-white pb-[24px]">
-          <div className="absolute left-[42px] top-[103px]">
-            <div className="flex h-[130px] w-[130px] xl:h-[166px] xl:w-[166px] items-center justify-center rounded-full bg-white">
-              <div className="flex h-[110px] w-[110px] xl:h-[150px] xl:w-[150px] items-center justify-center rounded-full bg-[#E2E3E5]">
-                <Image
-                  src={detailsAvatar}
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="hidden xl:block absolute top-[19px] right-[103px]">
-            <div className="w-[104px] h-[104px] border-[4px] border-[#9D1217] relative right-[65px] rounded-[8px]"></div>
-            <div className="w-[104px] h-[104px] border-[4px] border-[#9D1217] relative bottom-[58px] rounded-[8px]"></div>
-          </div>
-
-          <div className="h-[192px] w-full bg-[#F6DE9D]" />
-
-          <div className="w-full flex gap-y-[34px] flex-col">
-            <div className="pl-[222px] pb-[34px] py-[14px] flex flex-col gap-y-[8px]">
-                <p className="text-[14px] xl:text-[20px] font-[500]">{"TSHEPISO MODISE"}</p>
-                
-            </div>
-            <div className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-y-[40px] gap-x-[90px] px-[36px]">
-                <div className="flex flex-col gap-y-[8px]">
-                    <p className="font-[500] text-[14px] text-[#5B5B5B]">Creation Date</p>
-                    <p className="font-[500] text-[20px] ">{"August 30, 2024"}</p>
-                </div>
-                <div className="flex flex-col gap-y-[8px]">
-                    <p className="font-[500] text-[14px] text-[#5B5B5B]">Position</p>
-                    <p className="font-[500] text-[20px] ">{"Teacher"}</p>
-                </div>
-                <div className="flex flex-col gap-y-[8px]">
-                    <p className="font-[500] text-[14px] text-[#5B5B5B]">Designation</p>
-                    <p className="font-[500] text-[20px] ">{"Technical Support (PC Engineering) (Higher Certificate)"}</p>
-                </div>
-                <div className="flex flex-col gap-y-[8px]">
-                    <p className="font-[500] text-[14px] text-[#5B5B5B]">Mode</p>
-                    <p className="font-[500] text-[20px] ">{"Full time"}</p>
-                </div>
-                <div className="flex flex-col gap-y-[8px]">
-                    <p className="font-[500] text-[14px] text-[#5B5B5B]">Allocated Modules</p>
-                    <p className="font-[500] text-[20px] ">{37}</p>
-                </div>
-                <div className="flex flex-col gap-y-[8px]">
-                    <p className="font-[500] text-[14px] text-[#5B5B5B]">Total Lessons</p>
-                    <p className="font-[500] text-[20px] ">{51}</p>
-                </div>
-                <div className="flex flex-col gap-y-[8px]">
-                    <p className="font-[500] text-[14px] text-[#5B5B5B]">Assignment & Assessment</p>
-                    <p className="font-[500] text-[20px] ">{62}</p>
-                </div>
-                <div className="flex flex-col gap-y-[8px]">
-                    <p className="font-[500] text-[14px] text-[#5B5B5B]">Status</p>
-                    <p className="font-[500] text-[20px] ">{"Active"}</p>
-                </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex w-full flex-col gap-y-[24px] rounded-[8px] bg-white p-[24px]">
-            <h3 className="font-[500] text-[24px] text-[#1E1E1E]">Personal Information</h3>
-
-            <div className="grid grid-cols-2 gap-x-[20px] gap-y-[24px]">
-              <InputPage
-                title="Cell Phone Number"
-                required="*"
-                placeholder="76856185856"
-                className="col-span-2 xl:col-span-1"
-              />
-              <InputPage
-                title="Emergency cell Phone Number"
-                required="*"
-                placeholder=""
-                className="col-span-2 xl:col-span-1"
-              />
-              <InputPage className="col-span-2" title="House/Building No  (House Address)" placeholder="Works@Registry Building 106 & 108, Cnr Kerk & Troye Street" />
-              <InputPage className="col-span-2" title="Street" required="*" placeholder="Joovyspring Supermarket, Asokor Extension" />
-              <InputPage className="col-span-2 xl:col-span-1" title="Gender" required="*" placeholder="Male" />
-              <InputPage
-                title="Postal Code"
-                placeholder="45754"
-                className="col-span-2 xl:col-span-1"
-              />
-              
-            </div>
-        </div>
-
-        <div className="flex w-full flex-col gap-y-[24px] rounded-[8px] bg-white p-[24px]">
-            <h3 className="font-[500] text-[24px] text-[#1E1E1E]">Bank Information</h3>
-
-            <div className="grid grid-cols-2 gap-x-[20px] gap-y-[24px]">
-              <InputPage
-                title="Bank Name"
-                placeholder=""
-                className="col-span-2 xl:col-span-1"
-              />
-              <InputPage
-                title="Account Number"
-                placeholder=""
-                className="col-span-2 xl:col-span-1"
-              />
-              <InputPage className="col-span-2 xl:col-span-1" title="Account Name" placeholder="" />
-              <InputPage className="col-span-2 xl:col-span-1"  title="Account Type"  placeholder="" />
-            </div>
-        </div>
-
-        <div className="w-full  bg-[white] pl-[24px] h-auto">
-            <p className="text-[24px] font-[500] pt-[24px]">Leave Details</p>
-
-            <div className="w-full h-full bg-white px-[8px] pb-[20px]">
-          <Table
-            columns={columns}
-            data={leave}
+      <div className="relative flex flex-col rounded-[24px] bg-white">
+        <div className="absolute left-[42px] top-[103px]">
+          <Image
+            src={formState.profileImage || detailsAvatar}
+            width={80}
+            height={80}
+            alt="Profile Image"
+            className="h-[80px] w-[80px] rounded-full"
           />
         </div>
 
+        <div className="h-[192px] bg-[#F6DE9D]"></div>
+        <div className="grid grid-cols-2 gap-[20px] p-[24px]">
+          <InputPage
+            title="First Name"
+            value={formState.firstName}
+            onChange={handleInputChange("firstName")}
+            placeholder=""
+            className="col-span-2 xl:col-span-1"
+          />
+          <InputPage
+            title="Last Name"
+            value={formState.lastName}
+            onChange={handleInputChange("lastName")}
+            placeholder=""
+            className="col-span-2 xl:col-span-1"
+          />
+          <InputPage
+            title="Email"
+            value={formState.email}
+            onChange={handleInputChange("email")}
+            placeholder=""
+            className="col-span-2 xl:col-span-1"
+          />
+          <InputPage
+            title="Phone Number"
+            value={formState.phoneNumber}
+            onChange={handleInputChange("phoneNumber")}
+            placeholder=""
+            className="col-span-2 xl:col-span-1"
+          />
+          <InputPage
+            title="Date of Birth"
+            value={formState.dob}
+            onChange={handleInputChange("dob")}
+            placeholder=""
+            className="col-span-2 xl:col-span-1"
+          />
+          <InputPage
+            title="Gender"
+            value={formState.gender}
+            onChange={handleInputChange("gender")}
+            placeholder=""
+            className="col-span-2 xl:col-span-1"
+          />
+          <InputPage
+            title="Mode"
+            value={formState.mode}
+            onChange={handleInputChange("mode")}
+            placeholder=""
+            className="col-span-2 xl:col-span-1"
+          />
+          {/* <InputPage
+            title="Qualification"
+            value={formState.qualification}
+            onChange={handleInputChange("qualification")}
+            placeholder=""
+            className="col-span-2 xl:col-span-1"
+          /> */}
+          <InputPage
+            title="Position"
+            value={formState.position}
+            onChange={handleInputChange("position")}
+            placeholder=""
+            className="col-span-2 xl:col-span-1"
+          />
+          <InputPage
+            title="Address"
+            value={formState.address}
+            onChange={handleInputChange("address")}
+            placeholder=""
+            className="col-span-2"
+          />
+          <InputPage
+            title="Staff ID"
+            value={formState.staffId}
+            onChange={handleInputChange("staffId")}
+            placeholder=""
+            className="col-span-2 xl:col-span-1"
+          />
+          <div>
+            <label className="text-[16px] font-[600]">Password</label>
+            <input
+              title="Password"
+              type="password"
+              value={formState.password}
+              onChange={handleInputChange("password")}
+              placeholder="Type in Password"
+              className="mt-2 h-[43px] w-full overflow-hidden rounded-[8px] border border-[#CEAAAA] bg-[#FCF9F9] px-[16px] outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="text-[16px] font-[600]">Confirm Password</label>
+            <input
+              title="Re-type Password"
+              type="password"
+              value={formState.rePassword}
+              onChange={handleInputChange("rePassword")}
+              placeholder="Confirm Password"
+              className="mt-3 h-[43px] w-full overflow-hidden rounded-[8px] border border-[#CEAAAA] bg-[#FCF9F9] px-[16px] outline-none"
+            />
+          </div>
         </div>
 
+        <button
+          onClick={handleSubmit}
+          className="mx-auto mt-[20px] rounded bg-[#9D1217] px-[24px] py-[12px] text-white"
+        >
+          Save Changes
+        </button>
       </div>
     </div>
   );

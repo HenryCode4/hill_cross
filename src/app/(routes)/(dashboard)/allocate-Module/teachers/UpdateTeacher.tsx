@@ -1,3 +1,4 @@
+import CustomMultiSelectComponent from "@/components/multiSelectComponent";
 import MultiSelectComponent from "@/components/multiSelectComponent";
 import SelectComponent from "@/components/selectComponent";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,7 @@ import { allocateModuleFormSchema, schoolFormSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -47,6 +48,7 @@ const UpdateAllocatedModule = ({
   onClose,
   event,
 }: UpdateAllocatedModuleTriggerProps) => {
+  console.log(event)
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: (values: z.infer<typeof allocateModuleFormSchema>) =>
@@ -54,24 +56,29 @@ const UpdateAllocatedModule = ({
   });
   const {data: teacher} = useTeacherData();
         const {data: academicCalender} = useAcademicCalendarData()
-        const {data: modules} = useModuleData()
-  
+        const { data: modules } = useModuleData({ request_type: "all" });
+        console.log(modules)
         const teacherApi = teacher?.data?.data;
         const academicCalenderApi = academicCalender?.data?.data;
+        
         const modulesApi = modules?.data?.data;
-  
+        console.log(modulesApi)
         const teacherOption = teacherApi?.map((item: any)=> ({
           id: item.id,
           label: item.name
-        }))
+        }));
+
         const academicOption = academicCalenderApi?.map((item: any)=> ({
           id: item.id,
           label: item.name
-        }))
-        const modulesOption = modulesApi?.map((item: any)=> ({
-          id: item.id,
-          label: item.name
-        }))
+        }));
+
+        const modulesOption = useMemo(() => {
+          return modulesApi?.map((item: any) => ({
+            id: item.id,
+            label: item.name,
+          })) ?? [];
+        }, [modulesApi]);
 
   const form = useForm<z.infer<typeof allocateModuleFormSchema>>({
     resolver: zodResolver(allocateModuleFormSchema),
@@ -85,13 +92,30 @@ const UpdateAllocatedModule = ({
   // Update form values when event changes
   useEffect(() => {
     if (event) {
+      let moduleIds: string[] = [];
+  
+      if (typeof event.module === "string") {
+        // Split by commas and 'and'
+        const rawNames = event.module
+          .split(/,| and /i)
+          .map((name: string) => name.trim());
+  
+        // Match labels to find module IDs
+        moduleIds = modulesOption
+          ?.filter((mod: any) => rawNames.includes(mod.label))
+          .map((mod: any) => mod.id) ?? [];
+      } else if (Array.isArray(event.module)) {
+        moduleIds = event.module;
+      }
+  
       form.reset({
         teacher_id: event.teacher_id || "",
         academic_calender_id: event.academic_calender_id || "",
-        modules: event.module ? [event.module] : [],
+        modules: moduleIds,
       });
     }
-  }, [event, form]);
+  }, [event, form, modulesOption]);
+  
 
   const onSubmit = (values: z.infer<typeof allocateModuleFormSchema>) => {
     mutate(values, {
@@ -145,7 +169,7 @@ const UpdateAllocatedModule = ({
                         <FormControl>
                           <SelectComponent
                             items={teacherOption}
-                            placeholder={field.value || "Select Teacher"}
+                            placeholder={event.teacher || "Select Teacher"}
                             className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                             onChange={field.onChange}
 
@@ -169,7 +193,7 @@ const UpdateAllocatedModule = ({
                         <FormControl>
                           <SelectComponent
                             items={academicOption}
-                            placeholder={field.value || "Select Academic Calender"}
+                            placeholder={event.academic_calendar || "Select Academic Calender"}
                             className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                             onChange={field.onChange}
                           />
@@ -190,15 +214,45 @@ const UpdateAllocatedModule = ({
                           Select Modules
                         </FormLabel>
                         <FormControl>
-                          <MultiSelectComponent
-                            items={modulesOption}
-                            placeholder={`${field.value && ["Modules have been selected"]}` || "Select Modules"}
-                            className="h-[48px] rounded-[8px] border border-[#AACEC9]"
-                            onChange={(values) => {
-                              field.onChange(values);
-                            }} // Handle array of values
-                          />
+                        <CustomMultiSelectComponent
+                          placeholder="Select Modules"
+                          items={modulesOption}
+                          value={field.value}
+                          onChange={(values) => field.onChange(values)}
+                          className="h-[auto]"
+                        />
                         </FormControl>
+
+                         {/* Selected items tags container */}
+      {/* {field.value && field.value.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {field.value.map((moduleId, index) => {
+            // Find the matching module object to get the label
+            const moduleItem = modulesOption?.find((item: any) => item.id === moduleId);
+            const moduleLabel = moduleItem ? moduleItem.label : moduleId;
+            
+            return (
+              <div key={index} className="flex items-center bg-gray-100 px-2 py-1 rounded-md text-sm">
+                <span className="mr-1">{moduleLabel}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Remove this item from the array
+                    const newValues = field.value.filter(id => id !== moduleId);
+                    field.onChange(newValues);
+                  }}
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )} */}
                         <FormMessage />
                       </FormItem>
                     )}

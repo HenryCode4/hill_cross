@@ -1,4 +1,4 @@
-import { down, edit, green, play, red, trash, visibility } from "@/assets";
+import { down, edit, green, option, play, red, trash, visibility } from "@/assets";
 import ActionIcons from "@/components/action-icon";
 import Pagination from "@/components/pagination";
 import SelectComponent from "@/components/selectComponent";
@@ -15,6 +15,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import React, { useState } from "react";
 import { Loader } from "lucide-react";
+import CustomDropdownMenu from "@/components/customDropdownMenu";
+import { useRouter } from "next/navigation";
 
 interface elearning {
   module: string;
@@ -73,13 +75,16 @@ const LessonTable = () => {
   const [modalOpenEnd, setModalOpenEnd] = useState(false);
   const [modalOpenDelete, setModalOpenDelete] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<any>();
-console.log(selectedLesson)
+  const [modalOpenView, setModalOpenView] = useState(false);
+  const [previewLesson, setPreviewLesson] = useState<any>(null);
+console.log(previewLesson)
   const [filters, setFilters] = useState({
     teacher: "",
     module: "",
     status: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
 
   //teacher
   const { data: teacher } = useTeacherData();
@@ -152,6 +157,14 @@ console.log(selectedLesson)
     deleteLesson();
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center p-[70px]">
+        <Loader className="h-8 w-8 animate-spin text-red-700" />
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="flex w-full flex-col gap-y-[8px] px-4 pb-2">
@@ -186,13 +199,12 @@ console.log(selectedLesson)
         </div>
       </div>
 
-      {
-        isLoading ? (
-          <div className='p-[70px] flex items-center justify-center h-full w-full'>
-          <Loader className="animate-spin h-8 w-8 text-red-700" />
-     </div>
-        ) : (
-          <div className="w-full bg-white px-[8px] pb-[8px]">
+      {isLoading ? (
+        <div className="flex h-full w-full items-center justify-center p-[70px]">
+          <Loader className="h-8 w-8 animate-spin text-red-700" />
+        </div>
+      ) : (
+        <div className="w-full bg-white px-[8px] pb-[8px]">
           <Table
             columns={columns}
             data={lessonApi || []}
@@ -243,25 +255,61 @@ console.log(selectedLesson)
                     />
                   </>
                 )}
-  
+
                 <Image
                   key="edit-icon"
                   src={visibility}
                   alt="Edit icon"
                   className="h-[27px] w-[24px] cursor-pointer"
-                  //   onClick={()=> setModalOpenEdit(true)}
+                  onClick={() => {
+                    setPreviewLesson(value);
+                    setModalOpenView(true);
+                  }}
                 />
-  
+
                 <Image
                   key="trash-icon"
                   src={trash}
                   alt="Trash icon"
                   className="h-[24px] w-[24px] cursor-pointer"
-                  onClick={()=> {
-                    setModalOpenDelete(true)
-                    setSelectedLesson(value)
+                  onClick={() => {
+                    setModalOpenDelete(true);
+                    setSelectedLesson(value);
                   }}
                 />
+
+                <CustomDropdownMenu
+                                    trigger={
+                                      <Image
+                                        src={option}
+                                        alt="Option icon"
+                                        className="h-[24px] w-[24px]"
+                                      />
+                                    }
+                                    options={[
+                                      // {
+                                      //   label: "Details",
+                                      //   onClick: () => {
+                                      //     router.push(`/e-learning/assignments/${value.id}`);
+                                      //   },
+                                      // },
+                                      {
+                                        label: "Open File",
+                                        onClick: () => window.open(value.file_url, "_blank"),
+                                      },
+                                      // {
+                                      //   label: "Edit File",
+                                      //   onClick: () => {
+                                      //     setSelectedAssignment(item as any);
+                                      //     setModalOpenEdit(true);
+                                      //   },
+                                      // },
+                                      // {
+                                      //   label: "End Assignment",
+                                      //   onClick: () => console.log("End Assignment clicked"),
+                                      // },
+                                    ]}
+                                  />
               </div>
             )}
             renderTopic={(item) => (
@@ -280,7 +328,7 @@ console.log(selectedLesson)
               </div>
             )}
           />
-  
+
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -290,22 +338,60 @@ console.log(selectedLesson)
             isServerPagination={true}
             onServerPageChange={handleServerPageChange}
           />
-  
+
           {/* Delete Qualification modal */}
           {modalOpenDelete && selectedLesson && (
             <Warning
               open={modalOpenDelete}
               onClose={() => setModalOpenDelete(false)}
               description={`Are you sure you want to delete ${selectedLesson?.module}?`}
-              onConfirm={()=> deleteLesson()}
+              onConfirm={() => deleteLesson()}
             />
           )}
         </div>
-        )
-      }
+      )}
 
+      {modalOpenView && previewLesson && (
+        <div className="fixed inset-0 z-[9999] mt-5 flex items-center justify-center bg-black/50">
+          <div className="relative w-full max-w-2xl rounded-lg bg-white p-6">
+            <button
+              className="absolute right-4 top-3 text-lg font-bold"
+              onClick={() => {
+                setModalOpenView(false);
+                setPreviewLesson(null);
+              }}
+            >
+              ✕
+            </button>
 
-      
+            <h2 className="mb-2 text-xl font-semibold">
+              {previewLesson?.topic}
+            </h2>
+            <p className="mb-2 text-sm">Teacher: {previewLesson?.teacher}</p>
+            <p className="mb-2 text-sm">Module: {previewLesson?.module}</p>
+
+            {previewLesson?.file_type === "video" && (
+              <video
+                src={previewLesson?.file_url}
+                controls
+                className="mt-4 w-full rounded-md bg-black"
+              />
+            )}
+
+            {previewLesson?.materials?.length > 0 ? (
+              <ul className="mt-4 list-inside list-disc">
+                {previewLesson?.materials.map((mat: any, index: number) => (
+                  <li key={index}>{mat?.name}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-4 text-sm italic text-gray-500">
+                No materials available yet.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 };
