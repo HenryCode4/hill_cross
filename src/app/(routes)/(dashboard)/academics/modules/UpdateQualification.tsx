@@ -1,3 +1,4 @@
+import CustomMultiSelectComponent from "@/components/multiSelectComponent";
 import MultiSelectComponent from "@/components/multiSelectComponent";
 import SelectComponent from "@/components/selectComponent";
 import { Button } from "@/components/ui/button";
@@ -214,11 +215,12 @@ const UpdateSchool = ({
                                         Qualification
                                       </FormLabel>
                                       <FormControl>
-                                        <MultiSelectComponent
-                                        items={qualificationOptions}
-                                        placeholder="Select question"
-                                        className="h-[48px] rounded-[8px] border border-[#AACEC9]"
-                                        onChange={field.onChange}
+                                      <CustomMultiSelectComponent
+                                          placeholder="Select question"
+                                          items={qualificationOptions}
+                                          value={field.value}
+                                          onChange={(values) => field.onChange(values)}
+                                          className="h-[auto]"
                                         />
                                       </FormControl>
                                       <FormMessage />
@@ -232,14 +234,14 @@ const UpdateSchool = ({
                             <DialogFooter className="px-6">
                               <div className="flex w-full items-center justify-center">
                              
-                                              <Button
-                                                className="h-[40px] w-[205px]"
-                                                disabled={isPending}
-                                                type="submit"
-                                              >
-                                                {isPending && <Loader className="animate-spin" />}
-                                                Create Module
-                                              </Button>
+                                <Button
+                                  className="h-[40px] w-[205px]"
+                                  disabled={isPending}
+                                  type="submit"
+                                >
+                                  {isPending && <Loader className="animate-spin" />}
+                                  Create Module
+                                </Button>
                                      
                               </div>
                             </DialogFooter>

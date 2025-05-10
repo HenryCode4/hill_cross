@@ -250,7 +250,8 @@ export const createNotificationFormSchema = z.object({
 export type createNotificationFormType = z.infer<typeof createNotificationFormSchema>;
 
 export const academicStaffSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  first_name: z.string().min(1, "First Name is required"),
+  last_name: z.string().min(1, "First Name is required"),
   staff_id: z.string().min(1, "Staff ID is required"),
   email: z.string().email("Invalid email format"),
   phone_number: z.string().min(1, "Phone number is required"),
@@ -268,7 +269,8 @@ export const academicStaffSchema = z.object({
 export type createAcademicFormType = z.infer<typeof academicStaffSchema>;
 
 export const adminSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  first_name: z.string().min(1, "First Name is required"),
+  last_name: z.string().min(1, "First Name is required"),
   email: z.string().email("Invalid email format"),
   staff_id: z.string().min(1, "Staff id is required"),
   phone_number: z.string().min(1, "Phone number is required"),

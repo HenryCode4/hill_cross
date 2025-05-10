@@ -20,14 +20,15 @@ import { useTeacherData } from '@/hooks/useSchool';
 import useAcademicCalendarData from '@/hooks/useAcademicCalendar';
 import useModuleData from '@/hooks/useModule';
 import MultiSelectComponent from '@/components/multiSelectComponent';
+import CustomMultiSelectComponent from '@/components/multiSelectComponent';
 
 const NewTeacher = () => {
      const queryClient = useQueryClient();
       const [modalOpen, setModalOpen] = useState(false);
 
       const {data: teacher} = useTeacherData();
-      const {data: academicCalender} = useAcademicCalendarData()
-      const {data: modules} = useModuleData()
+      const {data: academicCalender} = useAcademicCalendarData("Active")
+      const { data: modules } = useModuleData({ request_type: "all" });
 
       const teacherApi = teacher?.data?.data;
       const academicCalenderApi = academicCalender?.data?.data;
@@ -164,15 +165,13 @@ const NewTeacher = () => {
                                     Select Modules
                                 </FormLabel>
                                 <FormControl>
-                                    <MultiSelectComponent
-                                    items={modulesOption}
-                                    placeholder="Select Modules"
-                                    className="h-[48px] rounded-[8px] border border-[#AACEC9]"
-                                    onChange={(values) => {
-                                      console.log('Selected values:', values);
-                                      field.onChange(values)
-                                    } } // Handle array of values
-                                    />
+                                <CustomMultiSelectComponent
+                                  placeholder="Select Modules"
+                                  items={modulesOption}
+                                  value={field.value}
+                                  onChange={(values) => field.onChange(values)}
+                                  className="h-[auto]"
+                                />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>

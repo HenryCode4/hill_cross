@@ -34,6 +34,7 @@ import useSemesterData from "@/hooks/useSemester";
 import useStandardData from "@/hooks/useStandard";
 import MultiSelectComponent from "@/components/multiSelectComponent";
 import useQualificationData from "@/hooks/useQualification";
+import CustomMultiSelectComponent from "@/components/multiSelectComponent";
 
 const ModuleComponent = () => {
     const queryClient = useQueryClient();
@@ -204,11 +205,12 @@ const ModuleComponent = () => {
                                         Qualification
                                       </FormLabel>
                                       <FormControl>
-                                        <MultiSelectComponent
-                                        items={qualificationOptions}
-                                        placeholder="Select question"
-                                        className="h-[48px] rounded-[8px] border border-[#AACEC9]"
-                                        onChange={field.onChange}
+                                        <CustomMultiSelectComponent
+                                          placeholder="Select question"
+                                          items={qualificationOptions}
+                                          value={field.value}
+                                          onChange={(values) => field.onChange(values)}
+                                          className="h-[auto]"
                                         />
                                       </FormControl>
                                       <FormMessage />
