@@ -18,23 +18,31 @@ import { toast } from '@/hooks/use-toast';
 import SelectComponent from '@/components/selectComponent';
 import useAcademicCalendarData from '@/hooks/useAcademicCalendar';
 import useModuleData from '@/hooks/useModule';
-import MultiSelectComponent from '@/components/multiSelectComponent';
 import useStudentData from '@/hooks/useStudent';
 import CustomMultiSelectComponent from '@/components/multiSelectComponent';
+import useQualificationData from '@/hooks/useQualification';
 
 const NewStudent = () => {
      const queryClient = useQueryClient();
       const [modalOpen, setModalOpen] = useState(false);
+      const [qualification, setQualification] = useState<string>()
 
-      const {data: student} = useStudentData();
+
+      const {data: student} = useStudentData(undefined, {
+        qualification: qualification,
+      });
+
+      const { data: qualificationsData, isLoading } = useQualificationData();
+        const qualifications = qualificationsData?.data?.data;
+
       const {data: academicCalender} = useAcademicCalendarData()
       const { data: modules } = useModuleData({ request_type: "all" });
 
       const studentApi = student?.data?.data;
+      console.log(studentApi)
       const academicCalenderApi = academicCalender?.data?.data;
       const modulesApi = modules?.data?.data;
 
-      console.log(academicCalenderApi)
       const studentOption = studentApi?.map((item: any)=> ({
         id: item.id,
         label: item.name
@@ -43,7 +51,13 @@ const NewStudent = () => {
         id: item.id,
         label: item.name
       }))
+
       const modulesOption = modulesApi?.map((item: any)=> ({
+        id: item.id,
+        label: item.name
+      }))
+
+      const qualificationOption = qualifications?.map((item: any)=> ({
         id: item.id,
         label: item.name
       }))
@@ -109,6 +123,19 @@ const NewStudent = () => {
                         <form className="flex flex-col gap-y-[16px]" onSubmit={form.handleSubmit(onSubmit)}>
                           <div className="flex flex-col gap-y-[24px] px-6">
 
+                            <div className="flex flex-col gap-y-[8px]">
+                              <Label>
+                                Qualification
+                              </Label>
+
+                              <SelectComponent
+                                      items={qualificationOption || []}
+                                      placeholder="Select Qualification"
+                                      className="h-[48px] rounded-[8px] border border-[#AACEC9]"
+                                      onChange={(value) => setQualification(value)}
+                                      />
+                           
+                            </div>
                             <div className="flex flex-col gap-y-[8px]">
                             <FormField
                               control={form.control}

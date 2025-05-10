@@ -305,7 +305,7 @@ export const newTeacherMutationFn = async (data: TeacherType) =>
 export const getStudentDataQueryFn = async (page?: string, filters?: StudentFilters) => {
   const endpoint = page
     ? `/students?page=${page}`
-    : '/students?request_type=all';
+    : '/students';
 
   const config = {
     timeout: 120000,

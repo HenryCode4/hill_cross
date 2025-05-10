@@ -199,6 +199,7 @@ const StudentMgt = () => {
     setCurrentPage(page);
   };
 
+
   return (
     <div className="flex h-full w-full flex-col gap-y-[24px] pb-[24px] pt-[90px] lg:gap-y-[43px] lg:px-[52px]">
       <Header title={"Student Management"} addStudentBtn />
@@ -220,7 +221,7 @@ const StudentMgt = () => {
 
       <div className="flex w-full flex-col justify-start gap-y-[20px] xl:items-center xl:justify-between 2xl:flex-row">
         <div className="flex w-full flex-col gap-y-[16px] px-[20px] xl:gap-y-[29px] xl:px-[0]">
-          <h3 className="text-[24px] font-[600]">Applicant’s List</h3>
+          <h3 className="text-[24px] font-[600]">{tab === 1 ? "Applicant’s List" : tab === 2 ? "Admitted Student" : tab === 3 ? "Registered Student" : tab === 4 ? "Dropped Out" : "Graduated"}</h3>
 
           <input
             placeholder="Search student name, Student ID"
