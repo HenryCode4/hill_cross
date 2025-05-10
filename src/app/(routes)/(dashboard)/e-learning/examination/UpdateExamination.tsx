@@ -41,7 +41,6 @@ const UpdateExamination = ({
   event,
 }: UpdateExaminationTriggerProps) => {
   const queryClient = useQueryClient();
-  console.log(event)
   const { mutate, isPending } = useMutation({
     mutationFn: (values: z.infer<typeof updateExaminationFormSchema>) =>
       updateExaminationMutationFn(event?.id, values),

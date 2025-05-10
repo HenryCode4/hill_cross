@@ -47,12 +47,6 @@ const Login = () => {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     mutate(values, {
       onSuccess: (response) => {
-        // if (response.data.mfaRequired) {
-        //   router.replace(`/verify-mfa?email=${values.email}`);
-        //   return;
-        // }
-        console.log(response.data);
-
         Cookies.set("accessToken", response.data.access_token, {
           expires: new Date(response.data.expires_at),
           secure: false,

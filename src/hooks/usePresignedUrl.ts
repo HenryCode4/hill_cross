@@ -37,7 +37,6 @@ export const usePresignedUrl = ({
       // Get presigned URL
       const presignedUrl = await presignedUrlMutation.mutateAsync(presignedUrlRequest);
       
-      console.log('Presigned URL received:', presignedUrl);
       
       // Since response is a string (the full presigned URL), use it directly
       if (typeof presignedUrl !== 'string') {
@@ -58,7 +57,6 @@ export const usePresignedUrl = ({
           throw new Error(`Upload failed with status: ${uploadResponse.status}`);
         }
         
-        console.log('Upload successful:', uploadResponse);
       } catch (uploadError) {
         console.error('Error during upload:', uploadError);
         throw uploadError;
@@ -72,7 +70,6 @@ export const usePresignedUrl = ({
         onSuccess(accessUrl, file);
       }
       
-      console.log(accessUrl)
       return accessUrl;
     } catch (error) {
       // Handle errors...

@@ -98,7 +98,6 @@ const UpdateSchool = ({
     }, [event, form]);
    
      const onSubmit = (values: z.infer<typeof moduleFormSchema>) => {
-         console.log(values)
        mutate(values, {
          onSuccess: (response) => {
            // if (response.data.mfaRequired) {

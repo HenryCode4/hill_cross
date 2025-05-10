@@ -59,7 +59,6 @@ const columns: Column[] = [
 const StudentFeesTable = () => {
     const {data: studentFees} = useStudentPaymentFees(false);
     const studentApi = studentFees?.data?.data;
-    console.log("studentApi", studentApi)
 
     const transaction = studentApi?.map((item: any) => ({
         id: item?.id,

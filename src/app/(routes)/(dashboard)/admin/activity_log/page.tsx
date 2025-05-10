@@ -51,7 +51,6 @@ const ActivityLogPage = () => {
   const {data: activityLog, isLoading} = useActivityLogData(currentPage.toString())
   const activityApi = activityLog?.data?.data;
   const totalPages = activityLog?.data?.meta?.last_page || 1;
-  console.log(activityApi);
   const activityOption = activityApi?.map((item: any) => ({
     date_created: item.date_created,
     user: item.user,

@@ -45,7 +45,6 @@ const UpdateAllocatedModule = ({
   onClose,
   event,
 }: UpdateAllocatedModuleTriggerProps) => {
-  console.log(event)
   const queryClient = useQueryClient();
   const [qualification, setQualification] = useState<string | undefined>(
     event?.qualification_id || undefined

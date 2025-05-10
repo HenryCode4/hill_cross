@@ -45,10 +45,6 @@ const StudentIdPage = () => {
   const { data: student } = useStudentByIdData(studentId as string);
   const filteredStudent = student?.data?.data;
 
-  console.log(filteredStudent);
-
- 
-
   const tabs = [
     {
       id: 1,
