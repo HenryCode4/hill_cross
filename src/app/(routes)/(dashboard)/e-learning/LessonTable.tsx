@@ -1,4 +1,4 @@
-import { down, edit, green, play, red, trash, visibility } from "@/assets";
+import { down, edit, green, option, play, red, trash, visibility } from "@/assets";
 import ActionIcons from "@/components/action-icon";
 import Pagination from "@/components/pagination";
 import SelectComponent from "@/components/selectComponent";
@@ -15,6 +15,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import React, { useState } from "react";
 import { Loader } from "lucide-react";
+import CustomDropdownMenu from "@/components/customDropdownMenu";
+import { useRouter } from "next/navigation";
 
 interface elearning {
   module: string;
@@ -75,13 +77,14 @@ const LessonTable = () => {
   const [selectedLesson, setSelectedLesson] = useState<any>();
   const [modalOpenView, setModalOpenView] = useState(false);
   const [previewLesson, setPreviewLesson] = useState<any>(null);
-
+console.log(previewLesson)
   const [filters, setFilters] = useState({
     teacher: "",
     module: "",
     status: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
 
   //teacher
   const { data: teacher } = useTeacherData();
@@ -274,6 +277,39 @@ const LessonTable = () => {
                     setSelectedLesson(value);
                   }}
                 />
+
+                <CustomDropdownMenu
+                                    trigger={
+                                      <Image
+                                        src={option}
+                                        alt="Option icon"
+                                        className="h-[24px] w-[24px]"
+                                      />
+                                    }
+                                    options={[
+                                      // {
+                                      //   label: "Details",
+                                      //   onClick: () => {
+                                      //     router.push(`/e-learning/assignments/${value.id}`);
+                                      //   },
+                                      // },
+                                      {
+                                        label: "Open File",
+                                        onClick: () => window.open(value.file_url, "_blank"),
+                                      },
+                                      // {
+                                      //   label: "Edit File",
+                                      //   onClick: () => {
+                                      //     setSelectedAssignment(item as any);
+                                      //     setModalOpenEdit(true);
+                                      //   },
+                                      // },
+                                      // {
+                                      //   label: "End Assignment",
+                                      //   onClick: () => console.log("End Assignment clicked"),
+                                      // },
+                                    ]}
+                                  />
               </div>
             )}
             renderTopic={(item) => (
@@ -316,7 +352,7 @@ const LessonTable = () => {
       )}
 
       {modalOpenView && previewLesson && (
-        <div className="fixed inset-0 z-50 mt-5 flex items-center justify-center bg-black/50">
+        <div className="fixed inset-0 z-[9999] mt-5 flex items-center justify-center bg-black/50">
           <div className="relative w-full max-w-2xl rounded-lg bg-white p-6">
             <button
               className="absolute right-4 top-3 text-lg font-bold"

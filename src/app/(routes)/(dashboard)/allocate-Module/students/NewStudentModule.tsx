@@ -20,6 +20,7 @@ import useAcademicCalendarData from '@/hooks/useAcademicCalendar';
 import useModuleData from '@/hooks/useModule';
 import MultiSelectComponent from '@/components/multiSelectComponent';
 import useStudentData from '@/hooks/useStudent';
+import CustomMultiSelectComponent from '@/components/multiSelectComponent';
 
 const NewStudent = () => {
      const queryClient = useQueryClient();
@@ -27,7 +28,7 @@ const NewStudent = () => {
 
       const {data: student} = useStudentData();
       const {data: academicCalender} = useAcademicCalendarData()
-      const {data: modules} = useModuleData()
+      const { data: modules } = useModuleData({ request_type: "all" });
 
       const studentApi = student?.data?.data;
       const academicCalenderApi = academicCalender?.data?.data;
@@ -164,15 +165,13 @@ const NewStudent = () => {
                                     Select Modules
                                 </FormLabel>
                                 <FormControl>
-                                    <MultiSelectComponent
-                                    items={modulesOption}
-                                    placeholder="Select Modules"
-                                    className="h-[48px] rounded-[8px] border border-[#AACEC9]"
-                                    onChange={(values) => {
-                                      console.log('Selected values:', values);
-                                      field.onChange(values)
-                                    } } // Handle array of values
-                                    />
+                                <CustomMultiSelectComponent
+                                  placeholder="Select Modules"
+                                  items={modulesOption}
+                                  value={field.value}
+                                  onChange={(values) => field.onChange(values)}
+                                  className="h-[auto]"
+                                />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>

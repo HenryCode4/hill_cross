@@ -108,9 +108,9 @@ const AcademicStaff = ({
   const filteredStaffOptions = staffApi
     ?.map((item: any) => ({
       id: item?.id,
-      avatar: item?.profile.avatar,
+      avatar: item?.profile?.avatar,
       name: item?.name,
-      qualifications: item?.qualifications,
+      qualifications: item?.qualifications?.name,
       createdDate: item?.date_created,
       email: item?.email,
       mode: item?.mode,
@@ -228,21 +228,6 @@ const AcademicStaff = ({
         <Table
           columns={columns}
           data={filteredStaffOptions}
-          // renderAction={(item: any) => {
-          //   // Pass icons directly as props
-          //   const icons = [
-          //     <Image
-          //     key="application-icon"
-          //       src={applicationStop}
-          //       alt="Application stop icon"
-          //       className="h-[24px] w-[24px]"
-          //     //   onClick={()=> setModalOpenEdit(true)}
-          //     />,
-
-          //   ];
-
-          //   return <ActionIcons  icons={icons} status={item.status} mgt financialStatus={item.financialStatus}/>;
-          // }}
 
           renderAction={(item: any) => (
             <div className="flex items-center gap-x-[8px]">

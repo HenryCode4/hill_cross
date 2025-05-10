@@ -23,8 +23,7 @@ const HrManagementPage = () => {
   const { data, isLoading } = useHrData(action, currentPage.toString());
   const staffApi = data?.data?.data;
   const totalPages = data?.data?.meta?.last_page || 1;
-
-  console.log(staffApi);
+  
   const handleServerPageChange = (page: number) => {
     setCurrentPage(page);
   };

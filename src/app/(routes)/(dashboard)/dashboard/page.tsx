@@ -16,6 +16,7 @@ import chartData from "@/lib/chartData.json";
 import DashboardCount from "./_component/dashboardCount";
 import StudentInflowChart from "./_component/studentInflowChart";
 import RecentRegisteredStudent from "./_component/recentRegisteredStudent";
+import StudentInflowChartAdmin from "./_component/studentInflowChartAdmin";
 
 const Dashboard = () => {
   const months = [
@@ -34,28 +35,7 @@ const Dashboard = () => {
 
       <div className="grid w-full grid-cols-1 gap-x-[56px] xl:grid-cols-2">
         <StudentInflowChart />
-
-        <div className="flex flex-col gap-[10px]">
-          <div className="flex h-[75px] items-center justify-between bg-white px-[32px]">
-            <p className="text-[18px] font-[600] leading-[29.05px] text-[#1E1E1E]">
-              STUDENT REGISTRATION
-            </p>
-
-            <div className="flex gap-x-[8px]">
-              <SelectComponent placeholder="This Month" items={months} />
-
-              <Button className="h-[43px] bg-[#9D1217]">filter</Button>
-            </div>
-          </div>
-          <div className="h-auto w-full bg-white p-[32px]">
-            <RenderBarChart
-              height={319}
-              barSize={20}
-              data={chartData}
-              fill="#fca7aa"
-            />
-          </div>
-        </div>
+        <StudentInflowChartAdmin />
       </div>
 
       <div className="flex w-full flex-col gap-y-[16px]">
@@ -65,13 +45,13 @@ const Dashboard = () => {
               NEW PAYMENTS
             </p>
 
-            <div className="flex h-[53px] w-[370px] items-center bg-[#F8F8F8] px-[16px]">
+            {/* <div className="flex h-[53px] w-[370px] items-center bg-[#F8F8F8] px-[16px]">
               <Input
                 className="w-full text-[24px] font-[400] text-[#B0B0B0] outline-none active:outline-none"
                 placeholder="Search by name"
               />
               <Search />
-            </div>
+            </div> */}
           </div>
         </div>
 

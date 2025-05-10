@@ -17,6 +17,7 @@ import { Loader } from 'lucide-react';
 
 interface modules {
   school: string;
+  name: string;
   qualifications: number;
   standard: string;
   semester: string;
@@ -38,6 +39,11 @@ interface Column {
 }
 
 const columns: Column[] = [
+  {
+    accessorKey: "name",
+    header: "NAME",
+    width: "20%",
+  },
   {
     accessorKey: "qualifications",
     header: "QUALIFICATIONS",
@@ -73,13 +79,14 @@ const AddNewModule = () => {
   const [selectedModule, setSelectedModule] = useState<{id: string, school: string}>();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, isLoading } = useModuleData(currentPage.toString());
+  const { data, isLoading } = useModuleData({ page: currentPage.toString() });
   const modules = data?.data?.data;
 
   const totalPages = data?.data?.meta?.last_page || 1;
 
   const apiData = modules?.map((module: any) => ({
     id: module.id,
+    name: module.name,
     qualifications: module.qualifications,
     school: module.qualification_collection[0]?.school?.name || '_',
     standard: module.standard?.name || '_',
