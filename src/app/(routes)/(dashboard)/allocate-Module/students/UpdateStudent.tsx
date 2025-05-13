@@ -201,6 +201,7 @@ const UpdateAllocatedModule = ({
                             className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                             onChange={field.onChange}
                             // value={field.value}
+                            disabled={!qualification}
                           />
                         </FormControl>
                         <FormMessage />

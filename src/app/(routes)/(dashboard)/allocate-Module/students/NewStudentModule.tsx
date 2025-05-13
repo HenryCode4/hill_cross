@@ -25,11 +25,11 @@ import useQualificationData from '@/hooks/useQualification';
 const NewStudent = () => {
      const queryClient = useQueryClient();
       const [modalOpen, setModalOpen] = useState(false);
-      const [qualification, setQualification] = useState<string>()
+      const [qualification, setQualification] = useState<string | undefined>(undefined);
 
 
       const {data: student} = useStudentData(undefined, {
-        qualification: qualification,
+        qualification: qualification || undefined,
       });
 
       const { data: qualificationsData, isLoading } = useQualificationData();
@@ -151,6 +151,7 @@ const NewStudent = () => {
                                       placeholder="Select Student"
                                       className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                                       onChange={field.onChange}
+                                      disabled={!qualification}
                                       />
                                   </FormControl>
                                   <FormMessage />
