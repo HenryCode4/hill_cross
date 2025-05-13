@@ -60,7 +60,7 @@ const UpdateAllocatedModule = ({
     qualification: qualification || undefined,
   });
   
-  const { data: academicCalender } = useAcademicCalendarData();
+  const {data: academicCalender} = useAcademicCalendarData("Active")
   const { data: modules } = useModuleData({ request_type: "all" });
 
   const { data: qualificationsData } = useQualificationData();

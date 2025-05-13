@@ -35,7 +35,7 @@ const NewStudent = () => {
       const { data: qualificationsData, isLoading } = useQualificationData();
         const qualifications = qualificationsData?.data?.data;
 
-      const {data: academicCalender} = useAcademicCalendarData()
+      const {data: academicCalender} = useAcademicCalendarData("Active")
       const { data: modules } = useModuleData({ request_type: "all" });
 
       const studentApi = student?.data?.data;

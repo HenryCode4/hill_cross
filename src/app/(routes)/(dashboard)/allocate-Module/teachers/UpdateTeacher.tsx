@@ -54,7 +54,7 @@ const UpdateAllocatedModule = ({
       updateAllocatedModuleMutationFn(event?.id, values),
   });
   const {data: teacher} = useTeacherData();
-        const {data: academicCalender} = useAcademicCalendarData()
+        const {data: academicCalender} = useAcademicCalendarData("Active")
         const { data: modules } = useModuleData({ request_type: "all" });
         const teacherApi = teacher?.data?.data;
         const academicCalenderApi = academicCalender?.data?.data;
