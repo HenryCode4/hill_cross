@@ -57,8 +57,6 @@ interface AdmittedStudentGridProps {
 const AdmittedStudentGrid = ({ studentApi }: AdmittedStudentGridProps) => {
   const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
 
-  console.log(studentApi);
-
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [confirmArchive, setConfirmArchive] = useState(false);

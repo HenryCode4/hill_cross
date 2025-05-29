@@ -71,7 +71,6 @@ const StudentTable = () => {
   const {data: studentEnrollment, isLoading} = useStudentEnrollmentData(currentPage.toString());
   const enrollmentApi = studentEnrollment?.data?.data;
   const totalPages = studentEnrollment?.data?.meta?.last_page || 1;
-console.log(enrollmentApi)
   const enrollmentOptions = enrollmentApi?.map((item: any) => ({
     name: item.student,
     qualification: item.qualification,

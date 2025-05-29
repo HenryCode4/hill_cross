@@ -25,21 +25,21 @@ import useQualificationData from '@/hooks/useQualification';
 const NewStudent = () => {
      const queryClient = useQueryClient();
       const [modalOpen, setModalOpen] = useState(false);
-      const [qualification, setQualification] = useState<string>()
+      const [qualification, setQualification] = useState<string | undefined>(undefined);
 
 
       const {data: student} = useStudentData(undefined, {
-        qualification: qualification,
+        qualification: qualification || undefined,
       });
 
       const { data: qualificationsData, isLoading } = useQualificationData();
         const qualifications = qualificationsData?.data?.data;
 
-      const {data: academicCalender} = useAcademicCalendarData()
+      const {data: academicCalender} = useAcademicCalendarData("Active")
       const { data: modules } = useModuleData({ request_type: "all" });
 
       const studentApi = student?.data?.data;
-      console.log(studentApi)
+
       const academicCalenderApi = academicCalender?.data?.data;
       const modulesApi = modules?.data?.data;
 
@@ -151,6 +151,7 @@ const NewStudent = () => {
                                       placeholder="Select Student"
                                       className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                                       onChange={field.onChange}
+                                      disabled={!qualification}
                                       />
                                   </FormControl>
                                   <FormMessage />

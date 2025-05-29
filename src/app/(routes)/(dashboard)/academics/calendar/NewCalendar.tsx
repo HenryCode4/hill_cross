@@ -23,7 +23,6 @@ const NewCalendar = () => {
     const [schoolState, setSchoolState] = useState("")
     const {data} = useSemesterData();
     const semesterApi = data?.data?.data;
-    console.log(semesterApi)
      const schoolOptions = semesterApi?.map((school: { id: string; name: string }) => ({
         id: school.id,
         label: school.name
@@ -31,12 +30,10 @@ const NewCalendar = () => {
 
      const {data: academicData} = useAcademicData()
      const academicApi = academicData?.data?.data;
-     console.log(academicApi)
      const academicOptions = academicApi?.map((academy: { id: string; name: string }) => ({
         id: academy.id,
         label: academy.name
      }))
-     console.log(academicOptions)
 
       const [modalOpen, setModalOpen] = useState(false);
       const { mutate, isPending } = useMutation({
@@ -57,7 +54,6 @@ const NewCalendar = () => {
       });
     
       const onSubmit = (values: z.infer<typeof calendarFormSchema>) => {
-        console.log(values)
         mutate(values, {
           onSuccess: (response) => {
             queryClient.invalidateQueries({ queryKey: ["calenderData"] });

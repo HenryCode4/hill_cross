@@ -45,7 +45,6 @@ const AcademicStaffSinglePage = () => {
 
   useEffect(() => {
     if (!staffData) return;
-    console.log(staffData);
 
     const profile = staffData.profile || {};
 

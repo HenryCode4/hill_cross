@@ -48,21 +48,18 @@ const UpdateAllocatedModule = ({
   onClose,
   event,
 }: UpdateAllocatedModuleTriggerProps) => {
-  console.log(event)
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: (values: z.infer<typeof allocateModuleFormSchema>) =>
       updateAllocatedModuleMutationFn(event?.id, values),
   });
   const {data: teacher} = useTeacherData();
-        const {data: academicCalender} = useAcademicCalendarData()
+        const {data: academicCalender} = useAcademicCalendarData("Active")
         const { data: modules } = useModuleData({ request_type: "all" });
-        console.log(modules)
         const teacherApi = teacher?.data?.data;
         const academicCalenderApi = academicCalender?.data?.data;
         
         const modulesApi = modules?.data?.data;
-        console.log(modulesApi)
         const teacherOption = teacherApi?.map((item: any)=> ({
           id: item.id,
           label: item.name

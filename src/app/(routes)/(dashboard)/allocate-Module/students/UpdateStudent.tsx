@@ -45,7 +45,6 @@ const UpdateAllocatedModule = ({
   onClose,
   event,
 }: UpdateAllocatedModuleTriggerProps) => {
-  console.log(event)
   const queryClient = useQueryClient();
   const [qualification, setQualification] = useState<string | undefined>(
     event?.qualification_id || undefined
@@ -61,7 +60,7 @@ const UpdateAllocatedModule = ({
     qualification: qualification || undefined,
   });
   
-  const { data: academicCalender } = useAcademicCalendarData();
+  const {data: academicCalender} = useAcademicCalendarData("Active")
   const { data: modules } = useModuleData({ request_type: "all" });
 
   const { data: qualificationsData } = useQualificationData();
@@ -202,6 +201,7 @@ const UpdateAllocatedModule = ({
                             className="h-[48px] rounded-[8px] border border-[#AACEC9]"
                             onChange={field.onChange}
                             // value={field.value}
+                            disabled={!qualification}
                           />
                         </FormControl>
                         <FormMessage />

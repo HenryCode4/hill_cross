@@ -14,9 +14,10 @@ interface selectComponentProps {
     border?: boolean;
     className?: string;
     full?: boolean;
+    disabled?:boolean;
 }
 
-const SelectComponent = ({placeholder, items = [], onChange, border, className, full}: selectComponentProps) => {
+const SelectComponent = ({disabled, placeholder, items = [], onChange, border, className, full}: selectComponentProps) => {
   // Helper function to handle both types of items
   const renderItem = (item: Items | string) => {
     if (typeof item === 'string') {
@@ -40,7 +41,7 @@ const SelectComponent = ({placeholder, items = [], onChange, border, className, 
       border && "border rounded-[8px]",
       !full && "w-full"
     )}>
-        <Select  onValueChange={onChange}>
+        <Select  onValueChange={onChange} disabled={disabled}>
                 <SelectTrigger className={cn("w-full h-[43px]", className)}>
                   <SelectValue 
                     className='text-[#696A6A] text-[1rem] outline-none focus:outline-none' 

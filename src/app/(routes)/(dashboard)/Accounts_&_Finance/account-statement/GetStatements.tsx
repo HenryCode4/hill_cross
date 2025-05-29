@@ -18,7 +18,6 @@ const GetStatements = () => {
     const { mutate: getStatements, isPending } = useMutation({
         mutationFn: getStatementsMutationFn,
         onSuccess: (data) => {
-            console.log(data.data);
           setStatements(data.data);
           toast({
             title: "Success",
@@ -52,7 +51,6 @@ const GetStatements = () => {
         });
       };
 
-      console.log("statement", statements);
   
   return (
     <>

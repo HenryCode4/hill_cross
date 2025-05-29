@@ -81,7 +81,6 @@ const PersonalDetails = ({filteredStudent}: PersonalDetailsProps) => {
       }, [filteredStudent, form]);
     
       const onSubmit = (values: z.infer<typeof personalDetailsSchema>) => {
-        console.log(values)
         mutate(values, {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["studentDataById"] });
