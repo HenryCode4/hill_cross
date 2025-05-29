@@ -14,9 +14,6 @@ interface selectProps {
 const SelectPage2 = ({data, placeholder, title, required, onChange, defaultValue , value}: selectProps) => {
 
   const handleValueChange = (selected: string) => {
-    console.log("new");
-    
-    console.log({selected});
     
     let index = 0
       const selectedItem = data.find(
@@ -25,9 +22,6 @@ const SelectPage2 = ({data, placeholder, title, required, onChange, defaultValue
             return item.label.toLowerCase() === selected.toLowerCase()
           }
       );
-
-      console.log({selectedItem});
-      
 
       if (selectedItem && onChange) {
           onChange(selectedItem,index);

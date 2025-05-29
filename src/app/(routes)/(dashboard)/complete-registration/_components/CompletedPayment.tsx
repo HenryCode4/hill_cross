@@ -1,7 +1,27 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import Table2 from '@/components/Table2'
+import { useStudentApprovedPaymentData } from '@/hooks/useFinalRegistration';
+import Link from 'next/link';
+import Pagination from '@/components/pagination';
 
 const CompletedPayment = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const {data: student} = useStudentApprovedPaymentData(
+      currentPage.toString(),
+          // {
+          //     payment_status: tab == "Approve Payment" ? "pending" : "completed",
+          //     // search: searchQuery || undefined
+          // }
+      );
+
+  const totalPages = student?.data?.meta?.last_page || 1;
+    
+  const handleServerPageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   const columns = [
     { accessorKey: 'name', header: 'NAME' },
     { accessorKey: 'studentId', header: 'STUDENT ID' },
@@ -11,20 +31,27 @@ const CompletedPayment = () => {
     { accessorKey: 'paymentDate', header: 'PAYMENT DATE' }
   ];
 
-  const data = [
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375084', registrationId: '9749475377', phoneNumber:'0655269353', admissionDate:'August 7, 2022', paymentDate:'August 7, 2022' },
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375184', registrationId: '9749475377', phoneNumber:'0655269353', admissionDate:'August 7, 2022', paymentDate:'August 7, 2022' },
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375284', registrationId: '9749475377', phoneNumber:'0655269353', admissionDate:'August 7, 2022', paymentDate:'August 7, 2022' },
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375384', registrationId: '9749475377', phoneNumber:'0655269353', admissionDate:'August 7, 2022', paymentDate:'August 7, 2022' },
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375484', registrationId: '9749475377', phoneNumber:'0655269353', admissionDate:'August 7, 2022', paymentDate:'August 7, 2022' },
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375584', registrationId: '9749475377', phoneNumber:'0655269353', admissionDate:'August 7, 2022', paymentDate:'August 7, 2022' },
-  ];
+  const modifyStudent = student?.data.data.map((st: { name: string; student_id: string; payment_date: string; id:string, registration_id: string, phone_number: string }) => (
+    {
+      name: st.name,
+      studentId: st.student_id,
+      registrationId: st.registration_id,
+      admissionDate: st.payment_date,
+      paymentDate: st.payment_date,
+      phoneNumber: st.phone_number
+
+    }
+  ))
+
+  if(!student){
+    return <p>loading</p>
+  }else{
 
   return (
     <>
     <Table2 columns={ [...columns,{ accessorKey: 'action', header: 'ACTION' }]}>
       <tbody className=" mt-4 ">
-      {data.map((row, rowIndex) => (
+      {modifyStudent.map((row:any, rowIndex:number) => (
           <tr key={rowIndex} className="bg-white mt-4">
             {columns.map((column, colIndex) => (
               <td
@@ -36,13 +63,23 @@ const CompletedPayment = () => {
                 {row[column.accessorKey as keyof typeof row]}
               </td>
             ))}
-            <td className='text-[#ED1000] whitespace-nowrap'>View Student Profile</td>
+            <td className='text-[#ED1000] whitespace-nowrap'><Link href={`/complete-registration/${modifyStudent[rowIndex].studentId}`}>View Student Profile</Link></td>
           </tr>
         ))}
         </tbody>
     </Table2>
+
+    <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPrevPage={() => {}}
+          onNextPage={() => {}}
+          onPageChange={() => {}}
+          isServerPagination={true}
+          onServerPageChange={handleServerPageChange}
+      />
     </>
-  )
+  )}
 }
 
 export default CompletedPayment

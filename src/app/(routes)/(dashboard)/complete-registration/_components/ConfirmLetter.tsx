@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ConfirmLetter = () => {
+const ConfirmLetter = ({save}:{save:any}) => {
   return (
     <div>ConfirmLetter</div>
   )

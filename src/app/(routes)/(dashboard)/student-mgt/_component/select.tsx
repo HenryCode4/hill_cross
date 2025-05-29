@@ -21,7 +21,7 @@ const SelectPage = ({data, placeholder, title, required, onChange, defaultValue 
         {title} <span className="text-[#930C02]">{required}</span>
       </label>
 
-      <Select onValueChange={onChange} defaultValue={defaultValue}>
+      <Select onValueChange={onChange} defaultValue={defaultValue} value={value}>
         <div className="h-full w-full rounded-[8px] border border-[#CEAAAA] bg-[#FCF9F9]">
           <SelectTrigger className="h-[43px] w-full bg-transparent outline-none">
             <SelectValue

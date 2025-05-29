@@ -1,9 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Table2 from '@/components/Table2'
 import Check from '@/assets/images/check_box.svg'
 import Image from 'next/image';
+import { useGetBookTracking } from '@/hooks/useFinalRegistration';
 
 const TrackBook = () => {
+
+   const [currentPage, setCurrentPage] = useState(1);
+  
+    const {data: books,isLoading,error} = useGetBookTracking(
+  // currentPage.toString(),
+        // {
+        //     payment_status: tab == "Approve Payment" ? "pending" : "completed",
+        //     // search: searchQuery || undefined
+        // }
+    );
+
+    console.log({books});
+    
+
   const columns = [
     { accessorKey: 'name', header: 'NAME' },
     { accessorKey: 'studentId', header: 'STUDENT ID' },
@@ -23,9 +38,26 @@ const TrackBook = () => {
     { name: 'CHIEDZA KANJOKA', studentId: '0411020375584', registrationId: '9749475377', phoneNumber:'0655269353', paymentStatus: 'Fully Paid', dispatched: true, collected: true },
   ];
 
+  if(isLoading){
+    return <>Loading</>
+  }
+
   return (
     <>
-    <Table2 columns={columns}>
+    <div className='flex justify-between md:justify-normal gap-6'>
+      {/* <div> */}
+        {/* <div className='bg-black'></div> */}
+        <div className='bg-white border-t-8 border-t-black w-[50%] md:w-[20rem] p-12 grid place-items-center gap-2'>
+          <p>{books?.data.books_dispatched}</p>
+          <p>Books Dispatched</p>
+        </div>
+        <div className='bg-white border-t-8 border-t-black w-[50%] md:w-[20rem] p-12 grid place-items-center gap-2'>
+          <p>{books?.data.books_collected}</p>
+          <p>Books Collected</p>
+        </div>
+      {/* </div> */}
+    </div>
+    {books?.data.length ? <Table2 columns={columns}>
       <tbody className=" mt-4 ">
       {data.map((row, rowIndex) => (
           <tr key={rowIndex} className="bg-white mt-4">
@@ -36,18 +68,17 @@ const TrackBook = () => {
                   column.accessorKey === 'name' ? 'whitespace-nowrap' : ''
                 }`}
               >
-                {/* <>
-                {console.log(row[column.accessorKey as keyof typeof row] == 'name')
-                }
-                </> */}
                 {(column.accessorKey == 'dispatched' || column.accessorKey  == 'collected') ? !(row[column.accessorKey as keyof typeof row]) ? <Image src={Check} alt='check' /> : 'false': row[column.accessorKey as keyof typeof row] }
-                {/* {row[column.accessorKey as keyof typeof row]} */}
               </td>
             ))}
           </tr>
         ))}
         </tbody>
-    </Table2>
+    </Table2> : (
+      <div>
+        <p>No Book Found</p>
+      </div>
+    )}
     </>
   )
 }

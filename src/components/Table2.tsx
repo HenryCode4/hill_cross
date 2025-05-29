@@ -8,23 +8,22 @@ interface Column {
 
 interface TableProps {
   columns: Column[];
-  children: React.ReactNode
+  children: React.ReactNode,
+  color?: boolean
 }
 
-const Table2 = ({ columns, children }: TableProps) => {
+const Table2 = ({ columns, children, color = false }: TableProps) => {
   return (
     <div className="relative overflow-x-auto">
-      {/* This div now holds the table with scrolling enabled */}
       <div className={`overflow-y-auto `}>
         <table className="min-w-full border-separate border-spacing-y-4">
           {/* Header with sticky positioning */}
-          <thead className="sticky top-0 z-10 h-[56px] bg-white text-[#B0B0B0] ">
+          <thead className={`sticky top-0 z-10 h-[56px] ${color ? 'bg-[#DADADA]' : 'bg-white'} text-[#B0B0B0] `}>
             <tr>
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  // style={{ width: column.width }}
-                  className={`text-[#B0B0B0] px-4 py-2 text-left text-[16px] 2xl:text-[20px] font-semibold`}
+                  className={`${color ? 'text-black' : 'text-[#B0B0B0]'}  px-4 py-2 text-left text-[16px] 2xl:text-[20px] font-semibold`}
                 >
                   {column.header}
                 </th>

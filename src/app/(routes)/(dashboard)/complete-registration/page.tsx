@@ -19,21 +19,26 @@ const CompleteRegistrationPage = () => {
   const [showModal,setShowModal] = useState(false);
   const tabItems: Tab[] = ["Approve Payment","Completed","Track Book Delivery"]
 
-  const [currentPage, setCurrentPage] = useState(1);
+//   const [currentPage, setCurrentPage] = useState(1);
 
-    // const {data: student} = useStudentPaymentData(
-    // currentPage.toString(),
-    //     // {
-    //     //     payment_status: tab == "Approve Payment" ? "pending" : "completed",
-    //     //     // search: searchQuery || undefined
-    //     // }
-    // );
+//     const {data: student} = useStudentPaymentData(
+//     currentPage.toString(),
+//         // {
+//         //     payment_status: tab == "Approve Payment" ? "pending" : "completed",
+//         //     // search: searchQuery || undefined
+//         // }
+//     );
+
+//     console.log({student});
+//   const totalPages = student?.data?.meta?.last_page || 1;
     
+//   const handleServerPageChange = (page: number) => {
+//     setCurrentPage(page);
+//   };
 
   const getActiveComponent = {
     "Approve Payment": (
-    //   <ApprovePayment student={student} />
-    <></>
+      <ApprovePayment  />
     ),
     'Completed': <CompletedPayment />,
     "Track Book Delivery": <TrackBook />,
@@ -41,7 +46,6 @@ const CompleteRegistrationPage = () => {
 
   return (
     <div className="flex h-full w-full flex-col gap-y-[24px] pb-[24px] pt-[90px] lg:gap-y-[43px] lg:px-[52px]">
-        {/* <Header title={"Registration Finalization"}  addStudentBtn hideSearch  /> */}
         <div className='flex justify-between mt-8'>
             <h1 className="text-[24px] font-[600] leading-[29.05px] text-[#011F1B]">
                 Registration Finalization
