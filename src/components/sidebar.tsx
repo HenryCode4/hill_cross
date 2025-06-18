@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { dashboard, dashboardLite, academics, academicsLite, account, accountLite, admin, adminLite, elearning, elearningLite, moduleAl, moduleLite2, studentMgt, studentMgtLite, notification, notificationLite, marketing, marketingLite, hrMgt, hrMgtLite, Logo, adminLite1 } from '@/assets'; 
 import Link from 'next/link';
 import Cookies from "js-cookie";
+import { useAuthContext } from '@/context/auth-provider';
 
 
 interface SidebarProps {
@@ -15,6 +16,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({toggle, setToggle}:SidebarProps) => {
+  const {user,isLoading} = useAuthContext();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -32,6 +34,10 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
   // Check if a specific item is active
   const isActive = (url: string | undefined) => pathname === url || pathname.startsWith(`${url}/`);
 
+  // const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')!) : null;
+  console.log({user});
+  
+
   // Sidebar items array
   const items = [
     {
@@ -45,6 +51,7 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
       url: "/academics",
       iconDark: academics,
       iconLite: academicsLite,
+      role: ["admin", "super admin"],
       sub: [
         {
           title: "Schools",
@@ -65,11 +72,13 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
       url: "/e-learning",
       iconDark: elearning,
       iconLite: elearningLite,
+      role: ["admin", "super admin"],
     }, 
     {
       title: "Allocate Module",
       iconDark: moduleAl,
       iconLite: moduleLite2,
+      role: ["admin", "super admin"],
       sub: [
         {
           title: "Teachers",
@@ -86,18 +95,21 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
       url: "/student-mgt",
       iconDark: studentMgt,
       iconLite: studentMgtLite,
+      role: ["admin", "super admin"],
     },
     {
       title: "Registration Finalization",
       url: "/complete-registration",
       iconDark: studentMgt,
       iconLite: studentMgtLite,
+      role: ["admin", "accountant"]
     },
     {
       title: "Accounts & Finance",
       // url: "",
       iconDark: account,
       iconLite: accountLite,
+      role: ["admin", "accountant"],
       sub: [
         {
           title: "Accounts & Finance",
@@ -171,9 +183,13 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
   
   const handleLogout = () => {
     Cookies.remove("accessToken");
+    Cookies.remove("role");
     router.replace("/"); 
   };
 
+  if(isLoading){
+    return <>Loading...</>
+  }
 
   return (
     <>
@@ -186,92 +202,94 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
       {/* Sidebar Menu with Scrollable Content */}
       <div className="flex-1 flex flex-col gap-y-[16px] w-full py-[47.5px] max-h-[calc(100vh-178px)] overflow-y-auto">
         {items.map((item) => {
-          const isActiveMain = isActive(item.url);
-
-          // For items with submenus
-          if (item.sub && !item.url) {
-            const isActiveSub = item.sub.some((subItem) => pathname === subItem.url);
-
-            return (
-              <div key={item.title}>
-                {/* Main Menu Item with Dropdown */}
-                <div
-                  className={`w-full flex items-center h-[64px] px-[24px] py-[8px] cursor-pointer ${
-                    isActiveSub ? 'bg-[#FFFFFF]' : 'hover:bg-[#FFFFFF1A]'
-                  }`}
-                  onClick={() => toggleDropdown(item.title)}
-                >
-                  <div className="flex w-full items-center gap-x-[16px]">
-                    <div
-                      className={`${
-                        isActiveSub ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
-                      } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
-                    >
-                      <Image src={isActiveSub ? item.iconLite : item.iconDark} alt="sidebar icon" />
+          
+          if(user?.role?.toLowerCase() == "super admin" || (item?.role && item.role.includes(user?.role?.toLowerCase()!))){
+            const isActiveMain = isActive(item.url);
+            // For items with submenus
+            if (item.sub && !item.url) {
+              const isActiveSub = item.sub.some((subItem) => pathname === subItem.url);
+  
+              return (
+                <div key={item.title}>
+                  {/* Main Menu Item with Dropdown */}
+                  <div
+                    className={`w-full flex items-center h-[64px] px-[24px] py-[8px] cursor-pointer ${
+                      isActiveSub ? 'bg-[#FFFFFF]' : 'hover:bg-[#FFFFFF1A]'
+                    }`}
+                    onClick={() => toggleDropdown(item.title)}
+                  >
+                    <div className="flex w-full items-center gap-x-[16px]">
+                      <div
+                        className={`${
+                          isActiveSub ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
+                        } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
+                      >
+                        <Image src={isActiveSub ? item.iconLite : item.iconDark} alt="sidebar icon" />
+                      </div>
+                      <span
+                        className={`${
+                          isActiveSub ? 'text-[#ED1000]' : 'text-[#FFFFFF]'
+                        } text-[16px] font-[600] leading-[19.36px]`}
+                      >
+                        {item.title}
+                      </span>
                     </div>
-                    <span
-                      className={`${
-                        isActiveSub ? 'text-[#ED1000]' : 'text-[#FFFFFF]'
-                      } text-[16px] font-[600] leading-[19.36px]`}
-                    >
-                      {item.title}
-                    </span>
+                    <ChevronDown
+                      className={`ml-auto transition-transform ${openItems[item.title] ? 'rotate-180' : ''} text-white`}
+                    />
                   </div>
-                  <ChevronDown
-                    className={`ml-auto transition-transform ${openItems[item.title] ? 'rotate-180' : ''} text-white`}
-                  />
-                </div>
-
-                {/* Submenu (Collapsible content) */}
-                {openItems[item.title] && (
-                  <div className={`${isActiveSub ? 'bg-[#FFFFFF]' : ''}`}>
-                    {item.sub.map((subItem, subIndex) => {
-                      const isActiveSubItem = pathname === subItem.url;
-
-                      return (
-                        <div key={subIndex} className={`h-[64px] px-[45px] py-[8px] hover:bg-[#FFFFFF1A]`}>
-                          <Link href={subItem.url}>
-                            <div className="flex items-center gap-x-2">
-                              <div
-                                className={`${
-                                    isActiveSub ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
-                                } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
-                              >
-                                <Image src={isActiveSub ? item.iconLite : item.iconDark} alt="sidebar icon" />
+  
+                  {/* Submenu (Collapsible content) */}
+                  {openItems[item.title] && (
+                    <div className={`${isActiveSub ? 'bg-[#FFFFFF]' : ''}`}>
+                      {item.sub.map((subItem, subIndex) => {
+                        const isActiveSubItem = pathname === subItem.url;
+  
+                        return (
+                          <div key={subIndex} className={`h-[64px] px-[45px] py-[8px] hover:bg-[#FFFFFF1A]`}>
+                            <Link href={subItem.url}>
+                              <div className="flex items-center gap-x-2">
+                                <div
+                                  className={`${
+                                      isActiveSub ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
+                                  } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
+                                >
+                                  <Image src={isActiveSub ? item.iconLite : item.iconDark} alt="sidebar icon" />
+                                </div>
+                                <span className={`text-[16px] font-[600] leading-[19.36px] ${isActiveSubItem && isActiveSub ? "text-[#ED1000]" : "text-[#FFFFFF]"} ${!isActiveSubItem && isActiveSub && "text-black"}`}>{subItem.title}</span>
                               </div>
-                              <span className={`text-[16px] font-[600] leading-[19.36px] ${isActiveSubItem && isActiveSub ? "text-[#ED1000]" : "text-[#FFFFFF]"} ${!isActiveSubItem && isActiveSub && "text-black"}`}>{subItem.title}</span>
-                            </div>
-                          </Link>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          } else {
-            return (
-              <div className="flex flex-col gap-y-[8px]" key={item.title}>
-                <div className={`h-[64px] ${isActiveMain ? 'bg-[#FFFFFF]' : 'hover:bg-[#FFFFFF1A]'}`}>
-                  <Link href={item.url} className="flex w-full gap-x-[16px] items-center px-[24px] py-[8px]">
-                    <div
-                      className={`${
-                        isActiveMain ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
-                      } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
-                    >
-                      <Image src={isActiveMain ? item.iconLite : item.iconDark} alt="sidebar icon" />
+                            </Link>
+                          </div>
+                        );
+                      })}
                     </div>
-                    <span
-                      className={`${
-                        isActiveMain ? 'text-[#9D1217]' : 'text-[#FFFFFF]'
-                      } text-[16px] font-[600] leading-[19.36px]`}
-                    >
-                      {item.title}
-                    </span>
-                  </Link>
+                  )}
                 </div>
-              </div>
-            );
+              );
+            } else {
+              return (
+                <div className="flex flex-col gap-y-[8px]" key={item.title}>
+                  <div className={`h-[64px] ${isActiveMain ? 'bg-[#FFFFFF]' : 'hover:bg-[#FFFFFF1A]'}`}>
+                    <Link href={item.url} className="flex w-full gap-x-[16px] items-center px-[24px] py-[8px]">
+                      <div
+                        className={`${
+                          isActiveMain ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
+                        } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
+                      >
+                        <Image src={isActiveMain ? item.iconLite : item.iconDark} alt="sidebar icon" />
+                      </div>
+                      <span
+                        className={`${
+                          isActiveMain ? 'text-[#9D1217]' : 'text-[#FFFFFF]'
+                        } text-[16px] font-[600] leading-[19.36px]`}
+                      >
+                        {item.title}
+                      </span>
+                    </Link>
+                  </div>
+                </div>
+              );
+            }
           }
         })}
       </div>
@@ -303,92 +321,95 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
       {/* Sidebar Menu with Scrollable Content */}
       <div className="flex-1 flex flex-col gap-y-[16px] w-full py-[47.5px] max-h-[calc(100vh-178px)] overflow-y-auto">
         {items.map((item) => {
-          const isActiveMain = isActive(item.url);
+          if(user?.role?.toLowerCase() == "super admin" || (item?.role && item.role.includes(user?.role?.toLowerCase()!))){
 
-          // For items with submenus
-          if (item.sub && !item.url) {
-            const isActiveSub = item.sub.some((subItem) => pathname === subItem.url);
-
-            return (
-              <div key={item.title}>
-                {/* Main Menu Item with Dropdown */}
-                <div
-                  className={`w-full flex items-center h-[64px] px-[24px] py-[8px] cursor-pointer ${
-                    isActiveSub ? 'bg-[#FFFFFF]' : 'hover:bg-[#FFFFFF1A]'
-                  }`}
-                  onClick={() => toggleDropdown(item.title)}
-                >
-                  <div className="flex w-full items-center gap-x-[16px]">
-                    <div
-                      className={`${
-                        isActiveSub ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
-                      } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
-                    >
-                      <Image src={isActiveSub ? item.iconLite : item.iconDark} alt="sidebar icon" />
+            const isActiveMain = isActive(item.url);
+  
+            // For items with submenus
+            if (item.sub && !item.url) {
+              const isActiveSub = item.sub.some((subItem) => pathname === subItem.url);
+  
+              return (
+                <div key={item.title}>
+                  {/* Main Menu Item with Dropdown */}
+                  <div
+                    className={`w-full flex items-center h-[64px] px-[24px] py-[8px] cursor-pointer ${
+                      isActiveSub ? 'bg-[#FFFFFF]' : 'hover:bg-[#FFFFFF1A]'
+                    }`}
+                    onClick={() => toggleDropdown(item.title)}
+                  >
+                    <div className="flex w-full items-center gap-x-[16px]">
+                      <div
+                        className={`${
+                          isActiveSub ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
+                        } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
+                      >
+                        <Image src={isActiveSub ? item.iconLite : item.iconDark} alt="sidebar icon" />
+                      </div>
+                      <span
+                        className={`${
+                          isActiveSub ? 'text-[#ED1000]' : 'text-[#FFFFFF]'
+                        } text-[16px] font-[600] leading-[19.36px]`}
+                      >
+                        {item.title}
+                      </span>
                     </div>
-                    <span
-                      className={`${
-                        isActiveSub ? 'text-[#ED1000]' : 'text-[#FFFFFF]'
-                      } text-[16px] font-[600] leading-[19.36px]`}
-                    >
-                      {item.title}
-                    </span>
+                    <ChevronDown
+                      className={`ml-auto transition-transform ${openItems[item.title] ? 'rotate-180' : ''} text-white`}
+                    />
                   </div>
-                  <ChevronDown
-                    className={`ml-auto transition-transform ${openItems[item.title] ? 'rotate-180' : ''} text-white`}
-                  />
-                </div>
-
-                {/* Submenu (Collapsible content) */}
-                {openItems[item.title] && (
-                  <div className={`${isActiveSub ? 'bg-[#FFFFFF]' : ''}`}>
-                    {item.sub.map((subItem, subIndex) => {
-                      const isActiveSubItem = pathname === subItem.url;
-
-                      return (
-                        <div key={subIndex} className={`h-[64px] px-[45px] py-[8px] hover:bg-[#FFFFFF1A]`}>
-                          <Link href={subItem.url} onClick={() => setToggle(false)}>
-                            <div className="flex items-center gap-x-2">
-                              <div
-                                className={`${
-                                    isActiveSub ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
-                                } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
-                              >
-                                <Image src={isActiveSub ? item.iconLite : item.iconDark} alt="sidebar icon" />
+  
+                  {/* Submenu (Collapsible content) */}
+                  {openItems[item.title] && (
+                    <div className={`${isActiveSub ? 'bg-[#FFFFFF]' : ''}`}>
+                      {item.sub.map((subItem, subIndex) => {
+                        const isActiveSubItem = pathname === subItem.url;
+  
+                        return (
+                          <div key={subIndex} className={`h-[64px] px-[45px] py-[8px] hover:bg-[#FFFFFF1A]`}>
+                            <Link href={subItem.url} onClick={() => setToggle(false)}>
+                              <div className="flex items-center gap-x-2">
+                                <div
+                                  className={`${
+                                      isActiveSub ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
+                                  } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
+                                >
+                                  <Image src={isActiveSub ? item.iconLite : item.iconDark} alt="sidebar icon" />
+                                </div>
+                                <span className={`text-[16px] font-[600] leading-[19.36px] ${isActiveSubItem && isActiveSub ? "text-[#ED1000]" : "text-[#FFFFFF]"} ${!isActiveSubItem && isActiveSub && "text-black"}`}>{subItem.title}</span>
                               </div>
-                              <span className={`text-[16px] font-[600] leading-[19.36px] ${isActiveSubItem && isActiveSub ? "text-[#ED1000]" : "text-[#FFFFFF]"} ${!isActiveSubItem && isActiveSub && "text-black"}`}>{subItem.title}</span>
-                            </div>
-                          </Link>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          } else {
-            return (
-              <div className="flex flex-col gap-y-[8px]" key={item.title}>
-                <div className={`h-[64px] ${isActiveMain ? 'bg-[#FFFFFF]' : 'hover:bg-[#FFFFFF1A]'}`}>
-                  <Link href={item.url} className="flex w-full gap-x-[16px] items-center px-[24px] py-[8px]" onClick={() => setToggle(false)}>
-                    <div
-                      className={`${
-                        isActiveMain ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
-                      } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
-                    >
-                      <Image src={isActiveMain ? item.iconLite : item.iconDark} alt="sidebar icon" />
+                            </Link>
+                          </div>
+                        );
+                      })}
                     </div>
-                    <span
-                      className={`${
-                        isActiveMain ? 'text-[#9D1217]' : 'text-[#FFFFFF]'
-                      } text-[16px] font-[600] leading-[19.36px]`}
-                    >
-                      {item.title}
-                    </span>
-                  </Link>
+                  )}
                 </div>
-              </div>
-            );
+              );
+            } else {
+              return (
+                <div className="flex flex-col gap-y-[8px]" key={item.title}>
+                  <div className={`h-[64px] ${isActiveMain ? 'bg-[#FFFFFF]' : 'hover:bg-[#FFFFFF1A]'}`}>
+                    <Link href={item.url} className="flex w-full gap-x-[16px] items-center px-[24px] py-[8px]" onClick={() => setToggle(false)}>
+                      <div
+                        className={`${
+                          isActiveMain ? 'bg-[#ED1000]' : 'bg-[#FFFFFF]'
+                        } w-[48px] h-[48px] rounded-[8px] flex items-center justify-center`}
+                      >
+                        <Image src={isActiveMain ? item.iconLite : item.iconDark} alt="sidebar icon" />
+                      </div>
+                      <span
+                        className={`${
+                          isActiveMain ? 'text-[#9D1217]' : 'text-[#FFFFFF]'
+                        } text-[16px] font-[600] leading-[19.36px]`}
+                      >
+                        {item.title}
+                      </span>
+                    </Link>
+                  </div>
+                </div>
+              );
+            }
           }
         })}
       </div>

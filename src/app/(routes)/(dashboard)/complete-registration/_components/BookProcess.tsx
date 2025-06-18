@@ -6,7 +6,9 @@ import { toast } from '@/hooks/use-toast'
 import { updateBookProcess } from '@/lib/api2'
 
 const BookProcess = ({payment,save}:{payment:any,save: any}) => {
-    const [bookStatus,setBookStatus] = useState("");
+    const [bookStatus,setBookStatus] = useState(payment?.data?.data?.books?.status || "");
+    
+    
     const bookOption = [
         {
             name: "Ordered",
@@ -31,12 +33,16 @@ const BookProcess = ({payment,save}:{payment:any,save: any}) => {
     ]
 
 
-       const { mutate, isPending } = useMutation({
-          mutationFn: updateBookProcess,
-        });
-      const queryClient = useQueryClient()
+    const { mutate, isPending } = useMutation({
+        mutationFn: updateBookProcess,
+    });
+    const queryClient = useQueryClient()
       
-      const onSubmit = (e:any) => {
+    const onSubmit = (e:any) => {
+        if(payment.data.data?.book?.status == bookStatus){
+            save("Confirmation Letter")
+            return
+        }
         e.preventDefault();
         
         mutate({id:payment.data.data.id,bookStatus}, {
@@ -44,7 +50,7 @@ const BookProcess = ({payment,save}:{payment:any,save: any}) => {
             queryClient.invalidateQueries({ queryKey: [`getSingleStudentPayment`, payment.data.data.student_id] });
             toast({
                 title: "Success",
-                description: "Payment Uploaded successfully",
+                description: "Book Status Updated",
                 variant: "default",
             });
             save("Confirmation Letter")
@@ -66,7 +72,7 @@ const BookProcess = ({payment,save}:{payment:any,save: any}) => {
             <div className='grid gap-2 mt-4'>
 
                 {bookOption.map(book => (
-                    <div className='flex items-center gap-4'>
+                    <div className='flex items-center gap-4' key={book.tag}>
                         <div 
                         className={`${book.name ? 'border border-[#9D1217] ' : 'border border-[#1C1B1F]'} h-4 w-4  cursor-pointer rounded-sm`}
                         onClick={() => {
@@ -92,7 +98,7 @@ const BookProcess = ({payment,save}:{payment:any,save: any}) => {
             </button>
             <button className="h-[48px] w-[161px] rounded-[8px] bg-[#ED1000]  text-[16px] font-[500] text-white"
             onClick={onSubmit} disabled={isPending}>
-                Save And Continue
+                {isPending ? 'Loading...' : 'Save And Continue'}
             </button>
         </div>
     </div>

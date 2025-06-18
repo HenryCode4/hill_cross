@@ -11,7 +11,7 @@ import EditModal from './EditModal';
 const PaymentHistory = ({payment,save}:{payment:any,save:() => void}) => {
     const [active,setActive] = useState<number | null>(null);
     const [showModal,setShowModal] = useState(false);
-    const [student,setStudent] = useState({student_name:"",amount_paid:"",balance:"",fee_category:"",id:"",studentId:payment.data.data.student_id});
+    const [student,setStudent] = useState({student_name:"",amount_paid:"",balance:"",fee_category:"",id:"",studentId:payment?.data.data.student_id || ""});
 
     const selectActive = (active:number | null) => {
         setActive(active)
@@ -39,7 +39,8 @@ const PaymentHistory = ({payment,save}:{payment:any,save:() => void}) => {
             balance: payment.balance_owing,
             status: payment.status,
             paymentDate: payment.payment_date,
-            id: payment.id
+            id: payment.id,
+            statement_of_account_url: payment.statement_of_account_url
         }
     });
     
@@ -96,7 +97,14 @@ const PaymentHistory = ({payment,save}:{payment:any,save:() => void}) => {
                                 <Image src={DownArrow} alt='down-arrown' className='mx-auto w-fit cursor-pointer ' />
                                 {rowIndex == active && <div className='absolute w-[12rem] right-0 px-4 py-6 grid gap-4 bg-white rounded-md z-[1000] border'>
                                     {data[rowIndex].status == "Pending" && <p className='cursor-pointer' onClick={() => onEditStudent(data[rowIndex])}>Edit Payment</p>}
-                                    <p className='cursor-pointer'>View Receipt</p>
+                                    <a
+                                        href={data[rowIndex].statement_of_account_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="cursor-pointer"
+                                        >
+                                        View Receipt
+                                    </a>
                                     {data[rowIndex].status == "Pending" && <p className='cursor-pointer' onClick={() => onApprove(row["id"])}>Approve Payment</p>}
                                 </div>}
                             </td>

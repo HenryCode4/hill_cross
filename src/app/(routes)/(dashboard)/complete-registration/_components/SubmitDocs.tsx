@@ -102,6 +102,14 @@ const SubmitDocs = ({payment,save}:{payment:any,save:  React.Dispatch<React.SetS
     });
 
     const onSubmit = (e:any) => {
+      if(!docs.id_url || !docs.cert_url || !docs.address_url || !docs.sponsor_url){
+        toast({
+            title: "Error",
+            description: "Please Upload All Documents.",
+            variant: "destructive",
+        });
+        return
+      }
       e.preventDefault();
       
       mutate({id:payment.data.data.id,...docs}, {
@@ -158,7 +166,7 @@ const SubmitDocs = ({payment,save}:{payment:any,save:  React.Dispatch<React.SetS
           </button>
           <button className="h-[48px] w-[161px] rounded-[8px] bg-[#ED1000]  text-[16px] font-[500] text-white"
           onClick={onSubmit}>
-            {isPending ? <Loader className="h-4 w-4 animate-spin text-gray-400" /> : 'Save And Continue'}
+            {isPending ? 'Loading ...' : 'Save And Continue'}
           </button>
         </div>
     </>

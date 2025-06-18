@@ -1,23 +1,19 @@
 import React, { useState } from 'react'
 import Table2 from '@/components/Table2'
-import Check from '@/assets/images/check_box.svg'
+import NotCollected from '@/assets/images/collected.svg'
+import Collected from '@/assets/images/dispatched.svg'
 import Image from 'next/image';
 import { useGetBookTracking } from '@/hooks/useFinalRegistration';
+import Pagination from '@/components/pagination';
+import { Loader } from 'lucide-react';
 
 const TrackBook = () => {
 
    const [currentPage, setCurrentPage] = useState(1);
   
-    const {data: books,isLoading,error} = useGetBookTracking(
-  // currentPage.toString(),
-        // {
-        //     payment_status: tab == "Approve Payment" ? "pending" : "completed",
-        //     // search: searchQuery || undefined
-        // }
-    );
-
-    console.log({books});
-    
+  const {data: books,isLoading,error} = useGetBookTracking(
+    // currentPage.toString()
+  );
 
   const columns = [
     { accessorKey: 'name', header: 'NAME' },
@@ -29,17 +25,21 @@ const TrackBook = () => {
     { accessorKey: 'collected', header: 'COLLECTED' },
   ];
 
-  const data = [
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375084', registrationId: '9749475377', phoneNumber:'0655269353', paymentStatus: 'Fully Paid', dispatched: true, collected: true },
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375184', registrationId: '9749475377', phoneNumber:'0655269353', paymentStatus: 'Fully Paid', dispatched: true, collected: true },
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375284', registrationId: '9749475377', phoneNumber:'0655269353', paymentStatus: 'Partially Paid', dispatched: true, collected: false },
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375384', registrationId: '9749475377', phoneNumber:'0655269353', paymentStatus: 'Partially Paid', dispatched: false, collected: false },
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375484', registrationId: '9749475377', phoneNumber:'0655269353', paymentStatus: 'Fully Paid', dispatched: true, collected: true },
-    { name: 'CHIEDZA KANJOKA', studentId: '0411020375584', registrationId: '9749475377', phoneNumber:'0655269353', paymentStatus: 'Fully Paid', dispatched: true, collected: true },
-  ];
+  const totalPages = books?.data?.meta?.last_page || 1;
+      
+  const handleServerPageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+  const bookData = books?.data.data.map((book:any) => {
+    return {name:book.student_name,studentId:book.student_id,registrationId:book.registration_id,phoneNumber:book.phone_number,paymentStatus:book.payment_status,dispatched:book.status.toLowerCase() == "dispatched" || book.status.toLowerCase() == "collected",collected:book.status.toLowerCase() == "collected"}
+  });
 
   if(isLoading){
-    return <>Loading</>
+    return (
+      <div className='w-full flex justify-center items-center'>
+        <Loader className="animate-spin h-8 w-8 mx-auto text-red-700" />
+      </div>
+  )
   }
 
   return (
@@ -57,18 +57,18 @@ const TrackBook = () => {
         </div>
       {/* </div> */}
     </div>
-    {books?.data.length ? <Table2 columns={columns}>
+    {books?.data.data.length ? <Table2 columns={columns}>
       <tbody className=" mt-4 ">
-      {data.map((row, rowIndex) => (
+      {bookData.map((row:any, rowIndex:number) => (
           <tr key={rowIndex} className="bg-white mt-4">
             {columns.map((column, colIndex) => (
               <td
                 key={colIndex}
                 className={`text-[#5B5B5B] w-fit text-[16px] 2xl:text-[20px] h-[68px] px-4 py-2 font-[500] pr-10 ${
-                  column.accessorKey === 'name' ? 'whitespace-nowrap' : ''
+                  column.accessorKey === 'name' || column.accessorKey === 'phoneNumber' ? 'whitespace-nowrap' : ''
                 }`}
               >
-                {(column.accessorKey == 'dispatched' || column.accessorKey  == 'collected') ? !(row[column.accessorKey as keyof typeof row]) ? <Image src={Check} alt='check' /> : 'false': row[column.accessorKey as keyof typeof row] }
+                {(column.accessorKey == 'dispatched' || column.accessorKey  == 'collected') ? (row[column.accessorKey as keyof typeof row]) ? <Image src={Collected} alt='check' /> : <Image src={NotCollected} alt='check' />: row[column.accessorKey as keyof typeof row] }
               </td>
             ))}
           </tr>
@@ -79,6 +79,16 @@ const TrackBook = () => {
         <p>No Book Found</p>
       </div>
     )}
+
+      <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPrevPage={() => {}}
+          onNextPage={() => {}}
+          onPageChange={() => {}}
+          isServerPagination={true}
+          onServerPageChange={handleServerPageChange}
+      />
     </>
   )
 }

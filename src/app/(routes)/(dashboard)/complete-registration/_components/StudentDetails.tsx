@@ -34,8 +34,6 @@ const ContactInput = ({placeholder, title, required,value,name, onChange}: Input
 const StudentDetails = ({payment,save}:{payment:any,save: any}) => {
   const {last_name,first_name,phone_number, student_id } = payment?.data.data;
   const [studentDetails,setStudentDetails] = useState({last_name:last_name,firstName: first_name, phoneNumber: phone_number, student_id  })
-
-  console.log({payment});
   
   const changeStudentDetails = (e:React.ChangeEvent<HTMLInputElement>) => {
     const {name,value} = e.target;
@@ -112,8 +110,9 @@ const StudentDetails = ({payment,save}:{payment:any,save: any}) => {
               Back
           </button>
           <button className="h-[48px] w-[161px] rounded-[8px] bg-[#ED1000]  text-[16px] font-[500] text-white"
-          onClick={onSubmit}>
-              Save And Continue
+          onClick={onSubmit}
+          disabled={isPending}>
+              {isPending ? 'Loading...' : 'Save And Continue'}
           </button>
         </div>
     </>

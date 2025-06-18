@@ -23,7 +23,7 @@ import { useSingleStudentPaymentData } from "@/hooks/useFinalRegistration";
 
 export type ActiveProps =  "Payment History" | "Registration" | "Student Details" | "Submission of Document" | "Confirmation of Admission" | "Portal Creation" | "Payment Confirmation" | "Books Process" | "Confirmation Letter"
 
-const page = ({params}:{params: Promise<{id:string}>}) => {
+const Page = ({params}:{params: Promise<{id:string}>}) => {
   const {id} = use(params);
   
   const {data: payment,isLoading} = useSingleStudentPaymentData(id);
@@ -78,7 +78,7 @@ const page = ({params}:{params: Promise<{id:string}>}) => {
     "Portal Creation": <PortalCreation payment={payment} save={setActive} />,
     "Payment Confirmation": <ConfirmPayment payment={payment} save={setActive} />,
     "Books Process": <BookProcess payment={payment} save={setActive} />,
-    "Confirmation Letter": <ConfirmLetter save={setActive} />
+    "Confirmation Letter": <ConfirmLetter payment={payment} save={setActive} />
   }
 
   if(isLoading){
@@ -125,4 +125,4 @@ const page = ({params}:{params: Promise<{id:string}>}) => {
   )
 }
 
-export default page
+export default Page

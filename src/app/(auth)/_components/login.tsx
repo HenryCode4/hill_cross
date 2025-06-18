@@ -8,7 +8,7 @@ import { Eye, EyeOff, Loader } from "lucide-react";
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { loginMutationFn } from "@/lib/api";
 import { useRouter } from "next/navigation";
@@ -44,10 +44,18 @@ const Login = () => {
     },
   });
 
+ const queryClient = useQueryClient();
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     mutate(values, {
       onSuccess: (response) => {
+        queryClient.invalidateQueries({ queryKey: ["authUser"] });
         Cookies.set("accessToken", response.data.access_token, {
+          expires: new Date(response.data.expires_at),
+          secure: false,
+          sameSite: "strict",
+        });
+        Cookies.set("role", response.data.user.role, {
           expires: new Date(response.data.expires_at),
           secure: false,
           sameSite: "strict",
@@ -55,7 +63,6 @@ const Login = () => {
         router.replace(`/dashboard`);
       },
       onError: (error) => {
-        console.log(error.message);
         toast({
           title: "Error",
           description: error.message,

@@ -93,3 +93,8 @@ export const updateBookProcess = async (values: any) =>{
   const {id, bookStatus} = values
   await API.patch(`/admin/students/update-book-tracking-status/${id}`,{status:bookStatus});
 }
+
+export const generateStudentAdmissionLetter = async (student_id:string) => {
+    const endpoint = `/students/${student_id}/grant-registration`;
+    await API.post(endpoint);
+}

@@ -1,34 +1,6 @@
-import Image from 'next/image'
-import Link from 'next/link'
 import React from 'react'
-import Check from '@/assets/images/check_box.svg'
-import { it } from 'node:test'
 
 const ConfirmPayment = ({payment,save}:{payment:any,save: any}) => {
-    const payments = [
-        {
-            name: "Student Card",
-            check: true
-        },
-        {
-            name: "Books (Fully Paid)",
-            check: true
-        },
-        {
-            name: "Books (Partially Paid)",
-            check: true
-        },
-        {
-            name: "Registration Fee",
-            check: false
-        },
-        {
-            name: "School Fees",
-            check: false
-        }
-    ]
-
-    console.log(payment.data.data.student_payments);
     
   return (
     <div className="flex flex-col justify-between h-full">

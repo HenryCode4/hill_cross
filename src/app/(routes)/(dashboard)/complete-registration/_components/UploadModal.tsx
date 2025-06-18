@@ -116,7 +116,6 @@ const UploadModal = ({showModal,onClose}:UploadModalProps) => {
             onClose();
             },
             onError: (error) => {
-            console.log(error.message);
             toast({
                 title: "Error",
                 description: error.message,

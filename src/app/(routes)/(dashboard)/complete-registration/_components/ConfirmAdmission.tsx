@@ -135,8 +135,8 @@ const ConfirmAdmission = ({payment,save}:{payment:any,save: any}) => {
                 Back
             </button>
             <button className="h-[48px] w-[161px] rounded-[8px] bg-[#ED1000]  text-[16px] font-[500] text-white"
-            onClick={onSubmit}>
-                Save And Continue
+            onClick={onSubmit} disabled={isPending}>
+                {isPending ? 'Loading...' : 'Save And Continue'}
             </button>
         </div>
     </>

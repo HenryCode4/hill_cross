@@ -4,6 +4,7 @@ import Table2 from '@/components/Table2'
 import Link from 'next/link';
 import { useStudentPaymentData } from '@/hooks/useFinalRegistration';
 import Pagination from '@/components/pagination';
+import { Loader } from 'lucide-react';
 
 const ApprovePayment = () => {
 
@@ -45,7 +46,11 @@ const ApprovePayment = () => {
   ))
 
   if(!student){
-    return <p>loading</p>
+    return (
+          <div className='w-full flex justify-center items-center'>
+            <Loader className="animate-spin h-8 w-8 mx-auto text-red-700" />
+          </div>
+      )
   }else{
 
     return (
