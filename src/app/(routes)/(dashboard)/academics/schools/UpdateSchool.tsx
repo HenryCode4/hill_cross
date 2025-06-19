@@ -69,7 +69,6 @@ const UpdateSchool = ({ open, onClose, event }: UpdateSchoolTriggerProps) => {
             onClose();
         },
         onError: (error) => {
-          console.log(error.message);
           toast({
             title: "Error",
             description: error.message,

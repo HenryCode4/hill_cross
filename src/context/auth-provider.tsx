@@ -2,6 +2,8 @@
 
 import useAuth from "@/hooks/use-auth";
 import React, { createContext, useContext } from "react";
+import Cookies from "js-cookie";
+
 
 type UserType = {
   id: string,
@@ -32,6 +34,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     email: data?.data?.data?.email,
     role: data?.data?.data?.role,
     avatar: data?.data?.data?.profile?.avatar
+  }
+
+  if(data){
+    Cookies.set("role", data.data.data.role, {
+      secure: false,
+      sameSite: "strict",
+    });
   }
   
   return (

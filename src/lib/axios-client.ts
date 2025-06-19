@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 const options = {
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: false,
-  timeout: 10000,
+  timeout: 30000,
 };
 
 const API = axios.create(options);
@@ -28,6 +28,13 @@ API.interceptors.response.use(
     return response;
   },
   async (error) => {
+
+    if (error.code === "ECONNABORTED") {
+      console.warn("Request timed out");
+      // You might want to notify the user here
+      return Promise.reject({ message: "Request timed out" });
+    }
+
     const { data, status } = error.response;
     if (data.errorCode === "AUTH_TOKEN_NOT_FOUND" && status === 401) {
       try {

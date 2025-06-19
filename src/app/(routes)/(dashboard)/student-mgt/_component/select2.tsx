@@ -2,18 +2,32 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import React from 'react'
 
 interface selectProps {
-    data: string[];
+    data: {label:string,key:string}[];
     placeholder: string;
     title?: string;
     required?: string
-    onChange?: (value: string) => void;
+    onChange?: (value: {label:string,key:string},index?:number) => void;
     defaultValue?: string;
     value?: string;
-    academic?: boolean;
 }
 
-const SelectPage = ({data, placeholder, title, required, onChange, defaultValue , value, academic}: selectProps) => {
+const SelectPage2 = ({data, placeholder, title, required, onChange, defaultValue , value}: selectProps) => {
+
+  const handleValueChange = (selected: string) => {
     
+    let index = 0
+      const selectedItem = data.find(
+          (item, i) =>{
+            index = i;
+            return item.label.toLowerCase() === selected.toLowerCase()
+          }
+      );
+
+      if (selectedItem && onChange) {
+          onChange(selectedItem,index);
+      }
+  };
+
   return (
     <div>
     <div className="flex flex-col gap-y-[8px]">
@@ -21,11 +35,11 @@ const SelectPage = ({data, placeholder, title, required, onChange, defaultValue 
         {title} <span className="text-[#930C02]">{required}</span>
       </label>
 
-      <Select onValueChange={onChange} defaultValue={defaultValue} value={value}>
+      <Select onValueChange={handleValueChange} value={value}>
         <div className="h-full w-full rounded-[8px] border border-[#CEAAAA] bg-[#FCF9F9]">
           <SelectTrigger className="h-[43px] w-full bg-transparent outline-none">
             <SelectValue
-              className={`${academic ? "border-[#AACEC9]" : "border-[#CEAAAA]"}w-full border bg-[#FCF9F9] text-[1rem] text-[#696A6A] outline-none`}
+              className="w-full border border-[#CEAAAA] bg-[#FCF9F9] text-[1rem] text-[#696A6A] outline-none"
               placeholder={placeholder}
             />
           </SelectTrigger>
@@ -33,8 +47,8 @@ const SelectPage = ({data, placeholder, title, required, onChange, defaultValue 
         <SelectContent>
           <SelectGroup>
             {data.map((item) => (
-              <SelectItem key={item} value={item.toLowerCase()}>
-                {item}
+              <SelectItem key={item.key} value={item.label}>
+                {item.label}
               </SelectItem>
             ))}
           </SelectGroup>
@@ -45,4 +59,4 @@ const SelectPage = ({data, placeholder, title, required, onChange, defaultValue 
   )
 }
 
-export default SelectPage
+export default SelectPage2

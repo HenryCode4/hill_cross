@@ -5,7 +5,8 @@ interface DecodedToken {
   exp: number;
 }
 
-const protectedRoutes = ["/dashboard", "/academics","/e-learning", "/allocate-Module", "/student-mgt", "/Accounts_&_Finance", "/notification", "/hr_management", "/admin"];
+const protectedRoutes = ["/dashboard", "/academics","/e-learning", "/allocate-Module", "/student-mgt", "/Accounts_&_Finance", "/notification", "/hr_management", "/admin","/complete-registration"];
+
 const publicRoutes = [
   "/",
   "/signup",
@@ -15,6 +16,10 @@ const publicRoutes = [
   "/verify-mfa",
 ];
 
+const adminRoutes = ["/academics","/e-learning", "/allocate-Module", "/student-mgt"]
+const accountantRoutes = ["/Accounts_&_Finance","/complete-registration"]
+const callCenterRoutes = ["/student-mgt"]
+
 export function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
   
@@ -23,11 +28,13 @@ export function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.some(route => path === route);
 
   const accessToken = req.cookies.get("accessToken")?.value;
+  const role = req.cookies.get("role")?.value;
 
   // Check token expiration if it exists
   if (accessToken) {
     try {
       const decoded: DecodedToken = jwtDecode(accessToken);
+      
       const currentTime = Math.floor(Date.now() / 1000);
 
       if (decoded.exp < currentTime) {
@@ -35,13 +42,33 @@ export function middleware(req: NextRequest) {
         const response = NextResponse.redirect(new URL("/", req.url));
         // Clear the expired token
         response.cookies.delete("accessToken");
+        response.cookies.delete("role");
         return response;
       }
     } catch (error) {
       // Token is invalid
       const response = NextResponse.redirect(new URL("/", req.url));
       response.cookies.delete("accessToken");
+      response.cookies.delete("role");
       return response;
+    }
+  }
+
+  if (accessToken && role) {
+    
+    if(role.toLowerCase() !== "super admin"){
+
+      if (!adminRoutes.some(route => path.startsWith(route)) && role.toLowerCase() == "admin") {
+        return NextResponse.redirect(new URL("/academics", req.url));
+      }
+  
+      if (!accountantRoutes.some(route => path.startsWith(route)) && role.toLowerCase() == "accountant") {
+        return NextResponse.redirect(new URL("/complete-registration", req.url));
+      }
+  
+      if (!callCenterRoutes.some(route => path.startsWith(route)) && role.toLowerCase() == "call center") {
+        return NextResponse.redirect(new URL("/student-mgt", req.url));
+      }
     }
   }
 
