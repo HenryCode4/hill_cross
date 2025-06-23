@@ -32,7 +32,7 @@ const ContactInput = ({placeholder, title, required,value,name, onChange}: Input
 }
 
 const StudentDetails = ({payment,save}:{payment:any,save: any}) => {
-  const {last_name,first_name,phone_number, student_id } = payment?.data.data;
+  const {last_name,first_name,phone_number, student_id } = payment?.data?.data;
   const [studentDetails,setStudentDetails] = useState({last_name:last_name,firstName: first_name, phoneNumber: phone_number, student_id  })
   
   const changeStudentDetails = (e:React.ChangeEvent<HTMLInputElement>) => {

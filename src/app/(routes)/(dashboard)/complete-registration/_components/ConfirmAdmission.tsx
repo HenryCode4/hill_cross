@@ -14,9 +14,6 @@ const ConfirmAdmission = ({payment,save}:{payment:any,save: any}) => {
     const {name,id} = payment.data.data.qualification.qualification;
     const {name:faculty} = payment.data.data.qualification.qualification.school;
 
-    console.log(study_mode);
-    
-
     const [schoolData, setSchoolData] = useState({faculty:faculty || "",course: name || "",qualification_id:id || "",mode_of_study:study_mode||"",level:"",email:email || ""})
     const studentType = ['Full-Time','Part-Time']
 

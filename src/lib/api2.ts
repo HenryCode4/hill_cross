@@ -75,7 +75,6 @@ export const editStudentPayment = async (data: any) =>{
 }
 
 export const updateStudentDocs = async (data: any) =>{
-  console.log({data}),data.id;
   await API.patch(`/admin/students/update-student-documents/${data.id}`,{...data,statement_of_account_url:data.file_url});
 }
 
@@ -89,7 +88,6 @@ export const updateStudentQualification = async (values: any) =>{
 }
 
 export const updateBookProcess = async (values: any) =>{
-  console.log({values});
   const {id, bookStatus} = values
   await API.patch(`/admin/students/update-book-tracking-status/${id}`,{status:bookStatus});
 }

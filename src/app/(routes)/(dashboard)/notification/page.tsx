@@ -80,7 +80,6 @@ const NotificationPage = () => {
       }
     );
 
-    console.log(selectedNotification?.id)
     const { mutate: deleteNotification, isPending } = useMutation({
         mutationFn: () => {
 

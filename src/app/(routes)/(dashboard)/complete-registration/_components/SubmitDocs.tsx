@@ -38,7 +38,8 @@ const FileInput = ({file_url,file_name,setDocs,docs}:{file_url:string,file_name:
 
     const { getPresignedUrl, isLoading } = usePresignedUrl({
             onSuccess: (url,file) => {
-              setDocs({...docs,[file_url]:url,[file_name]:file.name})
+              // setDocs({...docs,[file_url]:url,[file_name]:file.name});
+              setDocs((prev: any) => ({ ...prev, [file_url]: url, [file_name]: file.name }));
             }
           });
 
@@ -53,12 +54,20 @@ const FileInput = ({file_url,file_name,setDocs,docs}:{file_url:string,file_name:
             ];
           
             if (!allowedTypes.includes(file.type)) {
-              alert("Only PDF, DOC, and DOCX files are allowed.");
+              toast({
+                  title: "Error",
+                  description: "Only PDF, DOC, and DOCX files are allowed.",
+                  variant: "destructive",
+              });
               return;
             }
           
             if (file.size > 1024 * 1024) {
-              alert("File size must be less than 1MB.");
+              toast({
+                  title: "Error",
+                  description: "File size must be less than 1MB.",
+                  variant: "destructive",
+              });
               return;
             }
             await getPresignedUrl(file);
@@ -92,7 +101,7 @@ const SubmitDocs = ({payment,save}:{payment:any,save:  React.Dispatch<React.SetS
   const [docs,setDocs] = useState<DocsType>({id_url:"",id_name:"",cert_url:"",cert_name:"",address_url:"",address_name:"",sponsor_url:"",sponsor_name:""})
 
   useEffect(() => {
-    payment.data.data.documents.map((data: { file_type: string; file_url: string; }) => {
+    payment?.data?.data?.documents.map((data: { file_type: string; file_url: string; }) => {
       setDocs((docs) => ({...docs,[data.file_type]:data.file_url}))
     })
   },[])
@@ -100,6 +109,8 @@ const SubmitDocs = ({payment,save}:{payment:any,save:  React.Dispatch<React.SetS
     const { mutate, isPending } = useMutation({
       mutationFn: updateStudentDocs,
     });
+
+    const queryClient = useQueryClient();
 
     const onSubmit = (e:any) => {
       if(!docs.id_url || !docs.cert_url || !docs.address_url || !docs.sponsor_url){
@@ -114,8 +125,7 @@ const SubmitDocs = ({payment,save}:{payment:any,save:  React.Dispatch<React.SetS
       
       mutate({id:payment.data.data.id,...docs}, {
           onSuccess: (response:any) => {
-          // queryClient.invalidateQueries({ queryKey: ['getUnapprovedStudentsPayment'] });
-          // queryClient.invalidateQueries({ queryKey: [`getSingleStudentPayment`, student.id] });
+          queryClient.invalidateQueries({ queryKey: [`getSingleStudentPayment`, payment?.data?.data?.student_id] });
           toast({
               title: "Success",
               description: "Payment Uploaded successfully",
