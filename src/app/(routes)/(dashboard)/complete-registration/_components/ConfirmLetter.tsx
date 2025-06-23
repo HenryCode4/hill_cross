@@ -39,10 +39,9 @@ const ConfirmLetter = ({payment,save}:{payment:any,save:any}) => {
   return (
     <div className='relative h-full'>
       {letter && (
-        // <PdfThumbnail fileUrl={letter} downloadName={payment?.data?.data?.name + ' pdf'} />
         <div className="mt-2 bg-red-600 text-white px-4 py-2 rounded flex items-center justify-center w-full text-sm">
-        ⬇️ {payment?.data?.data?.name + ' Download PDF'}
-      </div>
+          {payment?.data?.data?.name + ' Download PDF'}
+        </div>
       )}
       <div className='flex justify-between'>
             <button className="absolute bottom-0 left-0 h-[48px] w-[161px] rounded-[8px] border border-[#ED1000]  text-[16px] font-[500] text-[#ED1000]"

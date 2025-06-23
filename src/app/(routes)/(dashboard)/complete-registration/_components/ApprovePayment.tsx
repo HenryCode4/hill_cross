@@ -18,7 +18,6 @@ const ApprovePayment = () => {
           // }
       );
   
-      console.log({student});
     const totalPages = student?.data?.meta?.last_page || 1;
       
     const handleServerPageChange = (page: number) => {

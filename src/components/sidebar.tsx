@@ -34,10 +34,6 @@ const Sidebar = ({toggle, setToggle}:SidebarProps) => {
   // Check if a specific item is active
   const isActive = (url: string | undefined) => pathname === url || pathname.startsWith(`${url}/`);
 
-  // const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')!) : null;
-  console.log({user});
-  
-
   // Sidebar items array
   const items = [
     {

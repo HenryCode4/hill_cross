@@ -66,8 +66,6 @@ const Page = ({params}:{params: Promise<{id:string}>}) => {
           name: "Confirmation Letter",
           link: `/complete-registration/1/confirmation-letter`
       }];
-
-      console.log({payment});
   
   const renderItem = {
     "Payment History": <PaymentHistory payment={payment} save={() => setActive("Registration")} />,
