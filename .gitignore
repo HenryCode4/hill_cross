@@ -46,3 +46,8 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Allure test results and reports
+allure-results/
+allure-report/
+
