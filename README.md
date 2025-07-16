@@ -51,4 +51,3 @@ This project contains end-to-end tests using [Playwright](https://playwright.dev
 npm install
 npx playwright install
 
-

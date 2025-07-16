@@ -30,7 +30,8 @@ export default defineConfig({
     ['allure-playwright'],
   ],
   expect: {
-    timeout: 115000, // Default timeout for expect assertions
+    timeout: 115000, 
+    //just a line
   },
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
