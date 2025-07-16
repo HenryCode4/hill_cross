@@ -22,6 +22,14 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm install
 
+      - name: ➕ Install wait-on (to wait for localhost)
+        run: npm install -D wait-on
+
+      - name: 🧭 Start Local Dev Server
+        run: |
+          npm run dev &
+          npx wait-on http://localhost:3000
+
       - name: 🎭 Install Playwright Browsers
         run: npx playwright install --with-deps
 
@@ -34,3 +42,4 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
+
