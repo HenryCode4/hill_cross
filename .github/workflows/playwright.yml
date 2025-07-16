@@ -34,13 +34,14 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: 🚀 Run Playwright Tests
-        run: npx playwright test || true   # Prevents hard stop if tests fail
+        run: npx playwright test || true  # Always run next step even if tests fail
 
-      - name: 📊 Generate Allure Report
-        run: npx allure generate ./allure-results --clean -o ./allure-report
+      - name: 📊 Generate Allure Report (Allure v3)
+        run: npx allure generate ./allure-results -o ./allure-report --force
 
-      - name: 📤 Upload Allure Report (HTML)
+      - name: 📤 Upload Allure HTML Report
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report/
+
