@@ -40,7 +40,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 # Playwright E2E Test Framework
 
-This project contains end-to-end tests using [Playwright](https://playwright.dev).
+This is a project that contains end-to-end tests using [Playwright](https://playwright.dev).
 
 
 
@@ -50,5 +50,4 @@ This project contains end-to-end tests using [Playwright](https://playwright.dev
 ```bash
 npm install
 npx playwright install
-
 
