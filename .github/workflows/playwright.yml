@@ -36,8 +36,9 @@ jobs:
       - name: 🚀 Run Playwright Tests
         run: npx playwright test || true  # Always run next step even if tests fail
 
-      - name: 📊 Generate Allure Report (Allure v3)
-        run: npx allure generate ./allure-results -o ./allure-report --force
+      - name: 📊 Generate Allure Report (Stable CLI)
+        run: npx allure-commandline generate ./allure-results --clean -o ./allure-report
+
 
       - name: 📤 Upload Allure HTML Report
         uses: actions/upload-artifact@v4
