@@ -29,6 +29,14 @@ pipeline {
       }
     }
 
+     stage('Start Dev Server') {
+      steps {
+        bat 'start /b npm run dev'
+        // Sleep to give the server time to start
+        bat 'timeout /t 10'
+      }
+    
+
     stage('Run Playwright Tests') {
       steps {
         bat 'npx playwright test'
