@@ -1,11 +1,6 @@
 pipeline {
   agent any
 
-  // Optional: Use this if you've installed NodeJS Plugin and configured 'Node 18'
-  // tools {
-  //   nodejs 'Node 18'
-  // }
-
   environment {
     CI = 'true'
   }
@@ -13,7 +8,7 @@ pipeline {
   stages {
     stage('Checkout Code') {
       steps {
-        git branch: 'master', url: 'https://github.com/HenryCode4/hill_cross.git'
+        git branch: 'main', url: 'https://github.com/HenryCode4/hill_cross.git'
       }
     }
 
@@ -26,6 +21,14 @@ pipeline {
     stage('Install Playwright Browsers') {
       steps {
         bat 'npx playwright install --with-deps'
+      }
+    }
+
+    stage('Start Dev Server') {
+      steps {
+        bat 'start /b npm run dev'
+        // Sleep to give the server time to start
+        bat 'timeout /t 10'
       }
     }
 
