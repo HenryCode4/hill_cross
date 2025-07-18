@@ -24,6 +24,15 @@ pipeline {
       }
     }
 
+    stage('Start Dev Server') {
+      steps {
+        bat 'start /b npm run dev'
+      // This replaces 'timeout /t 10'
+      bat 'ping -n 10 127.0.0.1 > nul'
+    }
+  }
+
+
     stage('Run Playwright Tests') {
       steps {
         bat 'npx playwright test'
