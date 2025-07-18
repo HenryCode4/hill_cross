@@ -1,0 +1,55 @@
+pipeline {
+  agent any
+
+  tools {
+    nodejs 'Node 18' // Make sure Jenkins Global Tools has Node 18 setup
+  }
+
+  environment {
+    CI = 'true'
+  }
+
+  stages {
+    stage('Checkout Code') {
+      steps {
+        git branch: 'master', url: 'https://github.com/HenryCode4/hill_cross.git'
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps {
+        sh 'npm install'
+      }
+    }
+
+    stage('Install Playwright Browsers') {
+      steps {
+        sh 'npx playwright install --with-deps'
+      }
+    }
+
+    stage('Run Playwright Tests') {
+      steps {
+        sh 'npx playwright test'
+      }
+    }
+  }
+
+  post {
+    success {
+      emailext(
+        subject: "✅ SUCCESS - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        body: "Build succeeded: ${env.BUILD_URL}",
+        to: 'gabicebenjamin@yahoo.com'
+      )
+    }
+
+    failure {
+      emailext(
+        subject: "❌ FAILED - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        body: "Build failed: ${env.BUILD_URL}",
+        to: 'gabicebenjamin@yahoo.com'
+      )
+    }
+  }
+}
