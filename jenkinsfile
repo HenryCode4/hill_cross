@@ -1,9 +1,10 @@
 pipeline {
   agent any
 
-  tools {
-    nodejs 'Node 18' // Make sure Jenkins Global Tools has Node 18 setup
-  }
+  // Optional: Use this if you've installed NodeJS Plugin and configured 'Node 18'
+  // tools {
+  //   nodejs 'Node 18'
+  // }
 
   environment {
     CI = 'true'
@@ -53,3 +54,7 @@ pipeline {
     }
   }
 }
+
+// This Jenkinsfile is designed to run Playwright tests in a CI/CD pipeline.
+// It includes stages for checking out the code, installing dependencies, installing Playwright browsers, and running tests.
+
