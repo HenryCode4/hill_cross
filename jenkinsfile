@@ -19,19 +19,19 @@ pipeline {
 
     stage('Install Dependencies') {
       steps {
-        sh 'npm install'
+        bat 'npm install'
       }
     }
 
     stage('Install Playwright Browsers') {
       steps {
-        sh 'npx playwright install --with-deps'
+        bat 'npx playwright install --with-deps'
       }
     }
 
     stage('Run Playwright Tests') {
       steps {
-        sh 'npx playwright test'
+        bat 'npx playwright test'
       }
     }
   }
@@ -54,7 +54,6 @@ pipeline {
     }
   }
 }
-
 // This Jenkinsfile is designed to run Playwright tests in a CI/CD pipeline.
 // It includes stages for checking out the code, installing dependencies, installing Playwright browsers, and running tests.
 
