@@ -1,6 +1,11 @@
 pipeline {
   agent any
 
+  // Optional: Use this if you've installed NodeJS Plugin and configured 'Node 18'
+  // tools {
+  //   nodejs 'Node 18'
+  // }
+
   environment {
     CI = 'true'
   }
@@ -8,7 +13,7 @@ pipeline {
   stages {
     stage('Checkout Code') {
       steps {
-        git branch: 'main', url: 'https://github.com/HenryCode4/hill_cross.git'
+        git branch: 'master', url: 'https://github.com/HenryCode4/hill_cross.git'
       }
     }
 
@@ -49,5 +54,7 @@ pipeline {
     }
   }
 }
+
 // This Jenkinsfile is designed to run Playwright tests in a CI/CD pipeline.
-// It includes stages for checking out the code, installing dependencies, installing Playwright browsers, and
+// It includes stages for checking out the code, installing dependencies, installing Playwright browsers, and running tests.
+
