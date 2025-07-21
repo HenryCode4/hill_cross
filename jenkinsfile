@@ -72,7 +72,7 @@ pipeline {
       )
     }
   }
-}  // ✅ THIS closing brace was missing in your file
+} 
 
 // This Jenkinsfile is designed to run Playwright tests in a CI/CD pipeline.
 // It includes stages for checking out the code, installing dependencies, installing Playwright browsers, and running tests.
