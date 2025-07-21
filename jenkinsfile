@@ -1,6 +1,10 @@
 pipeline {
   agent any
 
+  options {
+    timestamps()
+  }
+
   environment {
     CI = 'true'
   }
@@ -15,6 +19,13 @@ pipeline {
     stage('Install Dependencies') {
       steps {
         bat 'npm install'
+      }
+    }
+
+    stage('Compile TypeScript') {
+      steps {
+        echo "🛠️ Checking TypeScript compilation..."
+        bat 'npx tsc --noEmit'
       }
     }
 
