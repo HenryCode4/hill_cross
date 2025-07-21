@@ -9,5 +9,5 @@ test('test', async ({ page }) => {
   await expect(page.getByText('Forgot password?')).toBeVisible();
   await expect(page.getByText('New application?')).toBeVisible();
   await expect(page.locator('form')).toContainText('Click here');
-  await expect(page.getByText('HillCross College Student Management System')).toBeVisible();
+  await expect(page.getByText('HillCross College Student Management Systg')).toBeVisible();
 });
