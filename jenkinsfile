@@ -5,6 +5,10 @@ pipeline {
     timestamps()
   }
 
+  triggers {
+    githubPush() // ⬅️ this listens to GitHub push webhook
+  }
+
   environment {
     CI = 'true'
   }
